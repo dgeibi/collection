@@ -1,0 +1,5 @@
+The default if statement is a special form which means that even when an interpreter follows applicative substitution, it only evaluates one of it's parameters- not both. However, the newly created new-if doesn't has this property and hence, it never stops calling itself due to the third parameter passed to it in sqrt-iter.
+
+new-if is a procedure, and under applicative-order evaluation, all its arguments will be evaluated first before the procedure application is even started. The third argument to the new-if procedure, i.e. the recursive call to sqrt-iter, will always be evaluated. It is the evaluation of this third argument that causes an infinite loop.
+
+

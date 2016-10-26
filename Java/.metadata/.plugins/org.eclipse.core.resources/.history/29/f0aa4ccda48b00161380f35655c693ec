@@ -1,0 +1,7 @@
+public class Main {
+
+    public static void main(String[] args) {
+	 Book a =new Book("Head First Java", "Sierra, Bates", 1999);
+	 a.printBook();
+    }
+}

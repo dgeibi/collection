@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CSS Transform</title>
+        <style media="screen">
+            div:nth-child(1) {
+                transform-origin: left top;
+                background-color: yellow;
+                height: 200px;
+                width: 200px;
+                transform: scale(2);
+            }
+            div:nth-child(2) {
+                transform-origin: left top;
+                background-color: blue;
+                height: 200px;
+                width: 200px;
+                transform: rotate3d(0,0,1,45deg);
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            Div1
+        </div>
+        <div>
+            div2
+        </div>
+    </body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Opacity Demo</title>
+        <style media="screen">
+            a.btn {
+                color: #fff;
+                background-color: #33f;
+                border-color: #eee;
+                border-radius: 5px;
+                width: 100px;
+                display: block;
+                text-align: center;
+                padding: 10px 0;
+                opacity: 0.2;
+                filter: alpha(opacity=20); /* For IE8 and earlier */
+                box-shadow: 0 0 2em black;
+            }
+
+            a.btn:hover{
+                opacity: 0.6;
+                filter: alpha(opacity=60);
+                box-shadow: 0 0 1em black;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="#" class="btn">click me!</a>
+    </body>
+</html>

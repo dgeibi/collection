@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Drag and Drop Demo - Professional JavaScript for Web Developers 3rd</title>
+    <script>
+        var DragDrop = function() {
+            var dragging = null,
+                diffX = 0,
+                diffY = 0;
+
+            function handleEvent(event) {
+                switch (event.type) {
+                    case "mousedown":
+                        if (event.target.className.indexOf("draggable") > -1) {
+                            dragging = event.target;
+                            diffX = event.clientX - event.target.offsetLeft;
+                            diffY = event.clientY - event.target.offsetTop;
+                        }
+                        break;
+
+                    case "mousemove":
+                        if (dragging !== null) {
+                            dragging.style.left = (event.clientX - diffX) + "px";
+                            dragging.style.top = (event.clientY - diffY) + "px";
+                        }
+                        break;
+
+                    case "mouseup":
+                        dragging = null;
+                        break;
+                }
+            }
+            return {
+                enable: function() {
+                    document.addEventListener("mousedown", handleEvent);
+                    document.addEventListener("mousemove", handleEvent);
+                    document.addEventListener("mouseup", handleEvent);
+                },
+                disable: function() {
+                    document.removeEventListener("mousedown", handleEvent);
+                    document.removeEventListener("mousemove", handleEvent);
+                    document.removeEventListener("mouseup", handleEvent);
+                }
+            }
+        }();
+        DragDrop.enable();
+    </script>
+    <style media="screen">
+        body {
+            background-color: #345566;
+        }
+
+        .container {
+            position: relative;
+            margin-left: 300px;
+            background-color: yellow;
+            width: 500px;
+            height: 500px;
+        }
+
+        .dot {
+            position: absolute;
+            left: 60px;
+            top: 60px;
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dot draggable">
+        </div>
+    </div>
+</body>
+</html>
