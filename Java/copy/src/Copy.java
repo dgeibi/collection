@@ -13,6 +13,7 @@ public class Copy {
             BufferedWriter writer = new BufferedWriter(new FileWriter(output));
             while((line = reader.readLine())!= null){
                 writer.write(line);
+                writer.newLine();
             }
             writer.close();
             reader.close();
