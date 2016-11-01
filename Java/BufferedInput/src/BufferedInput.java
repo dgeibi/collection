@@ -5,7 +5,7 @@ public class BufferedInput {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File("myFile.txt")));
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String str = null;
-            System.out.print("enter your string: ");
+            System.out.println("enter your string: ");
             while(!(str = reader.readLine()).equals("quit")){
                 writer.write(str);
                 writer.newLine();
