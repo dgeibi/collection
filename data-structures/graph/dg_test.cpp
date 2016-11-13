@@ -4,6 +4,7 @@ int tests_run = 0;
 
 Status vi(VexType i) {
   printf("%c  ", i);
+  return OK;
 }
 
 static char const* testinit() {

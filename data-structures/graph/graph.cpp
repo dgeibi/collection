@@ -3,7 +3,6 @@
 Status CreateGraph(ALGraph& G, GraphKind kind, VexType *vexs, int n, ArcInfo  *arcs, int  e) {
   // 创建含n个顶点和e条边的有向图G，vexs为顶点信息，arcs为边信息
   int i;
-  AdjVexNodeP p;
 
   G.kind = kind;
   G.n    = n;
@@ -351,6 +350,7 @@ Status DFS(ALGraph G, int v, Status (*visit)(VexType))
     // p指向顶点v的下一条弧的弧头结点
     p = p->next;
   }
+  return OK;
 }
 
 Status DFSTraverse(ALGraph G, Status (*visit)(VexType)) {
