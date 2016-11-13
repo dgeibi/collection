@@ -1,9 +1,9 @@
-VPATH = ../LinkQueue:../vendor:.
+VPATH := ../LinkQueue:../vendor:.
 CC := g++
 objects := Graph.o LQueue.o dg_test.o
 
 dg_test.out : $(objects)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^
 
 $(objects) : miniunit.h LQueue.h
 
