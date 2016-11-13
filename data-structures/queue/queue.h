@@ -1,9 +1,12 @@
 #include "../vendor/miniunit.h"
+
 #include <cstdlib>
 
 #ifndef QUEUE_H
 # define QUEUE_H
+
 typedef int QElemType;
+
 typedef struct LQNode {
   QElemType      data;
   struct LQNode *next;

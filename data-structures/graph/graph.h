@@ -11,7 +11,6 @@
 # define MAX_SIZE_ARCS 20
 
 typedef char VexType;
-typedef int  QElemType;
 
 typedef enum {
   DG, DN, UDG, UDN
