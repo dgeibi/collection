@@ -1,4 +1,4 @@
-#include "LQueue.h"
+#include "queue.h"
 
 void InitQueue_LQ(LQueue& Q)
 { /* 构造一个空队列Q */

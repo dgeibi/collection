@@ -1,5 +1,6 @@
 #include "../vendor/miniunit.h"
 #include <cstdlib>
+#include <cstdio>
 
 #ifndef LINKEDLIST_H
 # define LINKEDLIST_H

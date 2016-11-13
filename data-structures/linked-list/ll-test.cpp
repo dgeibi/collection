@@ -1,6 +1,4 @@
-#include <cstdio>
-#include "../DS0.h"
-#include "LinkedList.h"
+#include "ll.h"
 
 Status func(LinkList L) {
   LinkList p = L->next;

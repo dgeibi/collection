@@ -1,16 +1,13 @@
-#include "Graph.h"
+#include "graph.h"
 
-
-Status CreateDG(ALGraph& G, VexType *vexs, int n, ArcInfo *arcs, int e)
-
-/* 创建含n个顶点和e条边的有向图G，vexs为顶点信息，arcs为边信息 */
-{
-  int i, j, k;
+Status CreateGraph(ALGraph& G, GraphKind kind, VexType *vexs, int n, ArcInfo  *arcs, int  e) {
+  // 创建含n个顶点和e条边的有向图G，vexs为顶点信息，arcs为边信息
+  int i;
   AdjVexNodeP p;
 
-  G.kind = DG;
+  G.kind = kind;
   G.n    = n;
-  G.e    = e;
+  G.e    = 0;
   G.vexs = NULL;
   G.tags = NULL;
 
@@ -32,34 +29,22 @@ Status CreateDG(ALGraph& G, VexType *vexs, int n, ArcInfo *arcs, int e)
     G.vexs[i].firstArc = NULL;
   }
 
-  for (k = 0; k < G.e; k++)
+  for (i = 0; i < e; i++)
   {
-    i = LocateVex(G, arcs[k].v);
-    j = LocateVex(G, arcs[k].w);
-
-    if ((i < 0) || (j < 0))
-    {
-      return ERROR;
-    }
-    p                  = (AdjVexNodeP)malloc(sizeof(AdjVexNode));
-    p->adjvex          = j;
-    p->info            = arcs[k].info;
-    p->next            = G.vexs[i].firstArc;
-    G.vexs[i].firstArc = p;
+    if (ERROR == AddArc(G, arcs[i].v, arcs[i].w, arcs[i].info)) return ERROR;
   }
   return OK;
 }
 
-int inDegree(ALGraph G, VexType v)
-
-// 求有向图G中值为 v 的顶点的入度。若k顶点不存在，则返回-1
-{
+int inDegree(ALGraph G, VexType v) {
+  // 求有向图G中值为 v 的顶点的入度。若k顶点不存在，则返回-1
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n))
   {
     return -1;
   }
+
   int i, sum = 0;
   AdjVexNodeP p;
 
@@ -77,10 +62,8 @@ int inDegree(ALGraph G, VexType v)
   return sum;
 }
 
-int outDegree(ALGraph G, VexType v)
-
-// 求有向图G中值为 v 的顶点的出度。若k顶点不存在，则返回-1
-{
+int outDegree(ALGraph G, VexType v) {
+  // 求有向图G中值为 v 的顶点的出度。若k顶点不存在，则返回-1
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n))
@@ -196,28 +179,28 @@ Status DestoryGraph(ALGraph& G) {
   return OK;
 }
 
-Status GetVex(ALGraph G, int k, VexType& w) {
+Status GetVex(ALGraph G, int k, VexType& v) {
   // 取图G中索引为k的顶点的值到 w
   if ((k < 0) || (k >= G.n)) {
     return ERROR;
   }
-  w = G.vexs[k].data;
+  v = G.vexs[k].data;
   return OK;
 }
 
-Status SetVex(ALGraph G, int k, VexType w) {
-  // 给图G中索引为k的顶点赋值 w
+Status SetVex(ALGraph G, int k, VexType v) {
+  // 给图G中索引为k的顶点赋值 v
+  // 如果图G已经存在值为 v 的结点不赋值
   if ((k < 0) || (k >= G.n)) {
     return ERROR;
   }
 
-  for (int i = 0; i < G.n; i++) {
-    if (G.vexs[i].data == w) {
-      return ERROR;
-    }
+  if (-1 == LocateVex(G, v)) {
+    G.vexs[k].data = v;
+    return OK;
+  } else {
+    return ERROR;
   }
-  G.vexs[k].data = w;
-  return OK;
 }
 
 Status AddArc(ALGraph& G, VexType v, VexType w, int info) {
@@ -370,8 +353,8 @@ Status DFS(ALGraph G, int v, Status (*visit)(VexType))
   }
 }
 
-Status DFSTraverse(ALGraph  G,
-                   Status (*visit)(VexType)) { // 深度优先遍历图 G
+Status DFSTraverse(ALGraph G, Status (*visit)(VexType)) {
+  // 深度优先遍历图 G
   int i;
 
   for (i = 0; i < G.n; i++) {

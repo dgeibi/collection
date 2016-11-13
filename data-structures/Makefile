@@ -1,15 +1,15 @@
-VPATH := ./LinkQueue:./vendor:./DirectedGraph
+VPATH := graph:vendor:queue
 CC := g++
-objects := Graph.o LQueue.o dg_test.o
+objects := graph.o queue.o dg_test.o
 
 all : dg_test.out
 
 dg_test.out : $(objects)
 	$(CC) -o $@ $^
 
-$(objects) : miniunit.h LQueue.h
+$(objects) : miniunit.h queue.h
 
-Graph.o dg_test.o : Graph.h
+graph.o dg_test.o : graph.h
 
 .PHONY : clean
 clean :

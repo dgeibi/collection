@@ -1,4 +1,4 @@
-#include "LinkedList.h"
+#include "ll.h"
 
 LinkList MakeNode_L(ElemType e) {
   LinkList p;

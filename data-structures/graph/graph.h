@@ -1,5 +1,5 @@
 #include "../vendor/miniunit.h"
-#include "../LinkQueue/LQueue.h"
+#include "../queue/queue.h"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -40,11 +40,12 @@ typedef struct {
   int     info;                // 对带权图，为权值
 } ArcInfo;                     // 边（弧）信息
 
-Status CreateDG(ALGraph& G,
-                VexType *vexs,
-                int      n,
-                ArcInfo *arcs,
-                int      e);     // 创建有向图的邻接表
+Status CreateGraph(ALGraph & G,
+                   GraphKind kind,
+                   VexType  *vexs,
+                   int       n,
+                   ArcInfo  *arcs,
+                   int       e); // 创建图的邻接表
 
 Status DestoryGraph(ALGraph& G); // 销毁图G
 
@@ -53,11 +54,11 @@ int    LocateVex(ALGraph G,
 
 Status GetVex(ALGraph  G,
               int      k,
-              VexType& w); // 取图G中索引为k的顶点的值到 w
+              VexType& v); // 取图G中索引为k的顶点的值到 v
 
 Status SetVex(ALGraph G,
               int     k,
-              VexType w); // 给图G中索引为k的顶点赋值 w
+              VexType v); // 给图G中索引为k的顶点赋值 v，若图G已经存在值为 v 的结点则不赋值
 
 int FirstAdjVex(ALGraph      G,
                 int          k,

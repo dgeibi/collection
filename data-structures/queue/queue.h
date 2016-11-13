@@ -1,8 +1,8 @@
 #include "../vendor/miniunit.h"
 #include <cstdlib>
 
-#ifndef LQUEUE_H
-# define LQUEUE_H
+#ifndef QUEUE_H
+# define QUEUE_H
 typedef int QElemType;
 typedef struct LQNode {
   QElemType      data;
@@ -35,4 +35,4 @@ Status DeQueue_LQ(LQueue   & Q,
                                             */
 void   Traverse_LQ(LQueue Q,
                    void (*vi)(QElemType)); /* 从队头到队尾依次对队列Q中每个元素调用函数vi() */
-#endif /* ifndef LQUEUE_H */
+#endif /* ifndef QUEUE_H */
