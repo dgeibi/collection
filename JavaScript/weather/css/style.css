@@ -1,0 +1,17 @@
+.site-title {
+  font-weight: bold;
+}
+
+body {
+  font-family: sans-serif;
+  color: #fff;
+  background-color: #666;
+  height: 100%;
+  text-align: center;
+}
+
+.btn {
+    background-color: transparent;
+    color: #0E88EB;
+    text-decoration: none;
+}
