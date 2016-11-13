@@ -1,6 +1,8 @@
-VPATH := ../LinkQueue:../vendor:.
+VPATH := ./LinkQueue:./vendor:./DirectedGraph
 CC := g++
 objects := Graph.o LQueue.o dg_test.o
+
+all : dg_test.out
 
 dg_test.out : $(objects)
 	$(CC) -o $@ $^
