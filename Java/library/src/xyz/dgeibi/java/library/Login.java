@@ -9,6 +9,7 @@ import java.sql.*;
 
 public class Login {
 
+
     Connection connection = DBConnection();
 
     private Connection DBConnection() {
@@ -42,6 +43,7 @@ public class Login {
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
         label.setText("GDUT Library System");
 
+        // Account Text
         label = new Label(c1, SWT.NULL);
         label.setText("账号: ");
         Text userT = new Text(c1, SWT.SINGLE | SWT.BORDER);
@@ -60,13 +62,13 @@ public class Login {
         userT.setFocus();
 
 
-        // 密码
+        // Password Text
         label = new Label(c1, SWT.NULL);
         label.setText("密码: ");
         Text pwT = new Text(c1, SWT.PASSWORD | SWT.BORDER);
         pwT.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
-
+        // Account Option
         Button option1 = new Button(c1, SWT.RADIO);
         option1.setText("用户");
         option1.setSelection(true);
@@ -74,7 +76,7 @@ public class Login {
         option2.setText("管理员");
 
 
-        // 登录按钮
+        // Login
         Button btn1 = new Button(c1, SWT.PUSH);
         btn1.setText("登录");
         btn1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -82,21 +84,14 @@ public class Login {
         btn1.addListener(SWT.Selection, event -> {
             try {
                 Statement st = connection.createStatement();
-                String sql;
-                if (option2.getSelection()) {
-                    sql = "SELECT id FROM admin WHERE id = '" + userT.getText() + "' AND " + "password = '" + pwT.getText() + "';";
-                } else if (option1.getSelection()) {
-                    sql = "SELECT id FROM user WHERE id = '" + userT.getText() + "' AND " + "password = '" + pwT.getText() + "';";
+                String sql = option2.getSelection() ? "admin" : "user";
+                sql = "SELECT id FROM " + sql + " WHERE id = '" + userT.getText() + "' AND " + "password = '" + pwT.getText() + "'";
+                ResultSet rs = st.executeQuery(sql);
+                if (rs.next()) {
+                    shell.close();
+                    new Client(rs.getString("id"), display, connection);
                 } else {
-                    sql = "";
-                }
-                if (!sql.equals("")) {
-                    ResultSet rs = st.executeQuery(sql);
-                    while (rs.next()) {
-                        // TODO: Client
-                        shell.close();
-                        new Client(rs.getString("id"), display, connection).go();
-                    }
+                    new Alert(shell, "登录失败", Alert.ERROR);
                 }
             } catch (SQLException se) {
                 se.printStackTrace();
@@ -105,27 +100,21 @@ public class Login {
             }
         });
 
+        // Create Account
         Button btn2 = new Button(c1, SWT.PUSH);
         btn2.setText("注册");
         btn2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         btn2.addListener(SWT.Selection, event -> {
             try {
                 Statement st = connection.createStatement();
-                String sql;
-                if (option2.getSelection())
-                    sql = "INSERT INTO admin (id,password,registerTime) VALUES ('" + userT.getText() + "','" + pwT.getText() + "',NOW());";
-                else if (option1.getSelection()) {
-                    sql = "INSERT INTO user (id,password,registerTime) VALUES ('" + userT.getText() + "','" + pwT.getText() + "',NOW());";
-                } else {
-                    sql = "";
-                }
-                if (!sql.equals("")) {
-                    if (st.executeUpdate(sql) > 0) {
-                        System.out.println("注册成功");
-                    }
+                String sql = option2.getSelection() ? "admin" : "user";
+                sql = "INSERT INTO " + sql + " (id,password,registerTime) " +
+                        "VALUES ('" + userT.getText() + "','" + pwT.getText() + "',NOW())";
+                if (st.executeUpdate(sql) > 0) {
+                    new Alert(shell, "注册成功！", Alert.NOTICE);
                 }
             } catch (SQLException se) {
-                new Alert(shell, "注册失败了,请更换其它ID！");
+                new Alert(shell, "注册失败,请更换其它ID！", Alert.ERROR);
             } catch (Exception e) {
                 e.printStackTrace();
             }

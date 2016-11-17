@@ -18,9 +18,12 @@ public class Client {
         this.userId = userId;
         this.display = display;
         this.connection = connection;
+        this.go();
     }
 
     void go() {
+        System.out.println(userId + " 登录成功");
+
         Shell shell = new Shell(display);
         shell.setText(userId + " - GDUT Library System");
         Table table = new Table(shell, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
