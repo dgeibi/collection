@@ -1,8 +1,10 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+
 import java.sql.*;
 
 public class Login {
@@ -103,6 +105,10 @@ public class Login {
                 e.printStackTrace();
             }
         });
+
+        /*
+         * TODO: add username
+         */
 
         // Create Account
         Button btn2 = new Button(c1, SWT.PUSH);

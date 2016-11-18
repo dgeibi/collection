@@ -1,7 +1,9 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class Alert extends Dialog {

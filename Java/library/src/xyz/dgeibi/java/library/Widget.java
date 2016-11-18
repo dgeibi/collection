@@ -1,19 +1,20 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
-import java.sql.*;
 
-/**
- * Created by dgeibi on 11/18/16.
- */
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Widget {
     public static Table createBookTable(Composite c, String sql, Connection connection, int options) {
         final Table table = new Table(c, options);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 
         String[] titles = {"id", "书名", "作者"};
         for (int i = 0; i < titles.length; i++) {
@@ -50,9 +51,9 @@ public class Widget {
 
     public static Button createBtn(Composite c, String text, Listener listener) {
         Button btn = new Button(c, SWT.PUSH);
-        btn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
         btn.setText(text);
         btn.addListener(SWT.Selection, listener);
+        btn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
         return btn;
     }
 }

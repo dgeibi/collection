@@ -1,7 +1,8 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class Confirm extends Dialog {
@@ -25,12 +26,12 @@ public class Confirm extends Dialog {
         label.setText(message);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
-        Button yes = Widget.createBtn(dialog, "确定", event -> {
+        Widget.createBtn(dialog, "确定", event -> {
             result = true;
             dialog.close();
         });
 
-        Button no = Widget.createBtn(dialog, "取消", event -> {
+        Widget.createBtn(dialog, "取消", event -> {
             dialog.close();
         });
 

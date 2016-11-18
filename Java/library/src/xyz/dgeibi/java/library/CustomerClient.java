@@ -1,9 +1,12 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class CustomerClient {
     String userId;
@@ -48,6 +51,7 @@ public class CustomerClient {
                 reload(parent);
             }
         });
+        ;
 
         // 还书
         label = new Label(c1, SWT.NONE);
@@ -80,7 +84,11 @@ public class CustomerClient {
         c1.pack();
         parent.pack();
     }
-
+    /* TODO:
+     *  support password update
+     *  delete account
+     *  history
+     */
     void go() {
         Shell shell = new Shell(this.display);
         shell.setLayout(new GridLayout());
@@ -90,6 +98,5 @@ public class CustomerClient {
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
         }
-        display.dispose();
     }
 }
