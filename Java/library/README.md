@@ -42,7 +42,7 @@ CREATE TABLE business
 ```
 
 ```sql
-INSERT INTO book (name, publishTime) VALUES ('黑客与画家', NOW());
+INSERT INTO book (name,author, publishTime) VALUES ('黑客与画家', 'Paul',NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('Head First Java','Sierra & Bates', NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('The Little Prince','‎Antoine de Saint-Exupéry', NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('JavaScript 高级程序设计','Nicholas C.Zakas', NOW());

@@ -1,14 +1,11 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.*;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-
 import java.sql.*;
 
 public class Login {
-
 
     Connection connection = DBConnection();
 
@@ -28,7 +25,6 @@ public class Login {
     }
 
     public void go() {
-        System.out.println("Driver loaded");
         Display display = new Display();
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
@@ -41,7 +37,7 @@ public class Login {
 
         Label label = new Label(c1, SWT.NULL);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        label.setText("GDUT Library System");
+        label.setText("GDUT Digital Library System");
 
         // Account Text
         label = new Label(c1, SWT.NULL);
@@ -75,7 +71,6 @@ public class Login {
         Button option2 = new Button(c1, SWT.RADIO);
         option2.setText("管理员");
 
-
         // Login
         Button btn1 = new Button(c1, SWT.PUSH);
         btn1.setText("登录");
@@ -84,12 +79,21 @@ public class Login {
         btn1.addListener(SWT.Selection, event -> {
             try {
                 Statement st = connection.createStatement();
-                String sql = option2.getSelection() ? "admin" : "user";
-                sql = "SELECT id FROM " + sql + " WHERE id = '" + userT.getText() + "' AND " + "password = '" + pwT.getText() + "'";
+                String kind = option2.getSelection() ? "admin" : "user";
+                String sql = "SELECT id FROM " + kind + " WHERE id = '" + userT.getText() +
+                        "' AND " + "password = '" + pwT.getText() + "'";
                 ResultSet rs = st.executeQuery(sql);
                 if (rs.next()) {
+                    String id = rs.getString("id");
                     shell.close();
-                    new Client(rs.getString("id"), display, connection);
+                    switch (kind) {
+                        case "admin":
+                            new AdminClient(id, display, connection);
+                            break;
+                        case "user":
+                            new CustomerClient(id, display, connection);
+                            break;
+                    }
                 } else {
                     new Alert(shell, "登录失败！", Alert.ERROR);
                 }

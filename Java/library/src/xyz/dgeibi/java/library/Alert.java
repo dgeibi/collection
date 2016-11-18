@@ -1,31 +1,26 @@
 package xyz.dgeibi.java.library;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
-
-public class Alert {
+public class Alert extends Dialog {
 
     final static int ERROR = 0;
     final static int NOTICE = 1;
-    Shell parentShell;
     String message;
     int option;
 
     public Alert(Shell parentShell, String message, int option) {
-        this.parentShell = parentShell;
+        super(parentShell);
         this.message = message;
         this.option = option;
         this.go();
     }
 
     void go() {
-        Shell shell = new Shell(parentShell);
+        Composite parent = getParent();
+        Shell shell = new Shell((Shell) parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         Label label;
 
         final int insetX = 4, insetY = 4;
@@ -68,6 +63,10 @@ public class Alert {
 
         shell.setSize(200, 100);
         shell.open();
+        Display display = parent.getDisplay();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) display.sleep();
+        }
         System.out.println(type + ": " + message);
     }
 }
