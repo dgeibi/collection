@@ -91,7 +91,7 @@ public class Login {
                     shell.close();
                     new Client(rs.getString("id"), display, connection);
                 } else {
-                    new Alert(shell, "登录失败", Alert.ERROR);
+                    new Alert(shell, "登录失败！", Alert.ERROR);
                 }
             } catch (SQLException se) {
                 se.printStackTrace();
@@ -114,7 +114,7 @@ public class Login {
                     new Alert(shell, "注册成功！", Alert.NOTICE);
                 }
             } catch (SQLException se) {
-                new Alert(shell, "注册失败,请更换其它ID！", Alert.ERROR);
+                new Alert(shell, "注册失败！", Alert.ERROR);
             } catch (Exception e) {
                 e.printStackTrace();
             }
