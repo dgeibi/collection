@@ -11,29 +11,29 @@ public class Client {
     String userId;
     Display display;
     Connection connection;
+    Shell shell;
 
     public Client(String userId, Display display, Connection connection) {
         this.userId = userId;
         this.display = display;
         this.connection = connection;
+        this.shell = new Shell(this.display);
+        this.shell.setLayout(new GridLayout());
+        this.shell.setText(this.userId + " - GDUT Digital Library System");
         this.go();
     }
 
     void go() {
-        System.out.println(userId + " 登录成功");
-
-        Shell shell = new Shell(display);
-        shell.setLayout(new GridLayout());
-        shell.setText(userId + " - GDUT Library System");
-
+        Composite c1 = new Composite(shell, SWT.NONE);
+        c1.setLayout(new GridLayout());
         // 借书
-        Label label = new Label(shell, SWT.NONE);
+        Label label = new Label(c1, SWT.NONE);
         label.setText("借书：");
         String sql1 = "SELECT id,name,author FROM book" +
                 " WHERE id NOT IN" +
                 "(SELECT bookid FROM business WHERE userid = '" + userId + "')" ;
-        final Table table1 = createTable(shell, sql1);
-        Button submit = createSubmitBtn(shell);
+        final Table table1 = createTable(c1, sql1);
+        Button submit = createSubmitBtn(c1);
         submit.addListener(SWT.Selection,event -> {
             TableItem[] Items = table1.getItems();
             for (TableItem item : Items) {
@@ -49,18 +49,18 @@ public class Client {
                     }
                 }
             }
-            shell.close();
+            c1.dispose();
             go();
         });
 
         // 还书
-        label = new Label(shell, SWT.NONE);
+        label = new Label(c1, SWT.NONE);
         label.setText("还书：");
         String sql2 = "SELECT id,name,author FROM book" +
                 " WHERE id IN" +
                 "(SELECT bookid FROM business WHERE userid = '" + userId + "')" ;
-        final Table table2 = createTable(shell, sql2);
-        submit = createSubmitBtn(shell);
+        final Table table2 = createTable(c1, sql2);
+        submit = createSubmitBtn(c1);
         submit.addListener(SWT.Selection,event -> {
             TableItem[] Items = table2.getItems();
             for (TableItem item : Items) {
@@ -75,10 +75,11 @@ public class Client {
                     }
                 }
             }
-            shell.close();
+            c1.dispose();
             go();
         });
 
+        c1.pack();
         shell.pack();
         shell.open();
         while (!shell.isDisposed()) {
@@ -87,8 +88,8 @@ public class Client {
         display.dispose();
     }
 
-    private Table createTable(Shell shell, String sql) {
-        final Table table = new Table(shell, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+    private Table createTable(Composite c, String sql) {
+        final Table table = new Table(c, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         table.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
@@ -119,8 +120,8 @@ public class Client {
         return table;
     }
 
-    private Button createSubmitBtn(Shell shell) {
-        Button submit = new Button(shell,SWT.PUSH);
+    private Button createSubmitBtn(Composite c) {
+        Button submit = new Button(c,SWT.PUSH);
         submit.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER,true,false));
         submit.setText("提交");
         return submit;

@@ -1,4 +1,4 @@
-# GDUT Library System
+# GDUT Digital Library System
 
 ## Framework:
 

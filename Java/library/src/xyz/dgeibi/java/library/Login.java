@@ -32,7 +32,7 @@ public class Login {
         Display display = new Display();
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
-        shell.setText("登录 - GDUT Library System");
+        shell.setText("登录 - GDUT Digital Library System");
         Composite c1 = new Composite(shell, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
