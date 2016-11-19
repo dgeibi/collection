@@ -48,3 +48,7 @@ INSERT INTO book (name, author, publishTime) VALUES ('The Little Prince','‎Ant
 INSERT INTO book (name, author, publishTime) VALUES ('JavaScript 高级程序设计','Nicholas C.Zakas', NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('SICP','Harold Abelson...', NOW());
 ```
+
+## Thanks:
+
+[SWT Snippets](http://www.eclipse.org/swt/snippets/)
