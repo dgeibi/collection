@@ -6,6 +6,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
 import java.sql.Connection;
@@ -14,18 +16,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class AdminClient {
-    String adminId;
+    String id;
 
-    public AdminClient(String adminId) {
-        this.adminId = adminId;
+    public AdminClient(String id) {
+        this.id = id;
         this.go();
     }
 
-    /* TODO:
-     *  support password update
-     */
     void reload(Shell parent) {
         Connection connection = Main.connection;
+
         Composite c1 = new Composite(parent, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
@@ -104,6 +104,17 @@ public class AdminClient {
         final Text tx2 = new Text(c2, SWT.SINGLE | SWT.BORDER);
         tx2.setLayoutData(gridData);
 
+        Composite setting = new Composite(parent, SWT.NONE);
+        setting.setLayout(new RowLayout());
+        RowData rowData = new RowData();
+        Widget.createBtn(setting, "注销", event -> {
+            parent.close();
+            new Login();
+        }, rowData);
+        Widget.createBtn(setting, "修改个人信息", event -> {
+            parent.setText("Admin: " + new Profile(parent, id, "admin").go() + "(" + id + ") - GDUT Digital Library System");
+        }, rowData);
+
         Widget.createBtn(c2, "提交新书", event -> {
             Confirm confirm = new Confirm(parent, "确定提交新书？");
             if (confirm.go()) {
@@ -123,14 +134,14 @@ public class AdminClient {
                         }
                         c1.dispose();
                         c2.dispose();
+                        setting.dispose();
                         reload(parent);
                     }
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
             }
-        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false,2,1));
-
+        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1));
 
         Widget.createBtn(c1, "下架已选的书籍", event -> {
             Confirm confirm = new Confirm(parent, "确定下架已选的书籍？");
@@ -152,6 +163,7 @@ public class AdminClient {
                 if (items.length > 0) {
                     c1.dispose();
                     c2.dispose();
+                    setting.dispose();
                     reload(parent);
                 }
             }
@@ -173,6 +185,8 @@ public class AdminClient {
             }
         }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 
+
+        setting.pack();
         c1.pack();
         c2.pack();
         parent.pack();
@@ -182,7 +196,19 @@ public class AdminClient {
         Display display = Main.display;
         Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
-        shell.setText("Admin: " + this.adminId + " - GDUT Digital Library System");
+        String username = "";
+        try {
+            Statement st = Main.connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT username FROM admin WHERE id = '" + id + "'");
+            if (rs.next()) {
+                username = rs.getString("username");
+            }
+        } catch (SQLException se) {
+        }
+        if (username == null) {
+            username = id;
+        }
+        shell.setText("Admin: " + username + "(" + this.id + ") - GDUT Digital Library System");
         reload(shell);
         shell.open();
 

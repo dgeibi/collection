@@ -42,18 +42,19 @@ public class Widget {
         return table;
     }
 
-    public static Button createBtn(Composite c, String text) {
-        Button btn = new Button(c, SWT.PUSH);
-        btn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
-        btn.setText(text);
-        return btn;
-    }
-
     public static Button createBtn(Composite c, String text, Listener listener) {
         Button btn = new Button(c, SWT.PUSH);
         btn.setText(text);
         btn.addListener(SWT.Selection, listener);
         btn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
+        return btn;
+    }
+
+    public static Button createBtn(Composite c, String text, Listener listener, Object data) {
+        Button btn = new Button(c, SWT.PUSH);
+        btn.setText(text);
+        btn.addListener(SWT.Selection, listener);
+        btn.setLayoutData(data);
         return btn;
     }
 }

@@ -3,7 +3,10 @@ package xyz.dgeibi.java.library;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 public class Confirm extends Dialog {
     boolean result = false;
@@ -15,8 +18,8 @@ public class Confirm extends Dialog {
     }
 
     public boolean go() {
-        Composite parent = getParent();
-        final Shell dialog = new Shell((Shell) parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        Shell parent = getParent();
+        final Shell dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setText(message);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;

@@ -5,14 +5,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Login {
-    public Login(){
+    public Login() {
         go();
     }
 
-    private void toggleComposite(Composite c, GridData d){
+    private void toggleComposite(Composite c, GridData d) {
         d.exclude = !d.exclude;
         c.setVisible(!d.exclude);
         c.getParent().pack();
@@ -87,7 +90,7 @@ public class Login {
         c11Layout.marginWidth = 0;
         c11.setLayout(c11Layout);
         // Password Confirm
-        new Label(c11, SWT.NULL).setText("确认密码：");
+        new Label(c11, SWT.NULL).setText("再次输入密码：");
         Text passwordCText = new Text(c11, SWT.PASSWORD | SWT.BORDER);
         passwordCText.setLayoutData(textGridData);
         // Username Text
