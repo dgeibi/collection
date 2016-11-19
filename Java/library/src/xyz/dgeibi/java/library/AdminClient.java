@@ -15,14 +15,9 @@ import java.sql.Statement;
 
 public class AdminClient {
     String adminId;
-    Display display;
-    Connection connection;
 
-
-    public AdminClient(String adminId, Display display, Connection connection) {
+    public AdminClient(String adminId) {
         this.adminId = adminId;
-        this.display = display;
-        this.connection = connection;
         this.go();
     }
 
@@ -30,6 +25,7 @@ public class AdminClient {
      *  support password update
      */
     void reload(Shell parent) {
+        Connection connection = Main.connection;
         Composite c1 = new Composite(parent, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
@@ -183,7 +179,8 @@ public class AdminClient {
     }
 
     void go() {
-        Shell shell = new Shell(this.display);
+        Display display = Main.display;
+        Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
         shell.setText("Admin: " + this.adminId + " - GDUT Digital Library System");
         reload(shell);

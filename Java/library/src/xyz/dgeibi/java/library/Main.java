@@ -1,8 +1,39 @@
 package xyz.dgeibi.java.library;
 
+import org.eclipse.swt.widgets.Display;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class Main {
+    static Connection connection = DBConnection();
+    static Display display = new Display();
+
     public static void main(String[] args) {
-        Login login = new Login();
-        login.go();
+        new Login();
+        display.dispose();
+
+        try {
+            connection.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+
+    private static Connection DBConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/keshe", "dgeibi", "123456");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return connection;
     }
 }

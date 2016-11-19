@@ -10,17 +10,14 @@ import java.sql.Statement;
 
 public class CustomerClient {
     String userId;
-    Display display;
-    Connection connection;
 
-    public CustomerClient(String userId, Display display, Connection connection) {
+    public CustomerClient(String userId) {
         this.userId = userId;
-        this.display = display;
-        this.connection = connection;
         this.go();
     }
 
     void reload(Shell parent) {
+        Connection connection = Main.connection;
         Composite c1 = new Composite(parent, SWT.NONE);
         c1.setLayout(new GridLayout());
 
@@ -90,7 +87,8 @@ public class CustomerClient {
      *  history
      */
     void go() {
-        Shell shell = new Shell(this.display);
+        Display display = Main.display;
+        Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
         shell.setText("User: " + this.userId + " - GDUT Digital Library System");
         reload(shell);

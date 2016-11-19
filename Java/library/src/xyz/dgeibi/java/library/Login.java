@@ -8,22 +8,8 @@ import org.eclipse.swt.widgets.*;
 import java.sql.*;
 
 public class Login {
-
-    Connection connection = DBConnection();
-
-    private Connection DBConnection() {
-        Connection connection = null;
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/keshe", "dgeibi", "123456");
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return connection;
+    public Login(){
+        go();
     }
 
     private void toggleComposite(Composite c, GridData d){
@@ -32,9 +18,10 @@ public class Login {
         c.getParent().pack();
     }
 
-
     public void go() {
-        Display display = new Display();
+        Connection connection = Main.connection;
+        Display display = Main.display;
+
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
         shell.setText("登录 - GDUT Digital Library System");
@@ -59,7 +46,7 @@ public class Login {
         c3.setLayout(gridLayout);
         GridData c3Data = new GridData(SWT.FILL, SWT.CENTER, true, false);
         c3.setLayoutData(c3Data);
-        toggleComposite(c3,c3Data);
+        toggleComposite(c3, c3Data);
 
         Label label = new Label(c1, SWT.NULL);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -92,7 +79,7 @@ public class Login {
 
         // Extra Text
         Composite c11 = new Composite(c1, SWT.NONE);
-        GridData c11Data = new GridData(SWT.LEFT,SWT.CENTER,true,false,2,1);
+        GridData c11Data = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
         c11.setLayoutData(c11Data);
         GridLayout c11Layout = new GridLayout();
         c11Layout.numColumns = 2;
@@ -100,23 +87,23 @@ public class Login {
         c11Layout.marginWidth = 0;
         c11.setLayout(c11Layout);
         // Password Confirm
-        new Label(c11,SWT.NULL).setText("确认密码：");
-        Text passwordCText = new Text(c11,SWT.PASSWORD | SWT.BORDER);
+        new Label(c11, SWT.NULL).setText("确认密码：");
+        Text passwordCText = new Text(c11, SWT.PASSWORD | SWT.BORDER);
         passwordCText.setLayoutData(textGridData);
         // Username Text
-        new Label(c11,SWT.NULL).setText("用户名：");
-        Text usernameText = new Text(c11,SWT.SINGLE | SWT.BORDER);
+        new Label(c11, SWT.NULL).setText("用户名：");
+        Text usernameText = new Text(c11, SWT.SINGLE | SWT.BORDER);
         usernameText.setLayoutData(textGridData);
-        toggleComposite(c11,c11Data);
+        toggleComposite(c11, c11Data);
 
         // Account Option
         Button option1 = new Button(c5, SWT.RADIO);
         option1.setText("用户");
         option1.setSelection(true);
-        option1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER,false,false,1,1));
+        option1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         Button option2 = new Button(c5, SWT.RADIO);
         option2.setText("管理员");
-        option2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER,true,false,1,1));
+        option2.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 
         // Login Button
         GridData gridDataLeft = new GridData(SWT.LEFT, SWT.CENTER, false, false);
@@ -138,10 +125,10 @@ public class Login {
                     shell.close();
                     switch (kind) {
                         case "admin":
-                            new AdminClient(id, display, connection);
+                            new AdminClient(id);
                             break;
                         case "user":
-                            new CustomerClient(id, display, connection);
+                            new CustomerClient(id);
                             break;
                     }
                 } else {
@@ -161,61 +148,53 @@ public class Login {
         btn2.setText("注册");
         btn2.setLayoutData(gridDataRight);
         btn2.addListener(SWT.Selection, event -> {
-            toggleComposite(c11,c11Data);
-            toggleComposite(c2,c2Data);
-            toggleComposite(c3,c3Data);
+            toggleComposite(c11, c11Data);
+            toggleComposite(c2, c2Data);
+            toggleComposite(c3, c3Data);
         });
 
         // Composite 3: extra buttons
-        Widget.createBtn(c3,"返回",event -> {
-            toggleComposite(c11,c11Data);
-            toggleComposite(c2,c2Data);
-            toggleComposite(c3,c3Data);
+        Widget.createBtn(c3, "返回", event -> {
+            toggleComposite(c11, c11Data);
+            toggleComposite(c2, c2Data);
+            toggleComposite(c3, c3Data);
         }).setLayoutData(gridDataLeft);
 
-        Widget.createBtn(c3,"确定注册",event -> {
-                String account = accountText.getText();
-                String username = usernameText.getText();
-                String password = passwordText.getText();
-                String passwordC = passwordCText.getText();
-                if (username.equals("")) {
-                    username = account;
-                }
-                if (passwordC.equals(password)) {
-                    try {
-                        Statement st = connection.createStatement();
-                        String sql = option2.getSelection() ? "admin" : "user";
-                        sql = "INSERT INTO " + sql + " (id,password,username,registerTime) " +
-                                "VALUES ('" + account + "','" + password + "','" +
-                                username + "',NOW())";
-                        if (st.executeUpdate(sql) > 0) {
-                            new Alert(shell, "注册成功！", Alert.NOTICE);
-                            toggleComposite(c11, c11Data);
-                            toggleComposite(c2, c2Data);
-                            toggleComposite(c3, c3Data);
-                        }
-                    } catch (SQLException se) {
-                        new Alert(shell, "注册失败！请更换ID后再试", Alert.ERROR);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        Widget.createBtn(c3, "确定注册", event -> {
+            String account = accountText.getText();
+            String username = usernameText.getText();
+            String password = passwordText.getText();
+            String passwordC = passwordCText.getText();
+            if (username.equals("")) {
+                username = account;
+            }
+            if (passwordC.equals(password)) {
+                try {
+                    Statement st = connection.createStatement();
+                    String sql = option2.getSelection() ? "admin" : "user";
+                    sql = "INSERT INTO " + sql + " (id,password,username,registerTime) " +
+                            "VALUES ('" + account + "','" + password + "','" +
+                            username + "',NOW())";
+                    if (st.executeUpdate(sql) > 0) {
+                        new Alert(shell, "注册成功！", Alert.NOTICE);
+                        toggleComposite(c11, c11Data);
+                        toggleComposite(c2, c2Data);
+                        toggleComposite(c3, c3Data);
                     }
-                } else {
-                    new Alert(shell,"你输入的密码不一致！",SWT.ERROR);
+                } catch (SQLException se) {
+                    new Alert(shell, "注册失败！请更换ID后再试", Alert.ERROR);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            } else {
+                new Alert(shell, "你输入的密码不一致！", SWT.ERROR);
+            }
         }).setLayoutData(gridDataRight);
-
 
         shell.pack();
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
-        }
-        display.dispose();
-
-        try {
-            connection.close();
-        } catch (SQLException se) {
-            se.printStackTrace();
         }
     }
 }
