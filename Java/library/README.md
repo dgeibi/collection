@@ -10,18 +10,20 @@
 ```sql
 CREATE TABLE admin
 (
-id INT(10) unsigned NOT NULL,
-password VARCHAR(120) NOT NULL,
-registerTime DATETIME,
-PRIMARY KEY (id)
+    id INT(10) unsigned NOT NULL,
+    password VARCHAR(120) NOT NULL,
+    registerTime DATETIME NOT NULL,
+    username VARCHAR(120),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE user
 (
-id INT(10) unsigned NOT NULL,
-password VARCHAR(120) NOT NULL,
-registerTime DATETIME,
-PRIMARY KEY (id)
+    id INT(10) unsigned NOT NULL,
+    password VARCHAR(120) NOT NULL,
+    registerTime DATETIME NOT NULL,
+    username VARCHAR(120),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE book

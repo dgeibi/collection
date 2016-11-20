@@ -17,26 +17,65 @@ import java.sql.Statement;
 
 public class AdminClient {
     String id;
+    Table table;
+    String sql1;
 
     public AdminClient(String id) {
         this.id = id;
         this.go();
     }
 
-    void reload(Shell parent) {
-        Connection connection = Main.connection;
+    void reload() {
+        Widget.reloadBookTable(table, sql1, Main.connection);
+        table.getParent().layout();
+    }
 
-        Composite c1 = new Composite(parent, SWT.NONE);
+    void go() {
+        Connection connection = Main.connection;
+        Display display = Main.display;
+        Shell shell = new Shell(display);
+        shell.setLayout(new GridLayout());
+        String username = "";
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT username FROM admin WHERE id = '" + id + "'");
+            if (rs.next()) {
+                username = rs.getString("username");
+            }
+        } catch (SQLException se) {
+        }
+        if (username == null) {
+            username = id;
+        }
+        shell.setText("Admin: " + username + "(" + this.id + ") - GDUT Digital Library System");
+
+        /*
+         * Setting
+         */
+        Composite setting = new Composite(shell, SWT.NONE);
+        setting.setLayout(new RowLayout());
+        RowData rowData = new RowData();
+        Widget.createBtn(setting, "注销", event -> {
+            shell.close();
+            new Login();
+        }, rowData);
+        Widget.createBtn(setting, "修改个人信息", event -> {
+            shell.setText("Admin: " + new Profile(shell, id, "admin").go() + "(" + id + ") - GDUT Digital Library System");
+        }, rowData);
+
+
+        /* c1: 图书管理 */
+        Composite c1 = new Composite(shell, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         c1.setLayout(gridLayout);
 
-
-        Label label = new Label(c1, SWT.NONE);
-        label.setText("所有书籍：");
-        String sql1 = "SELECT id,name,author FROM book";
-        final Table table = Widget.createBookTable(c1, sql1, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
-        table.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true, 2, 1));
+        new Label(c1, SWT.NONE).setText("所有书籍：");
+        sql1 = "SELECT id,name,author FROM book";
+        table = Widget.createBookTable(c1, sql1, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+        GridData tableGridData = new GridData(SWT.CENTER, SWT.CENTER, true, true, 2, 1);
+        tableGridData.heightHint = 200;
+        table.setLayoutData(tableGridData);
 
         final TableEditor editor = new TableEditor(table);
         editor.horizontalAlignment = SWT.LEFT;
@@ -63,7 +102,6 @@ public class AdminClient {
                                     switch (e.detail) {
                                         case SWT.TRAVERSE_RETURN:
                                             item.setText(column, text.getText());
-                                            //FALL THROUGH
                                         case SWT.TRAVERSE_ESCAPE:
                                             text.dispose();
                                             e.doit = false;
@@ -87,64 +125,8 @@ public class AdminClient {
                 index++;
             }
         });
-
-        Composite c2 = new Composite(parent, SWT.NONE);
-        label = new Label(c2, SWT.NONE);
-        label.setText("添加新图书：");
-        label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 2, 1));
-        gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
-        c2.setLayout(gridLayout);
-        new Label(c2, SWT.NONE).setText("书名：");
-        final Text tx1 = new Text(c2, SWT.SINGLE | SWT.BORDER);
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
-        gridData.minimumWidth = 500;
-        tx1.setLayoutData(gridData);
-        new Label(c2, SWT.NONE).setText("作者：");
-        final Text tx2 = new Text(c2, SWT.SINGLE | SWT.BORDER);
-        tx2.setLayoutData(gridData);
-
-        Composite setting = new Composite(parent, SWT.NONE);
-        setting.setLayout(new RowLayout());
-        RowData rowData = new RowData();
-        Widget.createBtn(setting, "注销", event -> {
-            parent.close();
-            new Login();
-        }, rowData);
-        Widget.createBtn(setting, "修改个人信息", event -> {
-            parent.setText("Admin: " + new Profile(parent, id, "admin").go() + "(" + id + ") - GDUT Digital Library System");
-        }, rowData);
-
-        Widget.createBtn(c2, "提交新书", event -> {
-            Confirm confirm = new Confirm(parent, "确定提交新书？");
-            if (confirm.go()) {
-                try {
-                    String name = tx1.getText();
-                    String author = tx2.getText();
-                    Statement st = connection.createStatement();
-                    ResultSet rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
-                            "' AND author = '" + author + "'");
-                    if (rs.next()) {
-                        new Alert(parent, "您添加的图书已存在！", Alert.ERROR);
-                    } else {
-                        st = connection.createStatement();
-                        if (st.executeUpdate("INSERT INTO book (name, author, publishTime) " +
-                                " VALUES (' " + name + "','" + author + "', NOW())") == 1) {
-                            new Alert(parent, "提交成功！", Alert.NOTICE);
-                        }
-                        c1.dispose();
-                        c2.dispose();
-                        setting.dispose();
-                        reload(parent);
-                    }
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                }
-            }
-        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1));
-
         Widget.createBtn(c1, "下架已选的书籍", event -> {
-            Confirm confirm = new Confirm(parent, "确定下架已选的书籍？");
+            Confirm confirm = new Confirm(shell, "确定下架已选的书籍？");
             if (confirm.go()) {
                 TableItem[] items = table.getItems();
                 for (TableItem item : items) {
@@ -161,16 +143,13 @@ public class AdminClient {
                     }
                 }
                 if (items.length > 0) {
-                    c1.dispose();
-                    c2.dispose();
-                    setting.dispose();
-                    reload(parent);
+                    reload();
                 }
             }
         }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 
         Widget.createBtn(c1, "更新书籍信息", event -> {
-            Confirm confirm = new Confirm(parent, "确定更新书籍信息？");
+            Confirm confirm = new Confirm(shell, "确定更新书籍信息？");
             if (confirm.go()) {
                 TableItem[] items = table.getItems();
                 for (TableItem item : items) {
@@ -186,32 +165,53 @@ public class AdminClient {
         }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 
 
-        setting.pack();
+        /* c2: 图书添加 */
+        Composite c2 = new Composite(shell, SWT.NONE);
+        Label label = new Label(c2, SWT.NONE);
+        label.setText("添加新图书：");
+        label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 2, 1));
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        c2.setLayout(gridLayout);
+        new Label(c2, SWT.NONE).setText("书名：");
+        final Text tx1 = new Text(c2, SWT.SINGLE | SWT.BORDER);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+        gridData.minimumWidth = 500;
+        tx1.setLayoutData(gridData);
+        new Label(c2, SWT.NONE).setText("作者：");
+        final Text tx2 = new Text(c2, SWT.SINGLE | SWT.BORDER);
+        tx2.setLayoutData(gridData);
+        Widget.createBtn(c2, "提交新书", event -> {
+            Confirm confirm = new Confirm(shell, "确定提交新书？");
+            if (confirm.go()) {
+                try {
+                    String name = tx1.getText();
+                    String author = tx2.getText();
+                    Statement st = connection.createStatement();
+                    ResultSet rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
+                            "' AND author = '" + author + "'");
+                    if (rs.next()) {
+                        new Alert(shell, "您添加的图书已存在！", Alert.ERROR);
+                    } else {
+                        st = connection.createStatement();
+                        if (st.executeUpdate("INSERT INTO book (name, author, publishTime) " +
+                                " VALUES ('" + name + "','" + author + "', NOW())") == 1) {
+                            new Alert(shell, "提交成功！", Alert.NOTICE);
+                            reload();
+                            tx1.setText("");
+                            tx2.setText("");
+                        }
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1));
+
         c1.pack();
         c2.pack();
-        parent.pack();
-    }
-
-    void go() {
-        Display display = Main.display;
-        Shell shell = new Shell(display);
-        shell.setLayout(new GridLayout());
-        String username = "";
-        try {
-            Statement st = Main.connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT username FROM admin WHERE id = '" + id + "'");
-            if (rs.next()) {
-                username = rs.getString("username");
-            }
-        } catch (SQLException se) {
-        }
-        if (username == null) {
-            username = id;
-        }
-        shell.setText("Admin: " + username + "(" + this.id + ") - GDUT Digital Library System");
-        reload(shell);
+        shell.pack();
         shell.open();
-
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
         }

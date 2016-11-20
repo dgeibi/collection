@@ -12,12 +12,13 @@ import java.sql.Statement;
 public class Profile extends Dialog {
     String userId;
     String type;
-    String username = getUsername();
+    String username;
 
     public Profile(Shell parent, String userId, String type) {
         super(parent);
         this.userId = userId;
         this.type = type;
+        this.username = getUsername();
     }
 
     public String getUsername() {
@@ -29,6 +30,7 @@ public class Profile extends Dialog {
                 n = rs.getString("username");
             }
         } catch (SQLException se) {
+            se.printStackTrace();
         }
         if (n == null) {
             n = userId;
