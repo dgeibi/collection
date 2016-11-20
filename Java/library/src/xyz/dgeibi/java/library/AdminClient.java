@@ -96,9 +96,8 @@ public class AdminClient {
         Text customerIDText = new Text(queryHistory, SWT.SINGLE | SWT.BORDER);
         customerIDText.setText("待查询的用户ID");
         customerIDText.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false));
-        customerIDText.addListener(SWT.FocusIn, event -> {
-            customerIDText.selectAll();
-        });
+        Widget.addSelectOnFocusToText(customerIDText);
+
         Widget.createBtn(queryHistory, "查询", new GridData(SWT.LEFT, SWT.FILL, true, false), event -> {
             String customerID = customerIDText.getText();
             try {
