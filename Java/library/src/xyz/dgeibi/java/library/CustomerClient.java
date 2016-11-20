@@ -151,7 +151,7 @@ public class CustomerClient {
         });
 
         view.pack();
-
+        top.pack();
         shell.pack();
         shell.open();
         while (!shell.isDisposed()) {

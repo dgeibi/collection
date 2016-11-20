@@ -259,6 +259,7 @@ public class AdminClient {
 
         c1.pack();
         c2.pack();
+        top.pack();
         shell.pack();
         shell.open();
         while (!shell.isDisposed()) {

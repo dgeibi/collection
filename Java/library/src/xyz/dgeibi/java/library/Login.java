@@ -27,7 +27,8 @@ public class Login {
 
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout());
-        shell.setText("登录 - GDUT Digital Library System");
+        String title = "登录 - GDUT Digital Library System";
+        shell.setText(title);
 
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
@@ -151,6 +152,7 @@ public class Login {
         btn2.setText("注册");
         btn2.setLayoutData(gridDataRight);
         btn2.addListener(SWT.Selection, event -> {
+            shell.setText("注册 - GDUT Digital Library System");
             toggleComposite(c11, c11Data);
             toggleComposite(c2, c2Data);
             toggleComposite(c3, c3Data);
@@ -158,6 +160,7 @@ public class Login {
 
         // Composite 3: extra buttons
         Widget.createBtn(c3, "返回", event -> {
+            shell.setText(title);
             toggleComposite(c11, c11Data);
             toggleComposite(c2, c2Data);
             toggleComposite(c3, c3Data);
@@ -180,6 +183,7 @@ public class Login {
                             username + "',NOW())";
                     if (st.executeUpdate(sql) > 0) {
                         new Alert(shell, "注册成功！", Alert.NOTICE);
+                        shell.setText(title);
                         toggleComposite(c11, c11Data);
                         toggleComposite(c2, c2Data);
                         toggleComposite(c3, c3Data);
