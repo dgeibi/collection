@@ -25,7 +25,7 @@ public class Login {
         Connection connection = Main.connection;
         Display display = Main.display;
 
-        final Shell shell = new Shell(display);
+        final Shell shell = new Shell(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
         shell.setLayout(new GridLayout());
         String title = "登录 - GDUT Digital Library System";
         shell.setText(title);

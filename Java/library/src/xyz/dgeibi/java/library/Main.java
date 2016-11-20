@@ -26,7 +26,7 @@ public class Main {
         Connection connection = null;
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/keshe", "dgeibi", "123456");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/keshe", "dgeibi", "123456");
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (SQLException e) {

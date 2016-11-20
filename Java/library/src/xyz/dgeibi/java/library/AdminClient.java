@@ -33,7 +33,7 @@ public class AdminClient {
     void go() {
         Connection connection = Main.connection;
         Display display = Main.display;
-        Shell shell = new Shell(display);
+        Shell shell = new Shell(display,SWT.SHELL_TRIM & (~SWT.RESIZE));
         shell.setLayout(new GridLayout());
         String username = "";
         try {

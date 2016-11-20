@@ -34,7 +34,7 @@ public class CustomerClient {
 
     void go() {
         Display display = Main.display;
-        Shell shell = new Shell(display);
+        Shell shell = new Shell(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
         GridLayout gridLayout = new GridLayout();
         gridLayout.marginHeight = 5;
         shell.setLayout(gridLayout);
