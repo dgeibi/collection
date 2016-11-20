@@ -21,8 +21,8 @@ public class Alert extends Dialog {
     }
 
     void go() {
-        Composite parent = getParent();
-        Shell shell = new Shell((Shell) parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        Shell parent = getParent();
+        Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         Label label;
 
         final int insetX = 4, insetY = 4;

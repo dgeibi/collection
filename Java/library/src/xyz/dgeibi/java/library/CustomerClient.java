@@ -32,10 +32,6 @@ public class CustomerClient {
         table1.getParent().layout();
     }
 
-    /* TODO:
-     *  delete account
-     *  history
-     */
     void go() {
         Display display = Main.display;
         Shell shell = new Shell(display);
@@ -45,7 +41,7 @@ public class CustomerClient {
         String username = "";
         try {
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT username FROM user WHERE id = '" + id + "'");
+            ResultSet rs = st.executeQuery("SELECT username FROM customer WHERE id = '" + id + "'");
             if (rs.next()) {
                 username = rs.getString("username");
             }
@@ -54,47 +50,68 @@ public class CustomerClient {
         if (username == null) {
             username = id;
         }
-        shell.setText("User: " + username + "(" + id + ") - GDUT Digital Library System");
+        shell.setText("Customer: " + username + "(" + id + ") - GDUT Digital Library System");
 
         /*
-         * Setting
+         * Top
          */
-        Composite setting = new Composite(shell, SWT.NONE);
-        setting.setLayout(new RowLayout());
-        setting.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        Composite top = new Composite(shell, SWT.NONE);
+        top.setLayout(new RowLayout());
+        top.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         RowData rowData = new RowData();
-        Widget.createBtn(setting, "注销", event -> {
+        Widget.createBtn(top, "注销", rowData, event -> {
             shell.close();
             new Login();
-        }, rowData);
-        Widget.createBtn(setting, "修改个人信息", event -> {
-            shell.setText("User: " + new Profile(shell, id, "user").go() + "(" + id + ") - GDUT Digital Library System");
-        }, rowData);
-        setting.pack();
+        });
+        Widget.createBtn(top, "修改个人信息", rowData, event -> {
+            shell.setText("Customer: " + new Profile(shell, id, "customer").go() + "(" + id + ") - GDUT Digital Library System");
+        });
+        Widget.createBtn(top, "删除账号", rowData, event -> {
+            Confirm confirm = new Confirm(shell, "你确定删除此账号？");
+            if (confirm.go()) {
+                try {
+                    Statement st = connection.createStatement();
+                    if (1 == st.executeUpdate("DELETE FROM customer WHERE id = '" + id + "'")) {
+                        connection.createStatement().executeUpdate("DELETE FROM history WHERE customerID = '" + id + "'");
+                        new Alert(shell, "成功删除。", Alert.NOTICE);
+                        shell.close();
+                        new Login();
+                    } else {
+                        new Alert(shell, "删除失败！", Alert.ERROR);
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        });
+        Widget.createBtn(top, "借阅记录", event -> {
+            new History(shell, id);
+        });
+        top.pack();
 
         /*
          * View
          */
         Composite view = new Composite(shell, SWT.NONE);
         view.setLayout(new GridLayout());
-        view.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        view.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true));
 
         // 借书
         Label label = new Label(view, SWT.NONE);
         label.setText("借书：");
         sql1 = "SELECT id,name,author FROM book" +
                 " WHERE id NOT IN" +
-                "(SELECT bookid FROM business WHERE userid = '" + id + "')";
+                "(SELECT bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL)";
         table1 = Widget.createBookTable(view, sql1, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
-        Widget.createBtn(view, "提交", event -> {
+        Widget.createBtn(view, "提交", new GridData(SWT.CENTER, SWT.CENTER, true, false), event -> {
             TableItem[] items = table1.getItems();
             for (TableItem item : items) {
                 if (item.getChecked()) {
-                    String bookId = item.getText(0);
+                    String bookID = item.getText(0);
                     try {
                         Statement st = connection.createStatement();
-                        String sql = "INSERT INTO business (userid,bookid,businessTime) " +
-                                "VALUES ('" + id + "', '" + bookId + "', " + "NOW())";
+                        String sql = "INSERT INTO history (customerID,bookID,businessTime) " +
+                                "VALUES ('" + id + "', '" + bookID + "', " + "NOW())";
                         st.executeUpdate(sql);
                     } catch (SQLException se) {
                         se.printStackTrace();
@@ -105,23 +122,23 @@ public class CustomerClient {
                 reload();
             }
         });
-        ;
+
 
         // 还书
         label = new Label(view, SWT.NONE);
         label.setText("还书：");
         sql2 = "SELECT id,name,author FROM book" +
                 " WHERE id IN" +
-                "(SELECT bookid FROM business WHERE userid = '" + id + "')";
+                "(SELECT bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL)";
         table2 = Widget.createBookTable(view, sql2, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
-        Widget.createBtn(view, "提交", event -> {
+        Widget.createBtn(view, "提交", new GridData(SWT.CENTER, SWT.CENTER, true, false), event -> {
             TableItem[] items = table2.getItems();
             for (TableItem item : items) {
                 if (item.getChecked()) {
-                    String bookId = item.getText(0);
+                    String bookID = item.getText(0);
                     try {
                         Statement st = connection.createStatement();
-                        String sql = "DELETE FROM business WHERE bookid = '" + bookId + "'";
+                        String sql = "UPDATE history SET returnTime = NOW() WHERE bookID = '" + bookID + "' AND customerID = '" + id + "'";
                         st.executeUpdate(sql);
                     } catch (SQLException se) {
                         se.printStackTrace();

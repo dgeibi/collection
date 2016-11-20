@@ -119,7 +119,7 @@ public class Login {
         btn1.addListener(SWT.Selection, event -> {
             try {
                 Statement st = connection.createStatement();
-                String kind = option2.getSelection() ? "admin" : "user";
+                String kind = option2.getSelection() ? "admin" : "customer";
                 String sql = "SELECT id FROM " + kind + " WHERE id = '" + accountText.getText() +
                         "' AND " + "password = '" + passwordText.getText() + "'";
                 ResultSet rs = st.executeQuery(sql);
@@ -130,7 +130,7 @@ public class Login {
                         case "admin":
                             new AdminClient(id);
                             break;
-                        case "user":
+                        case "customer":
                             new CustomerClient(id);
                             break;
                     }
@@ -163,7 +163,7 @@ public class Login {
             toggleComposite(c3, c3Data);
         }).setLayoutData(gridDataLeft);
 
-        Widget.createBtn(c3, "确定注册", event -> {
+        Widget.createBtn(c3, "确定注册", gridDataRight, event -> {
             String account = accountText.getText();
             String username = usernameText.getText();
             String password = passwordText.getText();
@@ -174,7 +174,7 @@ public class Login {
             if (passwordC.equals(password)) {
                 try {
                     Statement st = connection.createStatement();
-                    String sql = option2.getSelection() ? "admin" : "user";
+                    String sql = option2.getSelection() ? "admin" : "customer";
                     sql = "INSERT INTO " + sql + " (id,password,username,registerTime) " +
                             "VALUES ('" + account + "','" + password + "','" +
                             username + "',NOW())";
@@ -192,7 +192,7 @@ public class Login {
             } else {
                 new Alert(shell, "你输入的密码不一致！", SWT.ERROR);
             }
-        }).setLayoutData(gridDataRight);
+        });
 
         shell.pack();
         shell.open();

@@ -77,11 +77,10 @@ public class Widget {
     public static Button createBtn(Composite c, String text, Listener listener) {
         Button btn = createBtn(c, text);
         btn.addListener(SWT.Selection, listener);
-        btn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
         return btn;
     }
 
-    public static Button createBtn(Composite c, String text, Listener listener, Object data) {
+    public static Button createBtn(Composite c, String text, Object data, Listener listener) {
         Button btn = createBtn(c, text, listener);
         btn.setLayoutData(data);
         return btn;

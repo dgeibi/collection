@@ -50,23 +50,73 @@ public class AdminClient {
         shell.setText("Admin: " + username + "(" + this.id + ") - GDUT Digital Library System");
 
         /*
-         * Setting
+         * Top
          */
-        Composite setting = new Composite(shell, SWT.NONE);
-        setting.setLayout(new RowLayout());
+        Composite top = new Composite(shell, SWT.NONE);
+        top.setLayout(new RowLayout());
         RowData rowData = new RowData();
-        Widget.createBtn(setting, "注销", event -> {
+        Widget.createBtn(top, "注销", rowData, event -> {
             shell.close();
             new Login();
-        }, rowData);
-        Widget.createBtn(setting, "修改个人信息", event -> {
+        });
+        Widget.createBtn(top, "修改个人信息", rowData, event -> {
             shell.setText("Admin: " + new Profile(shell, id, "admin").go() + "(" + id + ") - GDUT Digital Library System");
-        }, rowData);
+        });
+        Widget.createBtn(top, "删除账号", rowData, event -> {
+            Confirm confirm = new Confirm(shell, "你确定删除此账号？");
+            if (confirm.go()) {
+                try {
+                    Statement st = connection.createStatement();
+                    if (1 == st.executeUpdate("DELETE FROM admin WHERE id = '" + id + "'")) {
+                        new Alert(shell, "成功删除。", Alert.NOTICE);
+                        shell.close();
+                        new Login();
+                    } else {
+                        new Alert(shell, "删除失败！", Alert.ERROR);
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        });
+
+        /*
+         * QueryHistory
+         */
+        Composite queryHistory = new Composite(shell, SWT.NONE);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        queryHistory.setLayout(gridLayout);
+        queryHistory.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+        Label label = new Label(queryHistory, SWT.NULL);
+        label.setText("借阅记录：");
+        label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+
+        Text customerIDText = new Text(queryHistory, SWT.SINGLE | SWT.BORDER);
+        customerIDText.setText("待查询的用户ID");
+        customerIDText.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false));
+        customerIDText.addListener(SWT.FocusIn, event -> {
+            customerIDText.selectAll();
+        });
+        Widget.createBtn(queryHistory, "查询", new GridData(SWT.LEFT, SWT.FILL, true, false), event -> {
+            String customerID = customerIDText.getText();
+            try {
+                Statement st = connection.createStatement();
+                ResultSet rs = st.executeQuery("SELECT id FROM customer WHERE id = '" + customerID + "'");
+                if (rs.next()) {
+                    new History(shell, customerID, History.ALL);
+                } else {
+                    new Alert(shell, "ID 不存在！", Alert.ERROR);
+                }
+            } catch (SQLException se) {
+            }
+        });
 
 
         /* c1: 图书管理 */
         Composite c1 = new Composite(shell, SWT.NONE);
-        GridLayout gridLayout = new GridLayout();
+        gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         c1.setLayout(gridLayout);
 
@@ -125,18 +175,18 @@ public class AdminClient {
                 index++;
             }
         });
-        Widget.createBtn(c1, "下架已选的书籍", event -> {
+        Widget.createBtn(c1, "下架已选的书籍", new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1), event -> {
             Confirm confirm = new Confirm(shell, "确定下架已选的书籍？");
             if (confirm.go()) {
                 TableItem[] items = table.getItems();
                 for (TableItem item : items) {
                     if (item.getChecked()) {
-                        String bookId = item.getText(0);
+                        String bookID = item.getText(0);
                         try {
                             Statement st = connection.createStatement();
-                            st.executeUpdate("DELETE FROM book WHERE id = '" + bookId + "'");
+                            st.executeUpdate("DELETE FROM book WHERE id = '" + bookID + "'");
                             st = connection.createStatement();
-                            st.executeUpdate("DELETE FROM business WHERE bookid = '" + bookId + "'");
+                            st.executeUpdate("DELETE FROM history WHERE bookID = '" + bookID + "'");
                         } catch (SQLException se) {
                             se.printStackTrace();
                         }
@@ -146,9 +196,9 @@ public class AdminClient {
                     reload();
                 }
             }
-        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+        });
 
-        Widget.createBtn(c1, "更新书籍信息", event -> {
+        Widget.createBtn(c1, "更新书籍信息", new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1), event -> {
             Confirm confirm = new Confirm(shell, "确定更新书籍信息？");
             if (confirm.go()) {
                 TableItem[] items = table.getItems();
@@ -162,12 +212,12 @@ public class AdminClient {
                     }
                 }
             }
-        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        });
 
 
         /* c2: 图书添加 */
         Composite c2 = new Composite(shell, SWT.NONE);
-        Label label = new Label(c2, SWT.NONE);
+        label = new Label(c2, SWT.NONE);
         label.setText("添加新图书：");
         label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 2, 1));
         gridLayout = new GridLayout();
@@ -181,7 +231,7 @@ public class AdminClient {
         new Label(c2, SWT.NONE).setText("作者：");
         final Text tx2 = new Text(c2, SWT.SINGLE | SWT.BORDER);
         tx2.setLayoutData(gridData);
-        Widget.createBtn(c2, "提交新书", event -> {
+        Widget.createBtn(c2, "提交新书", new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1), event -> {
             Confirm confirm = new Confirm(shell, "确定提交新书？");
             if (confirm.go()) {
                 try {
@@ -206,7 +256,7 @@ public class AdminClient {
                     se.printStackTrace();
                 }
             }
-        }).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1));
+        });
 
         c1.pack();
         c2.pack();
