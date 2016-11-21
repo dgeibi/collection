@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+
+mvn compile assembly:single -P win32
+mvn compile assembly:single -P win64
+mvn compile assembly:single -P linux64
