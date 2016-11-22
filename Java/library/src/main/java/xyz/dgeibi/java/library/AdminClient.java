@@ -298,7 +298,8 @@ public class AdminClient {
                     try {
                         rs.close();
                         st.close();
-                    } catch (SQLException se) {}
+                    } catch (SQLException se) {
+                    }
                 }
             }
         });

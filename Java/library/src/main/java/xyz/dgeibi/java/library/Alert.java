@@ -1,8 +1,12 @@
 package xyz.dgeibi.java.library;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 public class Alert extends Dialog {
 
@@ -22,19 +26,6 @@ public class Alert extends Dialog {
         Shell parent = getParent();
         Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         shell.setLayout(new GridLayout());
-        Label label;
-
-        Composite composite = new Composite(shell, SWT.NONE);
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
-        gridData.heightHint = 100;
-        composite.setLayoutData(gridData);
-
-        final int insetX = 4, insetY = 4;
-        FormLayout formLayout = new FormLayout();
-        formLayout.marginWidth = insetX;
-        formLayout.marginHeight = insetY;
-        formLayout.spacing = 40;
-        composite.setLayout(formLayout);
 
         String type = "";
         switch (option) {
@@ -49,26 +40,18 @@ public class Alert extends Dialog {
         shell.setText(type);
 
         // message
-        label = new Label(composite, SWT.NULL);
+        Label label = new Label(shell, SWT.NULL);
         label.setText(message);
-        final FormData labelData = new FormData();
-        labelData.left = new FormAttachment(0, 0);
-        labelData.right = new FormAttachment(100, 0);
-        label.setLayoutData(labelData);
+        label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 
         // OK btn
-        Button btn = new Button(composite, SWT.PUSH);
-        btn.setText("确定");
-        final FormData btnData = new FormData();
-        btnData.right = new FormAttachment(100, -insetX);
-        btnData.bottom = new FormAttachment(100, 0);
-        btn.setLayoutData(btnData);
-        btn.addListener(SWT.Selection, event -> {
+        Widget.createBtn(shell, "确定", new GridData(SWT.RIGHT, SWT.CENTER, true, false), event -> {
             shell.close();
         });
 
         shell.pack();
         shell.open();
+
         Display display = parent.getDisplay();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();

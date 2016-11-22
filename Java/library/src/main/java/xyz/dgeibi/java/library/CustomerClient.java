@@ -167,7 +167,8 @@ public class CustomerClient {
                     } finally {
                         try {
                             st.close();
-                        } catch (SQLException se){}
+                        } catch (SQLException se) {
+                        }
                     }
                 }
             }

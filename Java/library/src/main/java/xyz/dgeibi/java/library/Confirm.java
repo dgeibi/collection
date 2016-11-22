@@ -29,12 +29,12 @@ public class Confirm extends Dialog {
         label.setText(message);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
-        Widget.createBtn(dialog, "确定", event -> {
+        Widget.createBtn(dialog, "确定", new GridData(SWT.RIGHT, SWT.CENTER, true, false), event -> {
             result = true;
             dialog.close();
         });
 
-        Widget.createBtn(dialog, "取消", event -> {
+        Widget.createBtn(dialog, "取消", new GridData(SWT.RIGHT, SWT.CENTER, false, false), event -> {
             dialog.close();
         });
 
