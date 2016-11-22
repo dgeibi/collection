@@ -35,7 +35,6 @@ public class History extends Dialog {
         shell.setLayout(new GridLayout());
         shell.setText(id + " - History");
 
-
         final Table table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
@@ -49,9 +48,11 @@ public class History extends Dialog {
             TableColumn column = new TableColumn(table, SWT.NONE);
             column.setText(titles[i]);
         }
+        Statement st = null;
+        ResultSet rs = null;
         try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(sql1);
+            st = connection.createStatement();
+            rs = st.executeQuery(sql1);
             while (rs.next()) {
                 TableItem item = new TableItem(table, SWT.NONE);
                 String returnTime = rs.getString("returnTime");
@@ -62,23 +63,41 @@ public class History extends Dialog {
                 item.setText(3, returnTime);
                 String sql2 = "SELECT name,author FROM book " +
                         "WHERE id = '" + rs.getString("bookID") + "'";
-                ResultSet rs2 = st.executeQuery(sql2);
-                if (rs2.next()) {
-                    String author = rs2.getString("author");
-                    if (author == null) author = "";
-                    item.setText(0, rs2.getString("name"));
-                    item.setText(1, author);
+                Statement st2 = null;
+                ResultSet rs2 = null;
+                try {
+                    st2 = connection.createStatement();
+                    rs2 = st2.executeQuery(sql2);
+                    if (rs2.next()) {
+                        String author = rs2.getString("author");
+                        if (author == null) author = "";
+                        item.setText(0, rs2.getString("name"));
+                        item.setText(1, author);
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                } finally {
+                    try {
+                        rs2.close();
+                        st2.close();
+                    } catch (SQLException se) {
+                    }
                 }
             }
         } catch (SQLException se) {
             se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                st.close();
+            } catch (SQLException se) {
+            }
         }
-        table.getColumn(0).setWidth(250);
-        table.getColumn(1).setWidth(250);
-        table.getColumn(2).setWidth(250);
-        table.getColumn(3).setWidth(250);
+
+        for (int i = 0; i < titles.length; i++) {
+            table.getColumn(i).setWidth(250);
+        }
+
         table.pack();
         shell.pack();
         shell.open();
@@ -87,5 +106,4 @@ public class History extends Dialog {
             if (!display.readAndDispatch()) display.sleep();
         }
     }
-
 }

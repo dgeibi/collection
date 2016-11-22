@@ -33,16 +33,27 @@ public class AdminClient {
     void go() {
         Connection connection = Main.connection;
         Display display = Main.display;
-        Shell shell = new Shell(display,SWT.SHELL_TRIM & (~SWT.RESIZE));
+        Shell shell = new Shell(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
         shell.setLayout(new GridLayout());
         String username = "";
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT username FROM admin WHERE id = '" + id + "'");
-            if (rs.next()) {
-                username = rs.getString("username");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT username FROM admin WHERE id = '" + id + "'");
+            if (resultSet.next()) {
+                username = resultSet.getString("username");
             }
+            resultSet.close();
+            statement.close();
         } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException se) {
+            }
         }
         if (username == null) {
             username = id;
@@ -65,8 +76,9 @@ public class AdminClient {
         Widget.createBtn(top, "删除账号", rowData, event -> {
             Confirm confirm = new Confirm(shell, "你确定删除此账号？");
             if (confirm.go()) {
+                Statement st = null;
                 try {
-                    Statement st = connection.createStatement();
+                    st = connection.createStatement();
                     if (1 == st.executeUpdate("DELETE FROM admin WHERE id = '" + id + "'")) {
                         new Alert(shell, "成功删除。", Alert.NOTICE);
                         shell.close();
@@ -76,6 +88,11 @@ public class AdminClient {
                     }
                 } catch (SQLException se) {
                     se.printStackTrace();
+                } finally {
+                    try {
+                        st.close();
+                    } catch (SQLException se) {
+                    }
                 }
             }
         });
@@ -100,15 +117,25 @@ public class AdminClient {
 
         Widget.createBtn(queryHistory, "查询", new GridData(SWT.LEFT, SWT.FILL, true, false), event -> {
             String customerID = customerIDText.getText();
+            Statement st = null;
+            ResultSet rs = null;
             try {
-                Statement st = connection.createStatement();
-                ResultSet rs = st.executeQuery("SELECT id FROM customer WHERE id = '" + customerID + "'");
+                st = connection.createStatement();
+                rs = st.executeQuery("SELECT id FROM customer WHERE id = '" + customerID + "'");
                 if (rs.next()) {
                     new History(shell, customerID, History.ALL);
                 } else {
                     new Alert(shell, "ID 不存在！", Alert.ERROR);
                 }
+
             } catch (SQLException se) {
+                se.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    st.close();
+                } catch (SQLException e) {
+                }
             }
         });
 
@@ -181,13 +208,19 @@ public class AdminClient {
                 for (TableItem item : items) {
                     if (item.getChecked()) {
                         String bookID = item.getText(0);
+                        Statement st = null;
                         try {
-                            Statement st = connection.createStatement();
+                            st = connection.createStatement();
                             st.executeUpdate("DELETE FROM book WHERE id = '" + bookID + "'");
                             st = connection.createStatement();
                             st.executeUpdate("DELETE FROM history WHERE bookID = '" + bookID + "'");
                         } catch (SQLException se) {
                             se.printStackTrace();
+                        } finally {
+                            try {
+                                st.close();
+                            } catch (SQLException e) {
+                            }
                         }
                     }
                 }
@@ -202,12 +235,18 @@ public class AdminClient {
             if (confirm.go()) {
                 TableItem[] items = table.getItems();
                 for (TableItem item : items) {
+                    Statement st = null;
                     try {
-                        Statement st = connection.createStatement();
+                        st = connection.createStatement();
                         st.execute("UPDATE book SET name = '" + item.getText(1) + "',author = '" + item.getText(2) +
                                 "' WHERE id = '" + item.getText(0) + "'");
                     } catch (SQLException se) {
                         se.printStackTrace();
+                    } finally {
+                        try {
+                            st.close();
+                        } catch (SQLException e) {
+                        }
                     }
                 }
             }
@@ -233,11 +272,13 @@ public class AdminClient {
         Widget.createBtn(c2, "提交新书", new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1), event -> {
             Confirm confirm = new Confirm(shell, "确定提交新书？");
             if (confirm.go()) {
+                Statement st = null;
+                ResultSet rs = null;
+                String name = tx1.getText();
+                String author = tx2.getText();
                 try {
-                    String name = tx1.getText();
-                    String author = tx2.getText();
-                    Statement st = connection.createStatement();
-                    ResultSet rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
+                    st = connection.createStatement();
+                    rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
                             "' AND author = '" + author + "'");
                     if (rs.next()) {
                         new Alert(shell, "您添加的图书已存在！", Alert.ERROR);
@@ -253,6 +294,11 @@ public class AdminClient {
                     }
                 } catch (SQLException se) {
                     se.printStackTrace();
+                } finally {
+                    try {
+                        rs.close();
+                        st.close();
+                    } catch (SQLException se) {}
                 }
             }
         });

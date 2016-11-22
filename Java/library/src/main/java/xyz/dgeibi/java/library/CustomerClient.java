@@ -39,13 +39,22 @@ public class CustomerClient {
         gridLayout.marginHeight = 5;
         shell.setLayout(gridLayout);
         String username = "";
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT username FROM customer WHERE id = '" + id + "'");
-            if (rs.next()) {
-                username = rs.getString("username");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT username FROM customer WHERE id = '" + id + "'");
+            if (resultSet.next()) {
+                username = resultSet.getString("username");
             }
         } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException se) {
+            }
         }
         if (username == null) {
             username = id;
@@ -69,8 +78,9 @@ public class CustomerClient {
         Widget.createBtn(top, "删除账号", rowData, event -> {
             Confirm confirm = new Confirm(shell, "你确定删除此账号？");
             if (confirm.go()) {
+                Statement st = null;
                 try {
-                    Statement st = connection.createStatement();
+                    st = connection.createStatement();
                     if (1 == st.executeUpdate("DELETE FROM customer WHERE id = '" + id + "'")) {
                         connection.createStatement().executeUpdate("DELETE FROM history WHERE customerID = '" + id + "'");
                         new Alert(shell, "成功删除。", Alert.NOTICE);
@@ -81,6 +91,11 @@ public class CustomerClient {
                     }
                 } catch (SQLException se) {
                     se.printStackTrace();
+                } finally {
+                    try {
+                        st.close();
+                    } catch (SQLException se) {
+                    }
                 }
             }
         });
@@ -108,13 +123,19 @@ public class CustomerClient {
             for (TableItem item : items) {
                 if (item.getChecked()) {
                     String bookID = item.getText(0);
+                    Statement st = null;
                     try {
-                        Statement st = connection.createStatement();
+                        st = connection.createStatement();
                         String sql = "INSERT INTO history (customerID,bookID,businessTime) " +
                                 "VALUES ('" + id + "', '" + bookID + "', " + "NOW())";
                         st.executeUpdate(sql);
                     } catch (SQLException se) {
                         se.printStackTrace();
+                    } finally {
+                        try {
+                            st.close();
+                        } catch (SQLException se) {
+                        }
                     }
                 }
             }
@@ -136,12 +157,17 @@ public class CustomerClient {
             for (TableItem item : items) {
                 if (item.getChecked()) {
                     String bookID = item.getText(0);
+                    Statement st = null;
                     try {
-                        Statement st = connection.createStatement();
+                        st = connection.createStatement();
                         String sql = "UPDATE history SET returnTime = NOW() WHERE bookID = '" + bookID + "' AND customerID = '" + id + "'";
                         st.executeUpdate(sql);
                     } catch (SQLException se) {
                         se.printStackTrace();
+                    } finally {
+                        try {
+                            st.close();
+                        } catch (SQLException se){}
                     }
                 }
             }

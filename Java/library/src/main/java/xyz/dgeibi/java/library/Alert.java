@@ -1,9 +1,7 @@
 package xyz.dgeibi.java.library;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class Alert extends Dialog {
@@ -23,14 +21,20 @@ public class Alert extends Dialog {
     void go() {
         Shell parent = getParent();
         Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        shell.setLayout(new GridLayout());
         Label label;
+
+        Composite composite = new Composite(shell,SWT.NONE);
+        GridData gridData = new GridData();
+        gridData.heightHint = 100;
+        composite.setLayoutData(gridData);
 
         final int insetX = 4, insetY = 4;
         FormLayout formLayout = new FormLayout();
         formLayout.marginWidth = insetX;
         formLayout.marginHeight = insetY;
         formLayout.spacing = 40;
-        shell.setLayout(formLayout);
+        composite.setLayout(formLayout);
 
         String type = "";
         switch (option) {
@@ -45,7 +49,7 @@ public class Alert extends Dialog {
         shell.setText(type);
 
         // message
-        label = new Label(shell, SWT.NULL);
+        label = new Label(composite, SWT.NULL);
         label.setText(message);
         final FormData labelData = new FormData();
         labelData.left = new FormAttachment(0, 0);
@@ -53,7 +57,7 @@ public class Alert extends Dialog {
         label.setLayoutData(labelData);
 
         // OK btn
-        Button btn = new Button(shell, SWT.PUSH);
+        Button btn = new Button(composite, SWT.PUSH);
         btn.setText("确定");
         final FormData btnData = new FormData();
         btnData.right = new FormAttachment(100, -insetX);
@@ -63,7 +67,8 @@ public class Alert extends Dialog {
             shell.close();
         });
 
-        shell.setSize(200, 100);
+        composite.pack();
+        shell.pack();
         shell.open();
         Display display = parent.getDisplay();
         while (!shell.isDisposed()) {

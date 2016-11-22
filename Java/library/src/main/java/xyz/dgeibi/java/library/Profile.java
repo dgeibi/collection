@@ -23,14 +23,22 @@ public class Profile extends Dialog {
 
     public String getUsername() {
         String n = "";
+        Statement st = null;
+        ResultSet rs = null;
         try {
-            Statement st = Main.connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT username FROM " + type + " WHERE id = '" + customerID + "'");
+            st = Main.connection.createStatement();
+            rs = st.executeQuery("SELECT username FROM " + type + " WHERE id = '" + customerID + "'");
             if (rs.next()) {
                 n = rs.getString("username");
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                st.close();
+            } catch (SQLException se) {
+            }
         }
         if (n == null) {
             n = customerID;
@@ -69,42 +77,37 @@ public class Profile extends Dialog {
             String _username = usernameText.getText();
             String _passwordC = newPasswordCText.getText();
 
-            if (!_password.equals("") && !_username.equals("")) {
-                if (_password.equals(_passwordC)) {
+            if (!_password.equals("")) {
+                if (!_password.equals(_passwordC)) {
+                    new Alert(profile, "密码不匹配！", Alert.ERROR);
+                } else {
+                    Statement st = null;
+                    String sql = "UPDATE " + type + " SET" + " password = '" + _password + "'";
+                    if (!_username.equals("")) {
+                        sql += ", username ='" + _username + "'";
+                    }
+                    sql += " WHERE id = '" + customerID + "'";
                     try {
-                        Statement st = Main.connection.createStatement();
-                        if (1 == st.executeUpdate("UPDATE " + type + " SET username = '" + _username + "',password = '" +
-                                _password + "' WHERE id = '" + customerID + "'")) {
-                            username = _username;
+                        st = Main.connection.createStatement();
+                        if (st.executeUpdate(sql) > 0) {
                             new Alert(profile, "修改成功！", Alert.NOTICE);
                             profile.close();
                         } else {
                             new Alert(profile, "出错！", Alert.ERROR);
                         }
                     } catch (SQLException se) {
-                    }
-                } else {
-                    new Alert(profile, "密码不匹配！", Alert.ERROR);
-                }
-            } else if (!_password.equals("")) {
-                if (_password.equals(_passwordC)) {
-                    try {
-                        Statement st = Main.connection.createStatement();
-                        if (1 == st.executeUpdate("UPDATE " + type + " SET password = '" +
-                                _password + "' WHERE id = '" + customerID + "'")) {
-                            new Alert(profile, "修改成功！", Alert.NOTICE);
-                            profile.close();
-                        } else {
-                            new Alert(profile, "出错！", Alert.ERROR);
+                        se.printStackTrace();
+                    } finally {
+                        try {
+                            st.close();
+                        } catch (SQLException se) {
                         }
-                    } catch (SQLException se) {
                     }
-                } else {
-                    new Alert(profile, "密码不匹配！", Alert.ERROR);
                 }
             } else if (!_username.equals("")) {
+                Statement st = null;
                 try {
-                    Statement st = Main.connection.createStatement();
+                    st = Main.connection.createStatement();
                     if (1 == st.executeUpdate("UPDATE " + type + " SET username = '" + _username +
                             "' WHERE id = '" + customerID + "'")) {
                         username = _username;
@@ -115,6 +118,11 @@ public class Profile extends Dialog {
                     }
                 } catch (SQLException se) {
                     se.printStackTrace();
+                } finally {
+                    try {
+                        st.close();
+                    } catch (SQLException se) {
+                    }
                 }
             }
         });

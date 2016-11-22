@@ -118,12 +118,14 @@ public class Login {
         btn1.setLayoutData(gridDataLeft);
         shell.setDefaultButton(btn1);
         btn1.addListener(SWT.Selection, event -> {
+            Statement st = null;
+            ResultSet rs = null;
             try {
-                Statement st = connection.createStatement();
+                st = connection.createStatement();
                 String kind = option2.getSelection() ? "admin" : "customer";
                 String sql = "SELECT id FROM " + kind + " WHERE id = '" + accountText.getText() +
                         "' AND " + "password = '" + passwordText.getText() + "'";
-                ResultSet rs = st.executeQuery(sql);
+                rs = st.executeQuery(sql);
                 if (rs.next()) {
                     String id = rs.getString("id");
                     shell.close();
@@ -142,6 +144,12 @@ public class Login {
                 se.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    st.close();
+                } catch (SQLException se) {
+                }
             }
         });
 
@@ -175,8 +183,9 @@ public class Login {
                 username = account;
             }
             if (passwordC.equals(password)) {
+                Statement st = null;
                 try {
-                    Statement st = connection.createStatement();
+                    st = connection.createStatement();
                     String sql = option2.getSelection() ? "admin" : "customer";
                     sql = "INSERT INTO " + sql + " (id,password,username,registerTime) " +
                             "VALUES ('" + account + "','" + password + "','" +
@@ -192,6 +201,11 @@ public class Login {
                     new Alert(shell, "注册失败！请更换ID后再试", Alert.ERROR);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        st.close();
+                    } catch (SQLException se) {
+                    }
                 }
             } else {
                 new Alert(shell, "你输入的密码不一致！", SWT.ERROR);
