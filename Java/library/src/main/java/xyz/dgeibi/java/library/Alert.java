@@ -24,8 +24,8 @@ public class Alert extends Dialog {
         shell.setLayout(new GridLayout());
         Label label;
 
-        Composite composite = new Composite(shell,SWT.NONE);
-        GridData gridData = new GridData();
+        Composite composite = new Composite(shell, SWT.NONE);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
         gridData.heightHint = 100;
         composite.setLayoutData(gridData);
 
@@ -67,7 +67,6 @@ public class Alert extends Dialog {
             shell.close();
         });
 
-        composite.pack();
         shell.pack();
         shell.open();
         Display display = parent.getDisplay();
