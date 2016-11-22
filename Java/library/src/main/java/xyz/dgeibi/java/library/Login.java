@@ -182,7 +182,11 @@ public class Login {
             if (username.equals("")) {
                 username = account;
             }
-            if (passwordC.equals(password)) {
+            if (password.equals("")) {
+                new Alert(shell, "密码不能为空！", Alert.ERROR);
+            } else if (!passwordC.equals(password)) {
+                new Alert(shell, "你输入的密码不一致！", Alert.ERROR);
+            } else {
                 Statement st = null;
                 try {
                     st = connection.createStatement();
@@ -207,8 +211,6 @@ public class Login {
                     } catch (SQLException se) {
                     }
                 }
-            } else {
-                new Alert(shell, "你输入的密码不一致！", SWT.ERROR);
             }
         });
 
