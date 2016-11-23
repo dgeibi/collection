@@ -34,7 +34,7 @@ extern int tests_run;
 #define TEST_MAIN int main()                       \
   {                                                \
     char const *result = run();                    \
-    if (result != 0) printf("%s\n", result);       \
+    if (result != 0) printf("err: %s\n", result);       \
     else printf("All passed.\n");                  \
     printf("Total %d test(s) runned.", tests_run); \
     return 0;                                      \
