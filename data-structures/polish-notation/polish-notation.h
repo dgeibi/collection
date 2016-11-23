@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include "../vendor/miniunit.h"
+#include <cmath>
 
 #ifndef POLISHNOTATION_H
 # define POLISHNOTATION_H
@@ -12,16 +13,16 @@
 typedef char TElemType;
 
 typedef struct BiTNode {
-  int             type;
-  char            data;
-  int             value;
+  int             type;  // 类型：OPERATOR/ NUMBER/ VARIABLE
+  char            data;  // 字符数据：变量/运算符的字符
+  int             value; // 值：运算符/数字的值
   struct BiTNode *lchild, *rchild;
 } BiTNode, *BiTree;
 
 void   PostOrderTraverse(BiTree T,
-                         void (*Visit)(TElemType));
+                         void (*Visit)(BiTree));
 void   InOrderTraverse(BiTree T,
-                       void (*Visit)(TElemType));
+                       void (*Visit)(BiTree));
 void   DestroyBiTree(BiTree& T);
 Status DeleteChild(BiTree& p,
                    int     LR);
@@ -40,32 +41,34 @@ void      CreateBiTree(BiTree  & T,
 
 # define ClearBiTree DestroyBiTree;
 
-// 判断前缀表示式的语法是否合理
-Status isSyntaxReasonable(BiTree E);
-
-// 以字符序列的形式输入语法正确的前缀表示式并构造表达式
+// 由字符串构造表达式，如果语法有误，可能返回 NULL
 BiTree ReadExpr(char const *str);
 
-// 判断结点位置是否合理
+
+// 判断树 p 是否适合插入新的结点
+// 树为空，适合
+// 类型为运算符，适合
 Status isProper(BiTree p);
 
-Status PreOrderSearch(BiTree  & T,
-                      Status ( *test)(BiTree),
-                      int       type,
-                      TElemType data,
-                      int       value);
+// 先序查找新结点的位置，根据 test 函数判断位置是否合理，如果合理则插入新结点，并返回 OK
+// 找不到适当的位置返回 ERROR
+Status PreOrderSearch(BiTree & T,
+                      Status (*test)(BiTree),
+                      int      type,
+                      char     data,
+                      int      value);
 
-// 用带括弧的中缀表示式输出表达式 E，适当添加括号
+// 用带括弧的中缀表示式输出表达式 E，添加括号
 void WriteExpr(BiTree E);
 
 // 对变量 V 的赋值(V = c)
 // 变量的初值为 0 (实际使用字母表示)
-Status Assign(BiTree E,
-              char   V,
-              char   c);
+void Assign(BiTree E,
+            char   V,
+            int    num);
 
 // 对算术表达式 E 求值
-double Value(BiTree E);
+int    Value(BiTree E);
 
 // 构造一个新的复合表达式，(E1)P(E2)，(P E1 E1)
 BiTree CompoundExpr(char   P,
@@ -80,6 +83,15 @@ BiTree Diff(BiTree E,
 // 对表达式 E = (2 + 3 - a) * (b + 3 * 4)进行合并常数的操作后, 求得 E = (5 - a) * (b + 12)
 BiTree MergeConst(BiTree E);
 
-void   InOrderPrint(BiTree p);
+
+// 判断是否为原子
+// 只含有运算符不是原子
+// 变量不是原子
+Status isAtom(char const *str);
+
+Status isVariable(char ch); // 是变量
+Status isNumber(char ch);   // 是数字
+Status isOperator(char ch); // 是运算符
+
 
 #endif // ifndef POLISHNOTATION_H

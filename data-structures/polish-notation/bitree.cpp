@@ -70,22 +70,22 @@ void DestroyBiTree(BiTree& T) {
   }
 }
 
-void InOrderTraverse(BiTree T, void (*Visit)(TElemType))
+void InOrderTraverse(BiTree T, void (*Visit)(BiTree))
 {
   if (T)
   {
     InOrderTraverse(T->lchild, Visit);
-    Visit(T->data);
+    Visit(T);
     InOrderTraverse(T->rchild, Visit);
   }
 }
 
-void PostOrderTraverse(BiTree T, void (*Visit)(TElemType))
+void PostOrderTraverse(BiTree T, void (*Visit)(BiTree))
 {
   if (T)
   {
     PostOrderTraverse(T->lchild, Visit);
     PostOrderTraverse(T->rchild, Visit);
-    Visit(T->data);
+    Visit(T);
   }
 }
