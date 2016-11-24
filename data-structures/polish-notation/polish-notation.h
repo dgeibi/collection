@@ -61,6 +61,9 @@ Status PreOrderSearch(BiTree & T,
 // 用带括弧的中缀表示式输出表达式 E，添加括号
 void WriteExpr(BiTree E);
 
+// WriteExpr 的实现
+void InOrderWrite(BiTree p);
+
 // 对变量 V 的赋值(V = c)
 // 变量的初值为 0 (实际使用字母表示)
 void Assign(BiTree E,
@@ -81,8 +84,11 @@ BiTree Diff(BiTree E,
 
 // 合并表达式 E 中所有常数运算。例如,
 // 对表达式 E = (2 + 3 - a) * (b + 3 * 4)进行合并常数的操作后, 求得 E = (5 - a) * (b + 12)
-BiTree MergeConst(BiTree E);
+void   MergeConst(BiTree E);
 
+// 判断父母结点的运算符的优先级是否比子结点的优先级高
+Status isHigher(BiTree parent,
+                BiTree child);
 
 // 判断是否为原子
 // 只含有运算符不是原子
