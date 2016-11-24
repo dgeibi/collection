@@ -166,8 +166,7 @@ Expression ReadExpr(char const *str) {
             flag = 1; // 是负的原子
           }
         }
-        else if (PreOrderSearch(E, isProper, OPERAT
-OR, ch, 0) == ERROR) {
+        else if (PreOrderSearch(E, isProper, OPERATOR, ch, 0) == ERROR) {
           return NULL;
         }
       }
