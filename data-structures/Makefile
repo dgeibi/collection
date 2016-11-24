@@ -1,14 +1,18 @@
-VPATH := graph:vendor:queue
+VPATH := graph:vendor:queue:polish-notation
 CC := g++
 CFLAGS := -Wall -std=gnu++11
-objects := graph.o queue.o dg_test.o
+graph-objects := graph.o queue.o dg_test.o
+pn-objects := pn_test.o polish-notation.o
 
-all : dg_test.out
+all : dg_test.out pn_test.out
 
-dg_test.out : $(objects)
+pn_test.out : $(pn-objects)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(objects) : miniunit.h queue.h
+dg_test.out : $(graph-objects)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(graph-objects) : miniunit.h queue.h
 
 graph.o dg_test.o : graph.h
 

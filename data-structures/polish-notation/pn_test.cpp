@@ -1,9 +1,8 @@
 #include "polish-notation.h"
 
 int tests_run = 0;
-
 static char const* testinit() {
-  Expression E;
+  Expression  E;
   char const *str[] = {
     "0",
     "a",
@@ -21,11 +20,13 @@ static char const* testinit() {
 
   printf("\n%s\n", "ReadExpr and WriteExpr:");
 
-  for (int i = 0; i < length; i++) {
+  for (size_t i = 0; i < length; i++) {
     E = ReadExpr(str[i]);
     mu_assert("read expression", E != NULL);
     WriteExpr(E);
+    DestroyExpression(E);
   }
+  mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
   return OK;
 }
 
@@ -38,6 +39,9 @@ static char const* testcompound() {
   WriteExpr(t1);
   WriteExpr(t2);
   WriteExpr(E);
+  DestroyExpression(t1);
+  DestroyExpression(t2);
+  DestroyExpression(E);
   return OK;
 }
 
@@ -58,17 +62,81 @@ static char const* testvalue() {
 }
 
 static char const* testmerge() {
+  Expression  E;
+  char const *str[] = {
+    "+ 1 2",
+    "*-+2 3a+b*3 4",
+    "*1x",
+    "*0b"
+  };
+  size_t length = sizeof(str) / sizeof(*str);
+
+  printf("\n%s\n", "MergeConst:");
+
+  for (size_t i = 0; i < length; i++) {
+    E = ReadExpr(str[i]);
+    WriteExpr(E);
+    MergeConst(E);
+    WriteExpr(E);
+    DestroyExpression(E);
+  }
+  return OK;
+}
+
+static char const* testdiff() {
+  Expression  E, dE;
+  char const *str[] = {
+    "a",
+    "+- 233 y x",
+    "^x2",
+    "/ 1 x",
+    "* + x 2 - * x 2 1",
+    "* - + 2 3 a + x * 3 4",
+    "-*3^x4*2^x2",
+    "+ / 2 x / 3 * 2 x"
+  };
+  size_t length = sizeof(str) / sizeof(*str);
+
+  printf("\n%s\n", "Diff:");
+
+  for (size_t i = 0; i < length; i++) {
+    E  = ReadExpr(str[i]);
+    dE = Diff(E, 'x');
+    MergeConst(dE);
+    WriteExpr(dE);
+  }
+  return OK;
+}
+
+static char const* testcompute() {
+  char *str = (char *)malloc(100);
+  char  ch;
+  int   value;
   Expression E;
 
-  E = ReadExpr("+ 1 2");
-  printf("\n%s\n", "MergeConst:");
-  WriteExpr(E);
-  MergeConst(E);
-  WriteExpr(E);
-  E = ReadExpr("*-+2 3a+b*3 4");
-  WriteExpr(E);
-  MergeConst(E);
-  WriteExpr(E);
+  printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
+
+  while (fgets(str, 100, stdin) != NULL) {
+    printf("%s\n", "请输入需要赋值的变量(按 Ctrl + D 取消)：");
+    E = ReadExpr(str);
+
+    while ((ch = fgetc(stdin)) != EOF) {
+      CLEAN_INPUT;
+      printf("%s%c%s\n", "请输入要赋给变量", ch, "的值：");
+
+      while (scanf("%d", &value) != 1) {
+        CLEAN_INPUT;
+        printf("%s%c%s\n", "请再次输入要赋给变量", ch, "的值：");
+      }
+      CLEAN_INPUT;
+      Assign(E, ch, value);
+      printf("%s\n", "请再次输入需要赋值的变量(按 Ctrl + D 取消)：");
+    }
+    printf("\n%s\n", "结果：");
+    WriteExpr(E);
+    printf("%d\n",  Value(E));
+    printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
+  }
   return OK;
 }
 
@@ -77,6 +145,8 @@ static char const* run() {
   mu_run_test(testcompound);
   mu_run_test(testvalue);
   mu_run_test(testmerge);
+  mu_run_test(testdiff);
+  mu_run_test(testcompute);
   return OK;
 }
 

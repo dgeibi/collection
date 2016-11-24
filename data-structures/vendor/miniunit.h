@@ -40,4 +40,6 @@ extern int tests_run;
     return 0;                                      \
   }
 
+#define CLEAN_INPUT while (getchar() != '\n') { continue; }
+
 #endif /* ifndef MINIUNIT_H */
