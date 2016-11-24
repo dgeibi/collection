@@ -1,3 +1,22 @@
+#include "../vendor/miniunit.h"
+
+Status DeleteChild(BiTree& p,
+                   int     LR);
+Status InsertChild(BiTree p,
+                   int    LR,
+                   BiTree c);
+
+TElemType RightChild(BiTree    T,
+                     TElemType e);
+TElemType LeftChild(BiTree    T,
+                    TElemType e);
+int       BiTreeDepth(BiTree T);
+bool      BiTreeEmpty(BiTree T);
+void      CreateBiTree(BiTree  & T,
+                       TElemType ch);
+
+#define ClearBiTree DestroyBiTree;
+
 void CreateBiTree(BiTree& T, TElemType ch) {
   T = (BiTree)malloc(sizeof(BiTNode));
 
@@ -5,9 +24,9 @@ void CreateBiTree(BiTree& T, TElemType ch) {
   T->data = ch;
 }
 
-Status BiTreeEmpty(BiTree T) {
-  if (T) return FALSE;
-  else return TRUE;
+bool BiTreeEmpty(BiTree T) {
+  if (T) return false;
+  else return true;
 }
 
 int BiTreeDepth(BiTree T) {
@@ -47,31 +66,4 @@ Status DeleteChild(BiTree p, int LR) {
     return OK;
   }
   else return ERROR;
-}
-
-void DestroyBiTree(BiTree& T) {
-  if (T) {
-    if (T->lchild) DestroyBiTree(T->lchild);
-
-    if (T->rchild) {
-      DestroyBiTree(T->rchild);
-    }
-    free(T);
-  }
-}
-
-void InOrderTraverse(BiTree T, void (*Visit)(BiTree)) {
-  if (T) {
-    InOrderTraverse(T->lchild, Visit);
-    Visit(T);
-    InOrderTraverse(T->rchild, Visit);
-  }
-}
-
-void PostOrderTraverse(BiTree T, void (*Visit)(BiTree)) {
-  if (T) {
-    PostOrderTraverse(T->lchild, Visit);
-    PostOrderTraverse(T->rchild, Visit);
-    Visit(T);
-  }
 }
