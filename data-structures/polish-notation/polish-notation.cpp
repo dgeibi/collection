@@ -1,25 +1,33 @@
 #include "polish-notation.h"
 
-bool isReasonable(Expression E) {
+void ToConst(Expression E) {
+  if (E) {
+    E->type = CONST;
+    E->data = '\0';
+    DestroyExpression(E->lchild);
+    DestroyExpression(E->rchild);
+    E->lchild = E->rchild = NULL;
+  }
+}
+
+bool IsReasonable(Expression E) {
   // 判断表达式是否合理
   if (E) {
     if (E->type != OPERATOR) {
       return true;
     }
-    else if (false == isReasonable(E->lchild)) {
+    else if (false == IsReasonable(E->lchild)) {
       return false;
     }
-    else return isReasonable(E->rchild);
+    else return IsReasonable(E->rchild);
   }
   return false;
 }
 
-Expression Diff(Expression e, char V) {
-  Expression E;
+Expression Diff(Expression E, char V) {
+  if (E == NULL) return NULL;
 
-  if (e->type == OPERATOR) {
-    E = Copy(e);
-
+  if (E->type == OPERATOR) {
     switch (E->data) {
       case '+':
       case '-':
@@ -58,23 +66,12 @@ Expression Diff(Expression e, char V) {
         break;
     }
   }
-  else if ((e->type == VARIABLE) && (e->data == V)) {
-    // 指定的变量
-    E         = (Expression)malloc(sizeof(ExprNode));
-    E->type   = NUMBER;
-    E->value  = 1;
-    E->data   = '\0';
-    E->lchild = E->rchild = NULL;
-    return E;
-  }
-
-  // 其它变量或者常数项
-  E         = (Expression)malloc(sizeof(ExprNode));
-  E->type   = NUMBER;
-  E->value  = 0;
-  E->data   = '\0';
-  E->lchild = E->rchild = NULL;
-  return E;
+  Expression nE = (Expression)malloc(sizeof(ExprNode));
+  nE->type   = CONST;
+  nE->data   = '\0';
+  nE->lchild = nE->rchild = NULL;
+  nE->value  = ((E->type == VARIABLE) && (E->data == V)) ? 1 : 0;
+  return nE;
 }
 
 // 复制表达式
@@ -110,12 +107,12 @@ void DestroyExpression(Expression& E) {
 
 void MergeConst(Expression& E) {
   // 合并表达式 E 中所有常数运算
-  if (E != NULL) {
+  if (E) {
     MergeConst(E->lchild);
     MergeConst(E->rchild);
 
-    if ((E->type == OPERATOR) && E->lchild && (E->lchild->type == NUMBER) &&
-        E->rchild && (E->rchild->type == NUMBER)) {
+    if ((E->type == OPERATOR) && E->lchild && (E->lchild->type == CONST) &&
+        E->rchild && (E->rchild->type == CONST)) {
       switch (E->data) {
         case '+':
           E->value = E->lchild->value + E->rchild->value;
@@ -137,56 +134,46 @@ void MergeConst(Expression& E) {
           E->value = pow(E->lchild->value, E->rchild->value);
           break;
       }
-      E->type = NUMBER;
-      E->data = '\0';
-      DestroyExpression(E->lchild);
-      DestroyExpression(E->rchild);
-      E->lchild = E->rchild = NULL;
+      ToConst(E);
     }
     else if (((E->data == '*') &&
-              (((E->lchild->type == NUMBER) && (E->lchild->value == 0)) ||
-               ((E->rchild->type == NUMBER) && (E->rchild->value == 0)))) ||
+              (((E->lchild->type == CONST) && (E->lchild->value == 0)) ||
+               ((E->rchild->type == CONST) && (E->rchild->value == 0)))) || // * x 0 = 0
+                                                                            // * 0 x = 0
              (((E->data == '/') || (E->data == '^')) &&
-              (E->lchild->type == NUMBER) &&
-              (E->lchild->value == 0))) {
-      E->data  = '\0';
-      E->type  = NUMBER;
+              (E->lchild->type == CONST) &&
+              (E->lchild->value == 0))) {                                   // / 0 x = 0
+                                                                            // ^ 0 x = 0
       E->value = 0;
-      DestroyExpression(E->lchild);
-      DestroyExpression(E->rchild);
-      E->lchild = E->rchild = NULL;
+      ToConst(E);
     }
-    else if ((E->data == '^') && (E->rchild->type == NUMBER) &&
-             (E->rchild->value == 0)) {
-      E->data  = '\0';
-      E->type  = NUMBER;
+    else if ((E->data == '^') && (E->rchild->type == CONST) &&
+             (E->rchild->value == 0)) { // ^ x 0 == 1
       E->value = 1;
-      DestroyExpression(E->lchild);
-      DestroyExpression(E->rchild);
-      E->lchild = E->rchild = NULL;
+      ToConst(E);
     }
-    else if (E->data == '+') {
-      if ((E->lchild->type == NUMBER) && (E->lchild->value == 0)) {
+    else if (E->data == '+') { // + 0 x = x
+      if ((E->lchild->type == CONST) && (E->lchild->value == 0)) {
         DestroyExpression(E->lchild);
         E = E->rchild;
       }
-      else if ((E->rchild->type == NUMBER) && (E->rchild->value == 0)) {
+      else if ((E->rchild->type == CONST) && (E->rchild->value == 0)) { // + x 0 = x
         DestroyExpression(E->rchild);
         E = E->lchild;
       }
     }
     else if (E->data == '-') {
-      if ((E->rchild->type == NUMBER) && (E->rchild->value == 0)) {
+      if ((E->rchild->type == CONST) && (E->rchild->value == 0)) { // - x 0 = x
         DestroyExpression(E->rchild);
         E = E->lchild;
       }
     }
     else if (E->data == '*') {
-      if ((E->lchild->type == NUMBER) && (E->lchild->value == 1)) {
+      if ((E->lchild->type == CONST) && (E->lchild->value == 1)) { // * 1 x = x
         DestroyExpression(E->lchild);
         E = E->rchild;
       }
-      else if ((E->rchild->type == NUMBER) && (E->rchild->value == 1)) {
+      else if ((E->rchild->type == CONST) && (E->rchild->value == 1)) { // * x 1 = x
         DestroyExpression(E->rchild);
         E = E->lchild;
       }
@@ -194,7 +181,7 @@ void MergeConst(Expression& E) {
   }
 }
 
-bool isProper(Expression E) {
+bool IsProper(Expression E) {
   // 判断表达式 E 是否适合插入新的结点
   // 表达式为空，适合
   // 类型为运算符，适合
@@ -208,9 +195,9 @@ bool isProper(Expression E) {
   return false;
 }
 
-Status PreOrderSearch(Expression& E,
-                      bool (*test)(Expression), int type, char data,
-                      int value) {
+bool PreOrderFind(Expression& E,
+                  bool (*test)(Expression), int type, char data,
+                  int value) {
   // 先序查找新结点的位置，根据 test 函数判断位置是否合理，如果合理则插入新结点，并返回 OK
   // 找不到适当的位置返回 ERROR
   if (E == NULL) {
@@ -224,25 +211,20 @@ Status PreOrderSearch(Expression& E,
     E->value  = value;
     E->lchild = NULL;
     E->rchild = NULL;
-    return OK;
+    return true;
   }
   else if (test(E)) {
-    if (test(E->lchild)) {
-      if (OK == PreOrderSearch(E->lchild, test, type, data, value)) {
-        return OK;
-      }
-      else if (test(E->rchild)) {
-        return PreOrderSearch(E->rchild, test, type, data, value);
-      }
+    if (test(E->lchild) && PreOrderFind(E->lchild, test, type, data, value)) {
+      return true;
     }
     else if (test(E->rchild)) {
-      return PreOrderSearch(E->rchild, test, type, data, value);
+      return PreOrderFind(E->rchild, test, type, data, value);
     }
   }
-  return ERROR;
+  return false;
 }
 
-bool isOperator(char ch) {
+bool IsOperator(char ch) {
   // 是运算符
   switch (ch) {
     case '+':
@@ -255,7 +237,7 @@ bool isOperator(char ch) {
   return false;
 }
 
-bool isNumber(char ch) {
+bool IsConst(char ch) {
   // 是数字
   if ((ch >= '0') && (ch <= '9')) {
     return true;
@@ -263,7 +245,7 @@ bool isNumber(char ch) {
   return false;
 }
 
-bool isVariable(char ch) {
+bool IsVariable(char ch) {
   // 是变量
   if (((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) {
     return true;
@@ -271,7 +253,7 @@ bool isVariable(char ch) {
   return false;
 }
 
-bool isAtom(char const *str) {
+bool IsAtom(char const *str) {
   // 判断是否为原子
   // 只含有运算符不是原子
   // 变量不是原子
@@ -279,12 +261,12 @@ bool isAtom(char const *str) {
 
   for (size_t i = 0; i < length; i++)
   {
-    if (!isNumber(str[i]) && !isOperator(str[i]) && !isVariable(str[i]) &&
+    if (!IsConst(str[i]) && !IsOperator(str[i]) && !IsVariable(str[i]) &&
         (str[i] != ' ')) {
       continue;
     }
 
-    if (!(((i == 0) && isOperator(str[i]) && str[1]) || isNumber(str[i]))) {
+    if (!(((i == 0) && IsOperator(str[i]) && str[1]) || IsConst(str[i]))) {
       return false;
     }
   }
@@ -299,15 +281,15 @@ Expression ReadExpr(char const *str) {
   bool       BAD = false, MINUS = false;
 
   for (size_t i = 0; i < length; i++) {
-    if (isNumber(str[i])) {
+    if (IsConst(str[i])) {
       value = value * 10 + (str[i] - '0');
 
-      if (!isNumber(str[i + 1])) { // 下一个字符不是数字
+      if (!IsConst(str[i + 1])) { // 下一个字符不是数字
         if (MINUS) {
-          value = -value;          // 是负的原子
+          value = -value;         // 是负的原子
         }
 
-        if (PreOrderSearch(E, isProper, NUMBER, '\0', value) == ERROR) {
+        if (!PreOrderFind(E, IsProper, CONST, '\0', value)) {
           BAD = true;
           break;
         }
@@ -315,19 +297,19 @@ Expression ReadExpr(char const *str) {
       }
     }
     else {
-      if (isOperator(str[i])) {
-        if ((i == 0) && isAtom(str)) {
+      if (IsOperator(str[i])) {
+        if ((i == 0) && IsAtom(str)) {
           if (str[i] == '-') {
             MINUS = true; // 是负的原子
           }
         }
-        else if (PreOrderSearch(E, isProper, OPERATOR, str[i], 0) == ERROR) {
+        else if (!PreOrderFind(E, IsProper, OPERATOR, str[i], 0)) {
           BAD = true;
           break;
         }
       }
-      else if (isVariable(str[i])) {
-        if (PreOrderSearch(E, isProper, VARIABLE, str[i], 0) == ERROR) {
+      else if (IsVariable(str[i])) {
+        if (!PreOrderFind(E, IsProper, VARIABLE, str[i], 0)) {
           BAD = true;
           break;
         }
@@ -338,14 +320,15 @@ Expression ReadExpr(char const *str) {
     } // endelse
   }   // endfor
 
-  if (BAD) {
+  if (BAD || !IsReasonable(E)) {
     DestroyExpression(E);
+    printf("%s\n", "不合理的表达式！");
     return NULL;
   }
   return E;
 }
 
-bool isHigher(Expression parent, Expression child) {
+bool IsHigher(Expression parent, Expression child) {
   // 判断父母结点的运算符的优先级是否比子结点的优先级高
   switch (parent->data) {
     case '^':
@@ -380,17 +363,17 @@ bool isHigher(Expression parent, Expression child) {
   return false;
 }
 
-void InOrderWrite(Expression E) {
+void WriteEx(Expression E) {
   // 用带括弧的中缀表示式输出表达式 E，添加括号
   if (E) {
     if (E->lchild) {
-      if (isHigher(E, E->lchild)) {
+      if (IsHigher(E, E->lchild)) {
         putchar('(');
-        InOrderWrite(E->lchild);
+        WriteEx(E->lchild);
         putchar(')');
       }
       else {
-        InOrderWrite(E->lchild);
+        WriteEx(E->lchild);
       }
     }
 
@@ -400,19 +383,19 @@ void InOrderWrite(Expression E) {
         putchar(E->data);
         break;
 
-      case NUMBER:
+      case CONST:
         printf("%d", E->value);
         break;
     }
 
     if (E->rchild) {
-      if (isHigher(E, E->rchild)) {
+      if (IsHigher(E, E->rchild)) {
         putchar('(');
-        InOrderWrite(E->rchild);
+        WriteEx(E->rchild);
         putchar(')');
       }
       else {
-        InOrderWrite(E->rchild);
+        WriteEx(E->rchild);
       }
     }
   }
@@ -420,18 +403,15 @@ void InOrderWrite(Expression E) {
 
 void WriteExpr(Expression E) {
   // 加换行符
-  if (isReasonable(E)) {
-    InOrderWrite(E);
+  if (E) {
+    WriteEx(E);
     putchar('\n');
-  }
-  else {
-    printf("%s\n", "无效的表达式");
   }
 }
 
 Expression CompoundExpr(char P, Expression E1, Expression E2) {
   // 构造一个新的复合表达式，(E1)P(E2)，(P E1 E1)
-  if (!isOperator(P)) { // 不是运算符
+  if (!IsOperator(P)) { // 不是运算符
     return NULL;
   }
   else {
@@ -465,10 +445,10 @@ void Assign(Expression E,
 
 int Value(Expression E) {
   // 对算术表达式 E 求值
-  if (isReasonable(E)) {
+  if (E) {
     switch (E->type) {
       case VARIABLE:
-      case NUMBER:
+      case CONST:
         return E->value;
         break;
 

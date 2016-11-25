@@ -27,17 +27,18 @@ static char const* testinit() {
     DestroyExpression(E);
   }
   mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
+  mu_assert("read expression_NULL", ReadExpr("+ 1 2 3") == NULL);
+  mu_assert("read expression_NULL", ReadExpr("+ * 2 3 1 x") == NULL);
   return OK;
 }
 
 static char const* testcompound() {
   Expression t1 = ReadExpr("+12 11"), t2 = ReadExpr("-1 20");
-  Expression E = CompoundExpr('+', t1, t2);
+  Expression E = CompoundExpr('*', t1, t2);
 
   mu_assert("compound", NULL != E);
   printf("\n%s\n", "CompoundExpr:");
-  WriteExpr(t1);
-  WriteExpr(t2);
+  WriteEx(t1); printf(" %s ", "乘以"); WriteEx(t2); printf(" %s ", "等于");
   WriteExpr(E);
   DestroyExpression(t1);
   DestroyExpression(t2);
@@ -75,9 +76,9 @@ static char const* testmerge() {
 
   for (size_t i = 0; i < length; i++) {
     E = ReadExpr(str[i]);
-    WriteExpr(E);
+    printf("%s", "Before: "); WriteExpr(E);
     MergeConst(E);
-    WriteExpr(E);
+    printf("%s", "After: "); WriteExpr(E);
     DestroyExpression(E);
   }
   return OK;
@@ -103,12 +104,14 @@ static char const* testdiff() {
     E  = ReadExpr(str[i]);
     dE = Diff(E, 'x');
     MergeConst(dE);
-    WriteExpr(dE);
+    printf("%s", "原函数："); WriteExpr(E);
+    printf("%s", "对x的偏导数："); WriteExpr(dE);
+    putchar('\n');
   }
   return OK;
 }
 
-static char const* testcompute() {
+static char const* testcalculator() {
   char *str = (char *)malloc(100);
   char  ch;
   int   value;
@@ -133,8 +136,8 @@ static char const* testcompute() {
       printf("%s\n", "请再次输入需要赋值的变量(按 Ctrl + D 取消)：");
     }
     printf("\n%s\n", "结果：");
-    WriteExpr(E);
-    printf("%d\n",  Value(E));
+    WriteEx(E);
+    printf("=%d\n",  Value(E));
     printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
   }
   return OK;
@@ -146,7 +149,7 @@ static char const* run() {
   mu_run_test(testvalue);
   mu_run_test(testmerge);
   mu_run_test(testdiff);
-  mu_run_test(testcompute);
+  mu_run_test(testcalculator);
   return OK;
 }
 
