@@ -53,7 +53,12 @@ bool PreOrderFind(Expression& E,
                   char        data,
                   int         value);
 
-// 由字符串构造表达式，如果语法有误，可能返回 NULL
+// 由字符串构造表达式，如果语法有误，返回 NULL
+// 允许的字符：
+//    运算符：+-*/^
+//    常数：0-9
+//    变量：a-zA-Z
+//    分隔符：空格（可选）
 Expression ReadExpr(char const *str);
 
 // WriteExpr 的实现

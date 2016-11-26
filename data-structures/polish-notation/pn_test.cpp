@@ -121,6 +121,8 @@ static char const* testcalculator() {
   printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
 
   while (fgets(str, 100, stdin) != NULL) {
+    str[strcspn(str, "\r\n")] = 0; // 将第一个 \r 或者 \n 替换为 \0
+
     E = ReadExpr(str);
 
     if (E) {

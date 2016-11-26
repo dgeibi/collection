@@ -248,11 +248,6 @@ bool IsAtom(char const *str) {
 
   for (size_t i = 0; i < length; i++)
   {
-    if (!IsConst(str[i]) && !IsOperator(str[i]) && !IsVariable(str[i]) &&
-        (str[i] != ' ')) { // 忽略其它字符
-      continue;
-    }
-
     if (!(((i == 0) && IsOperator(str[i]) && str[1]) || IsConst(str[i]))) {
       return false;
     }
@@ -261,7 +256,12 @@ bool IsAtom(char const *str) {
 }
 
 Expression ReadExpr(char const *str) {
-  // 由字符串构造表达式，如果语法有误，可能返回 NULL
+  // 由字符串构造表达式，如果语法有误，返回 NULL
+  // 允许的字符：
+  //    运算符：+-*/^
+  //    常数：0-9
+  //    变量：a-zA-Z
+  //    分隔符：空格（可选）
   Expression E = NULL;
   int        value = 0;
   size_t     length = strlen(str);
@@ -290,19 +290,23 @@ Expression ReadExpr(char const *str) {
             MINUS = true; // 是负的原子
           }
         }
-        else if (!PreOrderFind(E,  OPERATOR, str[i], 0)) {
+        else if (!PreOrderFind(E, OPERATOR, str[i], 0)) {
           BAD = true;
           break;
         }
       }
       else if (IsVariable(str[i])) {
-        if (!PreOrderFind(E,  VARIABLE, str[i], 0)) {
+        if (!PreOrderFind(E, VARIABLE, str[i], 0)) {
           BAD = true;
           break;
         }
       }
-      else {
+      else if (str[i] == ' ') {
         continue;
+      }
+      else {
+        BAD = true;
+        break;
       }
     } // endelse
   }   // endfor
