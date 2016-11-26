@@ -70,7 +70,7 @@ void EnQueue_LQ(LQueue& Q, QElemType e) {
   /* 插入元素e为Q的新的队尾元素 */
   QueuePtr p = (QueuePtr)malloc(sizeof(LQNode));
 
-  if (!p)                                 /* 存储分配失败 */
+  if (!p) /* 存储分配失败 */
     exit(OVERFLOW);
   p->data      = e;
   p->next      = NULL;

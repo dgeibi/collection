@@ -18,13 +18,23 @@ static char const* testinit() {
 
   mu_assert("init: empty", CreateGraph(G, DG, NULL, 0, NULL, 0) == ERROR);
   DestoryGraph(G);
-  mu_assert("init: subset", CreateGraph(G, DG, (char *)"abcde", 2, arcs, 4) == ERROR);
+  mu_assert("init: subset", CreateGraph(G,
+                                        DG,
+                                        (char *)"abcde",
+                                        2,
+                                        arcs,
+                                        4) == ERROR);
   DestoryGraph(G);
   mu_assert("init: normal",
             CreateGraph(G, DG, (char *)"abcde", 5, arcs, 4) == OK);
   DestoryGraph(G);
   mu_assert("init: arcs too small",
-            CreateGraph(G, DG, (char *)"abcde", 5, arcs, MAX_SIZE_ARCS + 20) == ERROR);
+            CreateGraph(G,
+                        DG,
+                        (char *)"abcde",
+                        5,
+                        arcs,
+                        MAX_SIZE_ARCS + 20) == ERROR);
   return OK;
 }
 

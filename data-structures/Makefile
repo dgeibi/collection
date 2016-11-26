@@ -4,7 +4,7 @@ CFLAGS := -Wall -std=gnu++11
 graph-objects := graph.o queue.o dg_test.o
 pn-objects := pn_test.o polish-notation.o
 
-all : dg_test.out pn_test.out
+all : beautify dg_test.out pn_test.out
 
 pn_test.out : $(pn-objects)
 	$(CC) $(CFLAGS) -o $@ $^
@@ -19,6 +19,11 @@ graph.o dg_test.o : graph.h
 %.o : %.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-.PHONY : clean
+beautify: uncrustify.cfg
+	find . -type f -name '*.cpp' -exec uncrustify -c $< --no-backup "{}" \;
+	find . -type f -name '*.h' -exec uncrustify -c $< --no-backup "{}" \;
+
 clean :
 	rm $(objects) *.out
+
+.PHONY : clean beautify
