@@ -45,15 +45,10 @@ void       ToConst(Expression E);
 // 复制表达式
 Expression Copy(Expression E);
 
-// 判断表达式 p 是否适合插入新的结点
-// 表达式为空，适合
-// 类型为运算符，适合
-bool IsProper(Expression p);
-
-// 先序查找新结点的位置，根据 test 函数判断位置是否合理，如果合理则插入新结点，并返回 OK
-// 找不到适当的位置返回 ERROR
+// 先序查找新结点的位置，根据 IsReasonable 判断表达式是否可以插入/需要有递归
+// 如果 E 为 NULL 则插入，并返回 true
+// 未插入则返回 false
 bool PreOrderFind(Expression& E,
-                  Status (   *test)(Expression),
                   int         type,
                   char        data,
                   int         value);

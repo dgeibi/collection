@@ -121,24 +121,27 @@ static char const* testcalculator() {
   printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
 
   while (fgets(str, 100, stdin) != NULL) {
-    printf("%s\n", "请输入需要赋值的变量(按 Ctrl + D 取消)：");
     E = ReadExpr(str);
 
-    while ((ch = fgetc(stdin)) != EOF) {
-      CLEAN_INPUT;
-      printf("%s%c%s\n", "请输入要赋给变量", ch, "的值：");
+    if (E) {
+      printf("%s\n", "请输入需要赋值的变量(按 Ctrl + D 取消)：");
 
-      while (scanf("%d", &value) != 1) {
+      while ((ch = fgetc(stdin)) != EOF) {
         CLEAN_INPUT;
-        printf("%s%c%s\n", "请再次输入要赋给变量", ch, "的值：");
+        printf("%s%c%s\n", "请输入要赋给变量", ch, "的值：");
+
+        while (scanf("%d", &value) != 1) {
+          CLEAN_INPUT;
+          printf("%s%c%s\n", "请再次输入要赋给变量", ch, "的值：");
+        }
+        CLEAN_INPUT;
+        Assign(E, ch, value);
+        printf("%s\n", "请再次输入需要赋值的变量(按 Ctrl + D 取消)：");
       }
-      CLEAN_INPUT;
-      Assign(E, ch, value);
-      printf("%s\n", "请再次输入需要赋值的变量(按 Ctrl + D 取消)：");
+      printf("\n%s\n", "结果：");
+      WriteEx(E);
+      printf("=%d\n", Value(E));
     }
-    printf("\n%s\n", "结果：");
-    WriteEx(E);
-    printf("=%d\n",  Value(E));
     printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
   }
   return OK;

@@ -152,76 +152,63 @@ void MergeConst(Expression& E) {
       E->value = 1;
       ToConst(E);
     }
-    else if (E->data == '+') { // + 0 x = x
+    else if (E->data == '+') {
       if ((E->lchild->type == CONST) && (E->lchild->value == 0)) {
-        DestroyExpression(E->lchild);
+        DestroyExpression(E->lchild); // + 0 x = x
         E = E->rchild;
       }
-      else if ((E->rchild->type == CONST) && (E->rchild->value == 0)) { // + x 0 = x
-        DestroyExpression(E->rchild);
+      else if ((E->rchild->type == CONST) && (E->rchild->value == 0)) {
+        DestroyExpression(E->rchild); // + x 0 = x
         E = E->lchild;
       }
     }
     else if (E->data == '-') {
-      if ((E->rchild->type == CONST) && (E->rchild->value == 0)) { // - x 0 = x
-        DestroyExpression(E->rchild);
+      if ((E->rchild->type == CONST) && (E->rchild->value == 0)) {
+        DestroyExpression(E->rchild); // - x 0 = x
         E = E->lchild;
       }
     }
     else if (E->data == '*') {
-      if ((E->lchild->type == CONST) && (E->lchild->value == 1)) { // * 1 x = x
-        DestroyExpression(E->lchild);
+      if ((E->lchild->type == CONST) && (E->lchild->value == 1)) {
+        DestroyExpression(E->lchild); // * 1 x = x
         E = E->rchild;
       }
-      else if ((E->rchild->type == CONST) && (E->rchild->value == 1)) { // * x 1 = x
-        DestroyExpression(E->rchild);
+      else if ((E->rchild->type == CONST) && (E->rchild->value == 1)) {
+        DestroyExpression(E->rchild); // * x 1 = x
         E = E->lchild;
       }
     }
   }
 }
 
-bool IsProper(Expression E) {
-  // 判断表达式 E 是否适合插入新的结点
-  // 表达式为空，适合
-  // 类型为运算符，适合
-  if (E == NULL) {
-    return true;
-  }
+bool PreOrderFind(Expression& E, int type, char data, int value) {
+  // 先序查找新结点的位置，根据 IsReasonable 判断表达式是否可以插入/需要有递归
+  // 如果 E 为 NULL 则插入，并返回 true
+  // 未插入则返回 false
 
-  if (E->type == OPERATOR) {
-    return true;
-  }
-  return false;
-}
-
-bool PreOrderFind(Expression& E,
-                  bool (*test)(Expression), int type, char data,
-                  int value) {
-  // 先序查找新结点的位置，根据 test 函数判断位置是否合理，如果合理则插入新结点，并返回 OK
-  // 找不到适当的位置返回 ERROR
-  if (E == NULL) {
-    E = (ExprNode *)malloc(sizeof(ExprNode));
-
+  if (!IsReasonable(E)) {
     if (E == NULL) {
-      exit(OVERFLOW);
-    }
-    E->data   = data;
-    E->type   = type;
-    E->value  = value;
-    E->lchild = NULL;
-    E->rchild = NULL;
-    return true;
-  }
-  else if (test(E)) {
-    if (test(E->lchild) && PreOrderFind(E->lchild, test, type, data, value)) {
+      E = (ExprNode *)malloc(sizeof(ExprNode));
+
+      if (E == NULL) {
+        exit(OVERFLOW);
+      }
+      E->data   = data;
+      E->type   = type;
+      E->value  = value;
+      E->lchild = NULL;
+      E->rchild = NULL;
       return true;
     }
-    else if (test(E->rchild)) {
-      return PreOrderFind(E->rchild, test, type, data, value);
+    else if (!IsReasonable(E->lchild) &&
+             PreOrderFind(E->lchild, type, data, value)) {
+      return true; // 左式未满并且插入成功
+    }
+    else if (!IsReasonable(E->rchild)) {
+      return PreOrderFind(E->rchild, type, data, value);
     }
   }
-  return false;
+  return false; // 表达式已经满了，返回 false
 }
 
 bool IsOperator(char ch) {
@@ -262,7 +249,7 @@ bool IsAtom(char const *str) {
   for (size_t i = 0; i < length; i++)
   {
     if (!IsConst(str[i]) && !IsOperator(str[i]) && !IsVariable(str[i]) &&
-        (str[i] != ' ')) {
+        (str[i] != ' ')) { // 忽略其它字符
       continue;
     }
 
@@ -289,7 +276,7 @@ Expression ReadExpr(char const *str) {
           value = -value;         // 是负的原子
         }
 
-        if (!PreOrderFind(E, IsProper, CONST, '\0', value)) {
+        if (!PreOrderFind(E, CONST, '\0', value)) {
           BAD = true;
           break;
         }
@@ -303,13 +290,13 @@ Expression ReadExpr(char const *str) {
             MINUS = true; // 是负的原子
           }
         }
-        else if (!PreOrderFind(E, IsProper, OPERATOR, str[i], 0)) {
+        else if (!PreOrderFind(E,  OPERATOR, str[i], 0)) {
           BAD = true;
           break;
         }
       }
       else if (IsVariable(str[i])) {
-        if (!PreOrderFind(E, IsProper, VARIABLE, str[i], 0)) {
+        if (!PreOrderFind(E,  VARIABLE, str[i], 0)) {
           BAD = true;
           break;
         }
