@@ -29,6 +29,7 @@ static char const* testinit() {
   mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
   mu_assert("read expression_NULL", ReadExpr("+ 1 2 3") == NULL);
   mu_assert("read expression_NULL", ReadExpr("+ * 2 3 1 x") == NULL);
+  mu_assert("read expression_NULL", ReadExpr("+ * 2 3") == NULL);
   return OK;
 }
 
