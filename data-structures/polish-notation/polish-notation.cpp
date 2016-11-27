@@ -211,48 +211,62 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
   return false; // 表达式已经满了，返回 false
 }
 
-bool IsOperator(char ch) {
-  // 是运算符
-  switch (ch) {
-    case '+':
-    case '-':
-    case '*':
-    case '/':
-    case '^':
-      return true;
+bool Is(int type, char ch) {
+  // 判断 ch 是否是 type
+  switch (type) {
+    case CONST:
+
+      if ((ch >= '0') && (ch <= '9')) return true;
+      break;
+
+    case VARIABLE:
+
+      if (((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) return true;
+      break;
+
+    case OPERATOR:
+
+      switch (ch) {
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '^':
+          return true;
+      }
+      break;
   }
   return false;
 }
 
-bool IsConst(char ch) {
-  // 是数字
-  if ((ch >= '0') && (ch <= '9')) {
-    return true;
-  }
-  return false;
-}
-
-bool IsVariable(char ch) {
-  // 是变量
-  if (((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) {
-    return true;
-  }
-  return false;
-}
-
-bool IsAtom(char const *str) {
-  // 判断是否为原子
-  // 只含有运算符不是原子
-  // 变量不是原子
+bool IsAtom(int type, char const *str) {
+  // 判断是否为 type 类原子
   size_t length = strlen(str);
 
-  for (size_t i = 0; i < length; i++)
-  {
-    if (!(((i == 0) && IsOperator(str[i]) && str[1]) || IsConst(str[i]))) {
+  if (type == CONST) {
+    for (size_t i = 0; i < length; i++)
+    {
+      if ((i == 0) && ((str[0] == '+') || (str[0] == '-')) && str[1]) {
+        continue;
+      }
+
+      if (Is(type, str[i])) {
+        continue;
+      }
       return false;
     }
+    return true;
   }
-  return true;
+  else if (type == VARIABLE) {
+    if (length == 1) {
+      return Is(type, str[0]);
+    }
+    else if (length == 2) {
+      return (str[0] == '+' || str[0] == '-') && Is(type, str[1]);
+    }
+  }
+
+  return false;
 }
 
 Expression ReadExpr(char const *str) {
@@ -268,12 +282,12 @@ Expression ReadExpr(char const *str) {
   bool       BAD = false, MINUS = false;
 
   for (size_t i = 0; i < length; i++) {
-    if (IsConst(str[i])) {
+    if (Is(CONST, str[i])) {
       value = value * 10 + (str[i] - '0');
 
-      if (!IsConst(str[i + 1])) { // 下一个字符不是数字
+      if (!Is(CONST, str[i + 1])) { // 下一个字符不是常数
         if (MINUS) {
-          value = -value;         // 是负的原子
+          value = -value;           // 是负的常数原子
         }
 
         if (!PreOrderFind(E, CONST, '\0', value)) {
@@ -284,10 +298,10 @@ Expression ReadExpr(char const *str) {
       }
     }
     else {
-      if (IsOperator(str[i])) {
-        if ((i == 0) && IsAtom(str)) {
+      if (Is(OPERATOR, str[i])) {
+        if ((i == 0) && IsAtom(CONST, str)) {
           if (str[i] == '-') {
-            MINUS = true; // 是负的原子
+            MINUS = true; // 是负的常数原子
           }
         }
         else if (!PreOrderFind(E, OPERATOR, str[i], 0)) {
@@ -295,7 +309,15 @@ Expression ReadExpr(char const *str) {
           break;
         }
       }
-      else if (IsVariable(str[i])) {
+      else if (Is(VARIABLE, str[i])) {
+        if ((i == 1) && IsAtom(VARIABLE, str)) {
+          // 如果是变量原子，前面补零
+          if (!PreOrderFind(E, CONST, '\0', 0)) {
+            BAD = true;
+            break;
+          }
+        }
+
         if (!PreOrderFind(E, VARIABLE, str[i], 0)) {
           BAD = true;
           break;
@@ -402,7 +424,7 @@ void WriteExpr(Expression E) {
 
 Expression CompoundExpr(char P, Expression E1, Expression E2) {
   // 构造一个新的复合表达式，(E1)P(E2)，(P E1 E1)
-  if (!IsOperator(P)) { // 不是运算符
+  if (!Is(OPERATOR, P)) { // 不是运算符
     return NULL;
   }
   else {

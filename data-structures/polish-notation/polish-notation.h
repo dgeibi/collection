@@ -16,21 +16,20 @@ enum type {
 typedef struct ExprNode {
   int              type;  // 类型：OPERATOR/ CONST/ VARIABLE
   char             data;  // 字符数据：变量/运算符的字符
-  int              value; // 值：运算符/数字的值
+  int              value; // 值：变量/常数的值
   struct ExprNode *lchild, *rchild;
 } ExprNode, *Expression;
 
 // 释放表达式
 void DestroyExpression(Expression& E);
 
-// 判断是否为原子
-// 只含有运算符不是原子
-// 变量不是原子
-bool IsAtom(char const *str);
+// 判断是否为 type 类原子
+bool IsAtom(int         type,
+            char const *str);
 
-bool IsVariable(char ch); // 是变量
-bool IsConst(char ch);    // 是数字
-bool IsOperator(char ch); // 是运算符
+// 判断 ch 是否是 type
+bool Is(int  type,
+        char ch);
 
 // 判断父母结点的运算符的优先级是否比子结点的优先级高
 bool IsHigher(Expression parent,

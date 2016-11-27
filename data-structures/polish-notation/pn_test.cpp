@@ -6,8 +6,11 @@ static char const* testinit() {
   char const *str[] = {
     "0",
     "a",
+    "+111",
     "-91",
     "+a*bc",
+    "+a",
+    "-a",
     "+*15^x2*8x",
     "+++*3^x3*2^x2x6",
     "+ 1 2",
@@ -27,9 +30,25 @@ static char const* testinit() {
     DestroyExpression(E);
   }
   mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
+  mu_assert("read expression_NULL", ReadExpr("*11") == NULL);
   mu_assert("read expression_NULL", ReadExpr("+ 1 2 3") == NULL);
   mu_assert("read expression_NULL", ReadExpr("+ * 2 3 1 x") == NULL);
   mu_assert("read expression_NULL", ReadExpr("+ * 2 3") == NULL);
+  return OK;
+}
+
+static char const* testatom() {
+  mu_assert("IsAtom_CONST",  IsAtom(CONST, "12"));
+  mu_assert("IsAtom_CONST",  IsAtom(CONST, "+1112"));
+  mu_assert("IsAtom_CONST",  IsAtom(CONST, "-23"));
+  mu_assert("!IsAtom_CONST", !IsAtom(CONST, "-23v"));
+  mu_assert("!IsAtom_CONST", !IsAtom(CONST, "*23"));
+  mu_assert("!IsAtom_CONST", !IsAtom(CONST, "-23 3"));
+  mu_assert("IsAtom_VAR",    IsAtom(VARIABLE, "b"));
+  mu_assert("IsAtom_VAR",    IsAtom(VARIABLE, "-a"));
+  mu_assert("IsAtom_VAR",    IsAtom(VARIABLE, "+a"));
+  mu_assert("!IsAtom_VAR",   !IsAtom(VARIABLE, "+ab"));
+  mu_assert("!IsAtom_VAR",   !IsAtom(VARIABLE, "/b"));
   return OK;
 }
 
@@ -151,6 +170,7 @@ static char const* testcalculator() {
 
 static char const* run() {
   mu_run_test(testinit);
+  mu_run_test(testatom);
   mu_run_test(testcompound);
   mu_run_test(testvalue);
   mu_run_test(testmerge);
