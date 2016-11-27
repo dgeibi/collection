@@ -56,6 +56,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+#MVN
 */target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -66,5 +67,28 @@ dependency-reduced-pom.xml
 buildNumber.properties
 */.mvn/timing.properties
 
-# Exclude maven wrapper
-# !/.mvn/wrapper/maven-wrapper.jar
+#Eclipse.gitignore
+.metadata
+*/bin/
+*/tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+*/.settings/
+.loadpath
+.recommenders
+.project
+*/.externalToolBuilders/
+*.launch
+*.pydevproject
+.cproject
+.classpath
+.factorypath
+.buildpath
+.target
+.tern-project
+.texlipse
+.springBeans
+*/.recommenders/
