@@ -132,17 +132,17 @@ static char const* testdiff() {
 }
 
 static char const* testcalculator() {
-  char *str = (char *)malloc(100);
+  char *buffer = (char *)malloc(100);
   char  ch;
   int   value;
   Expression E;
 
   printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
 
-  while (fgets(str, 100, stdin) != NULL) {
-    str[strcspn(str, "\r\n")] = 0; // 将第一个 \r 或者 \n 替换为 \0
+  while (fgets(buffer, 100, stdin) != NULL) {
+    buffer[strcspn(buffer, "\r\n")] = 0; // 将第一个 \r 或者 \n 替换为 \0
 
-    E = ReadExpr(str);
+    E = ReadExpr(buffer);
 
     if (E) {
       printf("%s\n", "请输入需要赋值的变量(按 Ctrl + D 取消)：");

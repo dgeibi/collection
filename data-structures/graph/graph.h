@@ -39,17 +39,17 @@ typedef struct {
   int     info;                // 对带权图，为权值
 } ArcInfo;                     // 边（弧）信息
 
-Status CreateGraph(ALGraph & G,
-                   GraphKind kind,
-                   VexType  *vexs,
-                   int       n,
-                   ArcInfo  *arcs,
-                   int       e); // 创建图的邻接表
+Status CreateGraph(ALGraph   & G,
+                   GraphKind   kind,
+                   char const *vexs,
+                   int         n,
+                   ArcInfo    *arcs,
+                   int         e); // 创建图的邻接表
 
-Status DestoryGraph(ALGraph& G); // 销毁图G
+Status DestoryGraph(ALGraph& G);   // 销毁图G
 
 int    LocateVex(ALGraph G,
-                 VexType v);     // 查找顶点v在图G的索引
+                 VexType v);       // 查找顶点v在图G的索引
 
 Status GetVex(ALGraph  G,
               int      k,

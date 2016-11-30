@@ -1,11 +1,11 @@
 #include "graph.h"
 
-Status CreateGraph(ALGraph & G,
-                   GraphKind kind,
-                   VexType  *vexs,
-                   int       n,
-                   ArcInfo  *arcs,
-                   int       e) {
+Status CreateGraph(ALGraph   & G,
+                   GraphKind   kind,
+                   char const *vexs,
+                   int         n,
+                   ArcInfo    *arcs,
+                   int         e) {
   // 创建含n个顶点和e条边的有向图G，vexs为顶点信息，arcs为边信息
   int i;
 

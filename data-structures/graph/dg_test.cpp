@@ -18,20 +18,15 @@ static char const* testinit() {
 
   mu_assert("init: empty", CreateGraph(G, DG, NULL, 0, NULL, 0) == ERROR);
   DestoryGraph(G);
-  mu_assert("init: subset", CreateGraph(G,
-                                        DG,
-                                        (char *)"abcde",
-                                        2,
-                                        arcs,
-                                        4) == ERROR);
+  mu_assert("init: subset", CreateGraph(G, DG, "abcde", 2, arcs, 4) == ERROR);
   DestoryGraph(G);
   mu_assert("init: normal",
-            CreateGraph(G, DG, (char *)"abcde", 5, arcs, 4) == OK);
+            CreateGraph(G, DG, "abcde", 5, arcs, 4) == OK);
   DestoryGraph(G);
   mu_assert("init: arcs too small",
             CreateGraph(G,
                         DG,
-                        (char *)"abcde",
+                        "abcde",
                         5,
                         arcs,
                         MAX_SIZE_ARCS + 20) == ERROR);
@@ -47,7 +42,7 @@ static char const* testTraverse() {
   arcs[2] = { 'e', 'd', 1 };
   arcs[3] = { 'b', 'c', 1 };
 
-  CreateGraph(G, DG, (char *)"abcde", 5, arcs, 4);
+  CreateGraph(G, DG, "abcde", 5, arcs, 4);
   mu_assert("DFSTraverse", DFSTraverse(G, vi) == OK);
   putchar('\n');
   mu_assert("BFSTraverse", BFSTraverse(G, vi) == OK);
@@ -66,7 +61,7 @@ static char const* testAdd() {
   arcs[4] = { 'b', 'd', 1 };
   arcs[5] = { 'c', 'd', 1 };
 
-  CreateGraph(G, DG, (char *)"abcde", 5, arcs, 6);
+  CreateGraph(G, DG, "abcde", 5, arcs, 6);
   mu_assert("add: repeat", AddArc(G, 'b', 'c', 1) == ERROR && G.e == 6);
   g_print(G);
   mu_assert("add: normal", AddArc(G, 'a', 'c', 1) == OK && G.e == 7);
@@ -88,7 +83,7 @@ static char const* testRemove() {
   arcs[7] = { 'f', 'e', 1 };
   arcs[8] = { 'c', 'g', 1 };
 
-  CreateGraph(G, DG, (char *)"abcdefg", 7, arcs, 9);
+  CreateGraph(G, DG, "abcdefg", 7, arcs, 9);
   mu_assert("remove: not exist", RemoveArc(G, 'g', 'c') == ERROR && G.e == 9);
   g_print(G);
   mu_assert("remove: normal", RemoveArc(G, 'a', 'b') == OK && G.e == 8);
@@ -110,7 +105,7 @@ static char const* testDegree() {
   arcs[7] = { 'f', 'e', 1 };
   arcs[8] = { 'c', 'g', 1 };
 
-  CreateGraph(G, DG, (char *)"abcdefg", 7, arcs, 9);
+  CreateGraph(G, DG, "abcdefg", 7, arcs, 9);
   mu_assert("inDegree: normal",     inDegree(G, 'g') == 1);
   mu_assert("inDegree: zero",       inDegree(G, 'a') == 0);
   mu_assert("inDegree: not exist",  inDegree(G, 'h') == -1);
@@ -132,7 +127,7 @@ static char const* testVex() {
   arcs[4] = { 'b', 'd', 1 };
   arcs[5] = { 'c', 'd', 1 };
 
-  CreateGraph(G, DG, (char *)"abcde", 5, arcs, 6);
+  CreateGraph(G, DG, "abcde", 5, arcs, 6);
   mu_assert("SetVex: not exist", SetVex(G, 10, 'h') == ERROR);
   mu_assert("SetVex: repeat",    SetVex(G, 3,  'c') == ERROR);
   mu_assert("SetVex: normal",    SetVex(G, 3,  'h') == OK);
