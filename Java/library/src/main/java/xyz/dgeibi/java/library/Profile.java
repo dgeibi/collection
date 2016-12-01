@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 class Profile extends Dialog {
-    private String customerID;
+    private String userID;
     private String type;
     private String username;
 
-    Profile(Shell parent, String customerID, String type) {
+    Profile(Shell parent, String userID, String type) {
         super(parent);
-        this.customerID = customerID;
+        this.userID = userID;
         this.type = type;
         this.username = getUsername();
     }
@@ -27,7 +27,7 @@ class Profile extends Dialog {
         ResultSet rs = null;
         try {
             st = Main.connection.createStatement();
-            rs = st.executeQuery("SELECT username FROM " + type + " WHERE id = '" + customerID + "'");
+            rs = st.executeQuery("SELECT username FROM " + type + " WHERE id = '" + userID + "'");
             if (rs.next()) {
                 n = rs.getString("username");
             }
@@ -41,7 +41,7 @@ class Profile extends Dialog {
             }
         }
         if (n == null) {
-            n = customerID;
+            n = userID;
         }
         return n;
     }
@@ -86,7 +86,7 @@ class Profile extends Dialog {
                     if (!_username.equals("")) {
                         sql += ", username ='" + _username + "'";
                     }
-                    sql += " WHERE id = '" + customerID + "'";
+                    sql += " WHERE id = '" + userID + "'";
                     try {
                         st = Main.connection.createStatement();
                         if (st.executeUpdate(sql) > 0) {
@@ -109,7 +109,7 @@ class Profile extends Dialog {
                 try {
                     st = Main.connection.createStatement();
                     if (1 == st.executeUpdate("UPDATE " + type + " SET username = '" + _username +
-                            "' WHERE id = '" + customerID + "'")) {
+                            "' WHERE id = '" + userID + "'")) {
                         username = _username;
                         new Alert(profile, "修改成功！", Alert.NOTICE);
                         profile.close();

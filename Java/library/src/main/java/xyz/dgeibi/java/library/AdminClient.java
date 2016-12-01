@@ -176,7 +176,6 @@ class AdminClient {
         GridData tableGridData = new GridData(SWT.CENTER, SWT.CENTER, true, true, 2, 1);
         tableGridData.heightHint = 200;
         table.setLayoutData(tableGridData);
-
         final TableEditor editor = new TableEditor(table);
         editor.horizontalAlignment = SWT.LEFT;
         editor.grabHorizontal = true;
@@ -225,6 +224,7 @@ class AdminClient {
                 index++;
             }
         });
+
         Widget.createBtn(c1, "下架已选的书籍", new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1), event -> {
             Confirm confirm = new Confirm(shell, "确定下架已选的书籍？");
             if (confirm.go()) {
