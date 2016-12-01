@@ -1,6 +1,5 @@
 package xyz.dgeibi.java.library;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,7 +17,6 @@ public class CustomerClient {
     Table table1;
     Table table2;
     String sql1;
-    String sql2;
     Connection connection = Main.connection;
 
     public CustomerClient(String id) {
@@ -28,7 +26,7 @@ public class CustomerClient {
 
     void reload() {
         Widget.reloadBookTable(table1, sql1, connection);
-        Widget.reloadBookTable(table2, sql2, connection);
+        reloadReturnTable(table2);
         table1.getParent().layout();
     }
 
@@ -144,23 +142,19 @@ public class CustomerClient {
             }
         });
 
-
         // 还书
         label = new Label(view, SWT.NONE);
         label.setText("还书：");
-        sql2 = "SELECT id,name,author FROM book" +
-                " WHERE id IN" +
-                "(SELECT bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL)";
-        table2 = Widget.createBookTable(view, sql2, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+        table2 = createReturnTable(view);
         Widget.createBtn(view, "提交", new GridData(SWT.CENTER, SWT.CENTER, true, false), event -> {
             TableItem[] items = table2.getItems();
             for (TableItem item : items) {
                 if (item.getChecked()) {
-                    String bookID = item.getText(0);
+                    String businessID = item.getText(0);
                     Statement st = null;
                     try {
                         st = connection.createStatement();
-                        String sql = "UPDATE history SET returnTime = NOW() WHERE bookID = '" + bookID + "' AND customerID = '" + id + "'";
+                        String sql = "UPDATE history SET returnTime = NOW() WHERE id = '" + businessID + "'";
                         st.executeUpdate(sql);
                     } catch (SQLException se) {
                         se.printStackTrace();
@@ -183,6 +177,80 @@ public class CustomerClient {
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
+        }
+    }
+
+    public Table createReturnTable(Composite c) {
+        final Table table = new Table(c, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
+        GridData tableGridData = new GridData(SWT.LEFT, SWT.FILL, true, true);
+        tableGridData.heightHint = 200;
+        table.setLayoutData(tableGridData);
+        String[] titles = {"流水号", "书名", "作者"};
+        for (int i = 0; i < titles.length; i++) {
+            TableColumn column = new TableColumn(table, SWT.NONE);
+            column.setText(titles[i]);
+        }
+        reloadReturnTable(table);
+        table.getColumn(0).setWidth(60);
+        table.getColumn(1).setWidth(250);
+        table.getColumn(2).setWidth(250);
+        table.pack();
+        return table;
+    }
+
+    public void reloadReturnTable(Table table) {
+        TableItem[] items = table.getItems();
+        for (TableItem item :
+                items) {
+            item.dispose();
+        }
+
+        String sql = "SELECT id,bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL";
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            st = connection.createStatement();
+            rs = st.executeQuery(sql);
+            while (rs.next()) {
+                TableItem item = new TableItem(table, SWT.NONE);
+                item.setText(0, rs.getString("id"));
+                String sql2 = "SELECT name,author FROM book " +
+                        "WHERE id = '" + rs.getString("bookID") + "'";
+
+                // 显示书名和作者
+                Statement st2 = null;
+                ResultSet rs2 = null;
+                try {
+                    st2 = connection.createStatement();
+                    rs2 = st2.executeQuery(sql2);
+
+                    if (rs2.next()) {
+                        String author = rs2.getString("author");
+                        if (author == null) author = "";
+                        item.setText(1, rs2.getString("name"));
+                        item.setText(2, author);
+                    }
+
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                } finally {
+                    try {
+                        rs2.close();
+                        st2.close();
+                    } catch (SQLException se) {
+                    }
+                }
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                st.close();
+            } catch (SQLException se) {
+            }
         }
     }
 }
