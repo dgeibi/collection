@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Login {
-    public Login() {
+class Login {
+    Login() {
         go();
     }
 
@@ -21,7 +21,7 @@ public class Login {
         c.getParent().pack();
     }
 
-    public void go() {
+    private void go() {
         Connection connection = Main.connection;
         Display display = Main.display;
 

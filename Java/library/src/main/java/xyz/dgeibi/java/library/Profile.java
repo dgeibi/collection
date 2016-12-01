@@ -9,19 +9,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Profile extends Dialog {
-    String customerID;
-    String type;
-    String username;
+class Profile extends Dialog {
+    private String customerID;
+    private String type;
+    private String username;
 
-    public Profile(Shell parent, String customerID, String type) {
+    Profile(Shell parent, String customerID, String type) {
         super(parent);
         this.customerID = customerID;
         this.type = type;
         this.username = getUsername();
     }
 
-    public String getUsername() {
+    private String getUsername() {
         String n = "";
         Statement st = null;
         ResultSet rs = null;
@@ -46,7 +46,7 @@ public class Profile extends Dialog {
         return n;
     }
 
-    public String go() {
+    String go() {
         Shell parent = getParent();
 
         GridData textGridData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);

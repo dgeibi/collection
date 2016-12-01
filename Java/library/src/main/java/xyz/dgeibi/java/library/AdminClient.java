@@ -15,22 +15,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class AdminClient {
-    String id;
-    Table table;
-    String sql1;
+class AdminClient {
+    private String id;
+    private TableCreator tableCreator;
 
-    public AdminClient(String id) {
+    AdminClient(String id) {
         this.id = id;
         this.go();
     }
 
-    void reload() {
-        Widget.reloadBookTable(table, sql1, Main.connection);
-        table.getParent().layout();
+    private void reload(Composite c) {
+        tableCreator.reload();
+        c.layout();
     }
 
-    void go() {
+    private void go() {
         Connection connection = Main.connection;
         Display display = Main.display;
         Shell shell = new Shell(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
@@ -147,8 +146,33 @@ public class AdminClient {
         c1.setLayout(gridLayout);
 
         new Label(c1, SWT.NONE).setText("所有书籍：");
-        sql1 = "SELECT id,name,author FROM book";
-        table = Widget.createBookTable(c1, sql1, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+        tableCreator = new TableCreator() {
+            @Override
+            void reload() {
+                String sql = "SELECT id,name,author FROM book";
+                TableItem[] items = table.getItems();
+                for (TableItem item :
+                        items) {
+                    item.dispose();
+                }
+                try {
+                    Statement st = connection.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while (rs.next()) {
+                        TableItem item = new TableItem(table, SWT.NONE);
+                        item.setText(0, rs.getString("id"));
+                        item.setText(1, rs.getString("name"));
+                        item.setText(2, rs.getString("author"));
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        String[] tableTitle = {"id", "书名", "作者"};
+        Table table = tableCreator.init(c1, tableTitle);
         GridData tableGridData = new GridData(SWT.CENTER, SWT.CENTER, true, true, 2, 1);
         tableGridData.heightHint = 200;
         table.setLayoutData(tableGridData);
@@ -225,7 +249,7 @@ public class AdminClient {
                     }
                 }
                 if (items.length > 0) {
-                    reload();
+                    reload(table.getParent());
                 }
             }
         });
@@ -287,7 +311,7 @@ public class AdminClient {
                         if (st.executeUpdate("INSERT INTO book (name, author, publishTime) " +
                                 " VALUES ('" + name + "','" + author + "', NOW())") == 1) {
                             new Alert(shell, "提交成功！", Alert.NOTICE);
-                            reload();
+                            reload(table.getParent());
                             tx1.setText("");
                             tx2.setText("");
                         }

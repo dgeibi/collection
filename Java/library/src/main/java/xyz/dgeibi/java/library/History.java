@@ -10,25 +10,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class History extends Dialog {
+class History extends Dialog {
     final static int ALL = 1;
-    String id;
-    int option = 0;
+    private String id;
+    private int option = 0;
 
-    public History(Shell parent, String id) {
+    History(Shell parent, String id) {
         super(parent);
         this.id = id;
         go();
     }
 
-    public History(Shell parent, String id, int option) {
+    History(Shell parent, String id, int option) {
         super(parent);
         this.id = id;
         this.option = option;
         go();
     }
 
-    void go() {
+    private void go() {
         Connection connection = Main.connection;
         Shell parent = getParent();
         Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
@@ -44,9 +44,9 @@ public class History extends Dialog {
         String eSql1 = option == History.ALL ? "'" : "' AND returnTime IS NOT NULL";
         String sql1 = "SELECT bookID,businessTime,returnTime FROM history WHERE customerID = '" + id + eSql1;
         String[] titles = {"书名", "作者", "借阅时间", "归还时间"};
-        for (int i = 0; i < titles.length; i++) {
+        for (String title : titles) {
             TableColumn column = new TableColumn(table, SWT.NONE);
-            column.setText(titles[i]);
+            column.setText(title);
         }
         Statement st = null;
         ResultSet rs = null;

@@ -12,25 +12,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CustomerClient {
-    String id;
-    Table table1;
-    Table table2;
-    String sql1;
-    Connection connection = Main.connection;
+class CustomerClient {
+    private String id;
+    private Connection connection = Main.connection;
+    private TableCreator returnTableCreator;
+    private TableCreator borrowTableCreator;
 
-    public CustomerClient(String id) {
+    CustomerClient(String id) {
         this.id = id;
         this.go();
     }
 
-    void reload() {
-        Widget.reloadBookTable(table1, sql1, connection);
-        reloadReturnTable(table2);
-        table1.getParent().layout();
+    private void reload(Composite c) {
+        returnTableCreator.reload();
+        borrowTableCreator.reload();
+        c.layout();
     }
 
-    void go() {
+    private void go() {
         Display display = Main.display;
         Shell shell = new Shell(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
         GridLayout gridLayout = new GridLayout();
@@ -112,12 +111,38 @@ public class CustomerClient {
         // 借书
         Label label = new Label(view, SWT.NONE);
         label.setText("借书：");
-        sql1 = "SELECT id,name,author FROM book" +
-                " WHERE id NOT IN" +
-                "(SELECT bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL)";
-        table1 = Widget.createBookTable(view, sql1, connection, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
+
+        borrowTableCreator = new TableCreator() {
+            @Override
+            void reload() {
+                String sql = "SELECT id,name,author FROM book" +
+                        " WHERE id NOT IN" +
+                        "(SELECT bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL)";
+                TableItem[] items = table.getItems();
+                for (TableItem item :
+                        items) {
+                    item.dispose();
+                }
+                try {
+                    Statement st = connection.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while (rs.next()) {
+                        TableItem item = new TableItem(table, SWT.NONE);
+                        item.setText(0, rs.getString("id"));
+                        item.setText(1, rs.getString("name"));
+                        item.setText(2, rs.getString("author"));
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        String[] borrowTableTitle = {"id", "书名", "作者"};
+        Table borrowTable = borrowTableCreator.init(view, borrowTableTitle);
         Widget.createBtn(view, "提交", new GridData(SWT.CENTER, SWT.CENTER, true, false), event -> {
-            TableItem[] items = table1.getItems();
+            TableItem[] items = borrowTable.getItems();
             for (TableItem item : items) {
                 if (item.getChecked()) {
                     String bookID = item.getText(0);
@@ -138,16 +163,73 @@ public class CustomerClient {
                 }
             }
             if (items.length > 0) {
-                reload();
+                reload(borrowTable.getParent());
             }
         });
 
         // 还书
         label = new Label(view, SWT.NONE);
         label.setText("还书：");
-        table2 = createReturnTable(view);
+        String[] returnTableTitles = {"流水号", "书名", "作者"};
+        returnTableCreator = new TableCreator() {
+            @Override
+            void reload() {
+                TableItem[] items = table.getItems();
+                for (TableItem item :
+                        items) {
+                    item.dispose();
+                }
+
+                String sql = "SELECT id,bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL";
+                Statement st = null;
+                ResultSet rs = null;
+                try {
+                    st = connection.createStatement();
+                    rs = st.executeQuery(sql);
+                    while (rs.next()) {
+                        TableItem item = new TableItem(table, SWT.NONE);
+                        item.setText(0, rs.getString("id"));
+                        String sql2 = "SELECT name,author FROM book " +
+                                "WHERE id = '" + rs.getString("bookID") + "'";
+
+                        // 显示书名和作者
+                        Statement st2 = null;
+                        ResultSet rs2 = null;
+                        try {
+                            st2 = connection.createStatement();
+                            rs2 = st2.executeQuery(sql2);
+
+                            if (rs2.next()) {
+                                String author = rs2.getString("author");
+                                if (author == null) author = "";
+                                item.setText(1, rs2.getString("name"));
+                                item.setText(2, author);
+                            }
+
+                        } catch (SQLException se) {
+                            se.printStackTrace();
+                        } finally {
+                            try {
+                                rs2.close();
+                                st2.close();
+                            } catch (SQLException se) {
+                            }
+                        }
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                } finally {
+                    try {
+                        rs.close();
+                        st.close();
+                    } catch (SQLException se) {
+                    }
+                }
+            }
+        };
+        Table returnTable = returnTableCreator.init(view, returnTableTitles);
         Widget.createBtn(view, "提交", new GridData(SWT.CENTER, SWT.CENTER, true, false), event -> {
-            TableItem[] items = table2.getItems();
+            TableItem[] items = returnTable.getItems();
             for (TableItem item : items) {
                 if (item.getChecked()) {
                     String businessID = item.getText(0);
@@ -167,7 +249,7 @@ public class CustomerClient {
                 }
             }
             if (items.length > 0) {
-                reload();
+                reload(borrowTable.getParent());
             }
         });
 
@@ -177,80 +259,6 @@ public class CustomerClient {
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
-        }
-    }
-
-    public Table createReturnTable(Composite c) {
-        final Table table = new Table(c, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
-        GridData tableGridData = new GridData(SWT.LEFT, SWT.FILL, true, true);
-        tableGridData.heightHint = 200;
-        table.setLayoutData(tableGridData);
-        String[] titles = {"流水号", "书名", "作者"};
-        for (int i = 0; i < titles.length; i++) {
-            TableColumn column = new TableColumn(table, SWT.NONE);
-            column.setText(titles[i]);
-        }
-        reloadReturnTable(table);
-        table.getColumn(0).setWidth(60);
-        table.getColumn(1).setWidth(250);
-        table.getColumn(2).setWidth(250);
-        table.pack();
-        return table;
-    }
-
-    public void reloadReturnTable(Table table) {
-        TableItem[] items = table.getItems();
-        for (TableItem item :
-                items) {
-            item.dispose();
-        }
-
-        String sql = "SELECT id,bookID FROM history WHERE customerID = '" + id + "' AND returnTime IS NULL";
-        Statement st = null;
-        ResultSet rs = null;
-        try {
-            st = connection.createStatement();
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(0, rs.getString("id"));
-                String sql2 = "SELECT name,author FROM book " +
-                        "WHERE id = '" + rs.getString("bookID") + "'";
-
-                // 显示书名和作者
-                Statement st2 = null;
-                ResultSet rs2 = null;
-                try {
-                    st2 = connection.createStatement();
-                    rs2 = st2.executeQuery(sql2);
-
-                    if (rs2.next()) {
-                        String author = rs2.getString("author");
-                        if (author == null) author = "";
-                        item.setText(1, rs2.getString("name"));
-                        item.setText(2, author);
-                    }
-
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                } finally {
-                    try {
-                        rs2.close();
-                        st2.close();
-                    } catch (SQLException se) {
-                    }
-                }
-            }
-        } catch (SQLException se) {
-            se.printStackTrace();
-        } finally {
-            try {
-                rs.close();
-                st.close();
-            } catch (SQLException se) {
-            }
         }
     }
 }

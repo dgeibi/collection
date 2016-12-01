@@ -8,21 +8,21 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-public class Alert extends Dialog {
+class Alert extends Dialog {
 
     final static int ERROR = 0;
     final static int NOTICE = 1;
-    String message;
-    int option;
+    private String message;
+    private int option;
 
-    public Alert(Shell parentShell, String message, int option) {
+    Alert(Shell parentShell, String message, int option) {
         super(parentShell);
         this.message = message;
         this.option = option;
         this.go();
     }
 
-    void go() {
+    private void go() {
         Shell parent = getParent();
         Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         shell.setLayout(new GridLayout());

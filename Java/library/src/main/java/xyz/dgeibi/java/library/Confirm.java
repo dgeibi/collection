@@ -8,16 +8,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-public class Confirm extends Dialog {
-    boolean result = false;
-    String message;
+class Confirm extends Dialog {
+    private boolean result = false;
+    private String message;
 
-    public Confirm(Shell parent, String message) {
+    Confirm(Shell parent, String message) {
         super(parent);
         this.message = message;
     }
 
-    public boolean go() {
+    boolean go() {
         Shell parent = getParent();
         final Shell dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setText(message);
