@@ -24,6 +24,6 @@ beautify: uncrustify.cfg
 	find . -type f -name '*.h' -exec uncrustify -c $< --no-backup "{}" \;
 
 clean :
-	rm $(objects) *.out
+	rm -f *.o *.out
 
 .PHONY : clean beautify
