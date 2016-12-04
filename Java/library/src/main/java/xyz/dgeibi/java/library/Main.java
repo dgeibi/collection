@@ -1,5 +1,6 @@
 package xyz.dgeibi.java.library;
 
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 public class Main {
     static Connection connection = DBConnection();
     static Display display = new Display();
+    static Rectangle screenSize = display.getPrimaryMonitor().getBounds();
 
     public static void main(String[] args) {
         new Login();

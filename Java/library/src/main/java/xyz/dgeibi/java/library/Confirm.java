@@ -1,6 +1,8 @@
 package xyz.dgeibi.java.library;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Dialog;
@@ -39,6 +41,13 @@ class Confirm extends Dialog {
         });
 
         dialog.pack();
+
+        Rectangle parentSize = getParent().getBounds();
+        Rectangle shellSize = dialog.getBounds();
+        int locationX = (parentSize.width - shellSize.width) / 2 + parentSize.x;
+        int locationY = (parentSize.height - shellSize.height) / 2 + parentSize.y;
+        dialog.setLocation(new Point(locationX, locationY));
+
         dialog.open();
 
         Display display = parent.getDisplay();

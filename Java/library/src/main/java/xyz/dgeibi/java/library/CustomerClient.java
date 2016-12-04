@@ -256,6 +256,7 @@ class CustomerClient {
         view.pack();
         top.pack();
         shell.pack();
+        shell.setLocation((Main.screenSize.width - shell.getBounds().width) / 2, (Main.screenSize.height - shell.getBounds().height) / 2);
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
