@@ -300,30 +300,34 @@ class AdminClient {
                 ResultSet rs = null;
                 String name = tx1.getText();
                 String author = tx2.getText();
-                try {
-                    st = connection.createStatement();
-                    rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
-                            "' AND author = '" + author + "'");
-                    if (rs.next()) {
-                        new Alert(shell, "您添加的图书已存在！", Alert.ERROR);
-                    } else {
+                if (!name.equals("")) {
+                    try {
                         st = connection.createStatement();
-                        if (st.executeUpdate("INSERT INTO book (name, author, publishTime) " +
-                                " VALUES ('" + name + "','" + author + "', NOW())") == 1) {
-                            new Alert(shell, "提交成功！", Alert.NOTICE);
-                            reload(table.getParent());
-                            tx1.setText("");
-                            tx2.setText("");
+                        rs = st.executeQuery("SELECT id FROM book WHERE name = '" + name +
+                                "' AND author = '" + author + "'");
+                        if (rs.next()) {
+                            new Alert(shell, "您添加的图书已存在！", Alert.ERROR);
+                        } else {
+                            st = connection.createStatement();
+                            if (st.executeUpdate("INSERT INTO book (name, author, publishTime) " +
+                                    " VALUES ('" + name + "','" + author + "', NOW())") == 1) {
+                                new Alert(shell, "提交成功！", Alert.NOTICE);
+                                reload(table.getParent());
+                                tx1.setText("");
+                                tx2.setText("");
+                            }
+                        }
+                    } catch (SQLException se) {
+                        se.printStackTrace();
+                    } finally {
+                        try {
+                            rs.close();
+                            st.close();
+                        } catch (SQLException se) {
                         }
                     }
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                } finally {
-                    try {
-                        rs.close();
-                        st.close();
-                    } catch (SQLException se) {
-                    }
+                } else {
+                    new Alert(shell, "书名不能为空！", Alert.ERROR);
                 }
             }
         });
