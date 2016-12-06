@@ -5,52 +5,52 @@
 - MariaDB (MySQL)
 - SWT
 
-## MariaDB
+## MariaDB/MySQL
 
 ```sql
-create database keshe;
-
 CREATE USER 'dgeibi'@'localhost' IDENTIFIED BY '123456';
+CREATE DATABASE keshe CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 GRANT ALL ON keshe.* TO 'dgeibi'@'localhost';
 FLUSH PRIVILEGES;
 
 use keshe;
 
-CREATE TABLE admin
+CREATE TABLE admin                  -- 管理员
 (
-    id INT(10) unsigned NOT NULL,
-    password VARCHAR(120) NOT NULL,
-    registerTime DATETIME NOT NULL,
-    username VARCHAR(120),
-    PRIMARY KEY (id)
+    id INT(10) unsigned NOT NULL,   -- 账号
+    password VARCHAR(120) NOT NULL, -- 密码
+    registerTime DATETIME NOT NULL, -- 注册时间
+    username VARCHAR(120),          -- 用户名
+    PRIMARY KEY (id)                -- 账号不可重复
 );
 
-CREATE TABLE customer
+CREATE TABLE customer               -- 消费者
 (
-    id INT(10) unsigned NOT NULL,
-    password VARCHAR(120) NOT NULL,
-    registerTime DATETIME NOT NULL,
-    username VARCHAR(120),
-    PRIMARY KEY (id)
+    id INT(10) unsigned NOT NULL,   -- 账号
+    password VARCHAR(120) NOT NULL, -- 密码
+    registerTime DATETIME NOT NULL, -- 注册时间
+    username VARCHAR(120),          -- 用户名
+    PRIMARY KEY (id)                -- 账号不可重复
 );
 
-CREATE TABLE book
+CREATE TABLE book                               -- 书
 (
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name   VARCHAR(50) NOT NULL,
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 编号，自动递增
+    name   VARCHAR(50) NOT NULL,                -- 书名，不为NULL
     author VARCHAR(50),
-    publishTime DATETIME
+    publishTime DATETIME                        -- 添加的时间
 );
 
-CREATE TABLE history
+CREATE TABLE history                            -- 业务历史记录
 (
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    bookID INT(10) unsigned NOT NULL,
-    customerID INT(10) unsigned NOT NULL,
-    businessTime DATETIME,
-    returnTime DATETIME
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 编号，自动递增
+    bookID INT(10) unsigned NOT NULL,           -- 图书编号
+    customerID INT(10) unsigned NOT NULL,       -- 消费者编号
+    businessTime DATETIME,                      -- 借书时间
+    returnTime DATETIME                         -- 归还时间(如果为空表示未归还)
 );
 
+-- 图书数据
 INSERT INTO book (name,author, publishTime) VALUES ('黑客与画家', 'Paul',NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('Head First Java','Sierra & Bates', NOW());
 INSERT INTO book (name, author, publishTime) VALUES ('The Little Prince','‎Antoine de Saint-Exupéry', NOW());
