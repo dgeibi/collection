@@ -5,8 +5,7 @@
 #define FALSE 0
 #define OK 0
 #define ERROR 1
-#define IBFEASIBLE -1
-#define OVERFLOW 3
+#define _OVERFLOW_ 3
 #define MAXLEN 20
 #define MAXSIZE 20
 

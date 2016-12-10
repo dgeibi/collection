@@ -55,7 +55,7 @@ void EnQueue_LQ(LQueue& Q, QElemType e) {
   QueuePtr p = (QueuePtr)malloc(sizeof(LQNode));
 
   if (!p) /* ´æ´¢·ÖÅäÊ§°Ü */
-    exit(OVERFLOW);
+    exit(_OVERFLOW_);
   p->data = e;
   p->next = NULL;
 

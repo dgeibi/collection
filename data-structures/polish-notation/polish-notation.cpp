@@ -82,7 +82,7 @@ Expression Copy(Expression E) {
     p = (Expression)malloc(sizeof(ExprNode));
 
     if (p == NULL) {
-      exit(OVERFLOW);
+      exit(_OVERFLOW_);
     }
     p->type   = E->type;
     p->data   = E->data;
@@ -191,7 +191,7 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
       E = (ExprNode *)malloc(sizeof(ExprNode));
 
       if (E == NULL) {
-        exit(OVERFLOW);
+        exit(_OVERFLOW_);
       }
       E->data   = data;
       E->type   = type;
@@ -432,7 +432,7 @@ Expression CompoundExpr(char P, Expression E1, Expression E2) {
     E = (Expression)malloc(sizeof(ExprNode));
 
     if (E == NULL) {
-      exit(OVERFLOW);
+      exit(_OVERFLOW_);
     }
     E->type   = OPERATOR;
     E->value  = 0;
