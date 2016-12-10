@@ -49,16 +49,22 @@ Status CreateGraph(ALGraph   & G,
 Status DestoryGraph(ALGraph& G);   // 销毁图G
 
 int    LocateVex(ALGraph G,
-                 VexType v);       // 查找顶点v在图G的索引
+                 VexType v);
+
+// 查找顶点v在图G的索引
 
 Status GetVex(ALGraph  G,
               int      k,
-              VexType& v); // 取图G中索引为k的顶点的值到 v
+              VexType& v);
+
+// 取图G中索引为k的顶点的值到 v
 
 Status SetVex(ALGraph G,
               int     k,
-              VexType v); // 给图G中索引为k的顶点赋值 v，若图G已经存在值为 v
-                          // 的结点则不赋值
+              VexType v);
+
+// 给图G中索引为k的顶点赋值 v
+// 若图G已经存在值为 v 的结点则不赋值
 
 int FirstAdjVex(ALGraph      G,
                 int          k,

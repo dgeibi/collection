@@ -15,11 +15,8 @@ Status CreateGraph(ALGraph   & G,
   G.vexs = NULL;
   G.tags = NULL;
 
-  if (n <= 0) {
-    return ERROR;
-  }
-
-  if (MAX_SIZE_ARCS < e) {
+  if ((n <= 0) || (MAX_SIZE_ARCS < e)) {
+    // 顶点数为空，边数超过最大值
     return ERROR;
   }
 
@@ -35,6 +32,7 @@ Status CreateGraph(ALGraph   & G,
 
   for (i = 0; i < e; i++)
   {
+    // 逐条添加
     if (ERROR == AddArc(G, arcs[i].v, arcs[i].w, arcs[i].info)) return ERROR;
   }
   return OK;
@@ -45,15 +43,15 @@ int inDegree(ALGraph G, VexType v) {
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n)) {
-    return -1;
+    return -1; // k顶点不存在
   }
 
   int i, sum = 0;
   AdjVexNodeP p;
 
   for (i = 0; i < G.n; i++)
-  {
-    if (i == k) continue;
+  {                        // 逐个检查
+    if (i == k) continue;  // 跳过自身
     p = G.vexs[i].firstArc;
 
     while (p)
@@ -70,7 +68,7 @@ int outDegree(ALGraph G, VexType v) {
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n)) {
-    return -1;
+    return -1; // k顶点不存在
   }
   int i         = 0;
   AdjVexNode *p = G.vexs[k].firstArc;
@@ -100,7 +98,6 @@ Status ExistIn(ALGraph G, int m, int k) {
 
 int LocateVex(ALGraph G, VexType v) {
   // 查找顶点v在图G的索引
-
   for (int i = 0; i < G.n; i++) {
     if (G.vexs[i].data == v) {
       return i;
@@ -137,13 +134,14 @@ int NextAdjVex(ALGraph G, int k, AdjVexNodeP& p) {
 
   while (t) {
     if (t == p) {
+      // p 所指结点在索引为 k 的顶点的邻接链表中
       p = p->next;
 
       if (p != NULL) {
-        return p->adjvex;
+        return p->adjvex; // 找到了
       }
       else {
-        return -1; // 索引为k的顶点无邻接顶点
+        return -1;        // 结点已经取完了
       }
     }
     t = t->next;
@@ -249,6 +247,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
   if ((k < 0) || (m < 0) || (k >= G.n) || (m >= G.n)) return ERROR;
 
   if (ExistIn(G, m, k)) {
+    // v 与 w 邻接
     p = G.vexs[k].firstArc;
 
     if (p->adjvex == m) {
@@ -256,7 +255,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
       free(p);
     }
     else {
-      while (p) {
+      while (p) { // 寻找待删结点
         if (p->next->adjvex == m) {
           t = p->next;
           break;
@@ -298,6 +297,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
     }
   }
   else {
+    // v 不与 w 邻接
     return ERROR;
   }
   return OK;
@@ -309,9 +309,10 @@ Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
   AdjVexNodeP p;
   LQueue Q; InitQueue_LQ(Q);
 
-  for (i = 0; i < G.n; i++) {
-    G.tags[i] = UNVISITED;
-  }
+  for (i = 0; i < G.n; i++) G.tags[i] = UNVISITED;
+
+  // 初始化标志数组
+
 
   for (i = 0; i < G.n; i++)
     if (UNVISITED == G.tags[i]) {
@@ -320,8 +321,9 @@ Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
       G.tags[i] = VISITED;
       EnQueue_LQ(Q, i);
 
-      while (OK == DeQueue_LQ(Q, k)) {
+      while (OK == DeQueue_LQ(Q, k)) { // 出队元素到 k
         for (j = FirstAdjVex(G, k, p); j >= 0; j = NextAdjVex(G, k, p))
+          // 依次判断k顶点的所有邻接顶点j，若未访问，则访问，并入队
           if (UNVISITED == G.tags[j]) {
             if (ERROR == visit(G.vexs[j].data)) return ERROR;
 
@@ -334,13 +336,12 @@ Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
 }
 
 Status DFS(ALGraph G, int v, Status (*visit)(VexType)) {
-  // 图的顶点的搜索指针
   AdjVexNodeP p;
 
   // 置已访问标记
   G.tags[v] = VISITED;
 
-  // 输出被访问顶点的编号
+  // 访问顶点
   if (ERROR == visit(G.vexs[v].data)) return ERROR;
 
   // p指向顶点v的第一条弧的弧头结点
@@ -370,6 +371,7 @@ Status DFSTraverse(ALGraph G, Status (*visit)(VexType)) {
   }
 
   for (i = 0; i < G.n; i++) {
+    // 依次判断i顶点，若未访问过，则递归访问它
     if (UNVISITED == G.tags[i]) {
       if (DFS(G, i, visit) == ERROR) return ERROR;
     }

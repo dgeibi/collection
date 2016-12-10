@@ -1,13 +1,15 @@
 #include "graph.h"
 
-int tests_run = 0;
+int tests_run = 0; // 记录测试次数
 
 Status vi(VexType i) {
+  // 访问使用的函数
   printf("%c  ", i);
   return OK;
 }
 
 static char const* testinit() {
+  // 测试 CreateGraph 和 DestoryGraph
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -34,6 +36,7 @@ static char const* testinit() {
 }
 
 static char const* testTraverse() {
+  // 测试 DFSTraverse 和 BFSTraverse
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -43,6 +46,7 @@ static char const* testTraverse() {
   arcs[3] = { 'b', 'c', 1 };
 
   CreateGraph(G, DG, "abcde", 5, arcs, 4);
+  g_print(G);
   printf("DFS: ");
   mu_assert("DFSTraverse", DFSTraverse(G, vi) == OK);
   printf("\nBFS: ");
@@ -53,6 +57,7 @@ static char const* testTraverse() {
 }
 
 static char const* testAdd() {
+  // 测试 AddArc
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -74,6 +79,7 @@ static char const* testAdd() {
 }
 
 static char const* testRemove() {
+  // 测试 RemoveArc
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -98,6 +104,7 @@ static char const* testRemove() {
 }
 
 static char const* testDegree() {
+  //  测试 inDegree 和 outDegree
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -122,6 +129,7 @@ static char const* testDegree() {
 }
 
 static char const* testVex() {
+  // 测试 SetVex 和 GetVex
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
   VexType ch;
@@ -143,6 +151,7 @@ static char const* testVex() {
 }
 
 static char const* run() {
+  // 执行所有测试
   mu_run_test(testinit);
   mu_run_test(testTraverse);
   mu_run_test(testAdd);
