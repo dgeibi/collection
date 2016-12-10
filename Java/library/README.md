@@ -63,6 +63,17 @@ INSERT INTO book (name, author, publishTime) VALUES ('苏菲的世界','乔斯�
 INSERT INTO book (name, author, publishTime) VALUES ('算法导论','Thomas H.Cormen...', NOW());
 ```
 
+- Main.java：包含main方法，建立连接
+- Login.java：登录窗口
+- CustomerClient.java：客户端
+- AdminClient.java：管理员端
+- Profile.java：个人信息修改窗口
+- History.java：借阅记录窗口
+- Alert.java：错误/操作提示窗口
+- Confirm.java：确认窗口
+- TableCreator.java：辅助创建表格
+- Widget.java：包含自定义组件操作的静态方法
+
 ## Thanks:
 
 [SWT Snippets](http://www.eclipse.org/swt/snippets/)
