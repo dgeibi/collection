@@ -26,14 +26,19 @@ bool   IsEmpty_LQ(LQueue Q);               /* 若Q为空队列，则返回 true，否则返回
 int    QueueLength_LQ(LQueue Q);           /* 求队列的长度 */
 
 Status GetHead_LQ(LQueue     Q,
-                  QElemType& e);           /* 若队列不空，则用e返回Q的队头元素，并返回OK，否则返回ERROR*/
+                  QElemType& e);           /*
+                                              若队列不空，则用e返回Q的队头元素，并返回OK，否则返回ERROR*/
 
 void   EnQueue_LQ(LQueue  & Q,
                   QElemType e);            /* 插入元素e为Q的新的队尾元素 */
 
 Status DeQueue_LQ(LQueue   & Q,
-                  QElemType& e);           /* 若队列不空，删除Q的队头元素，用e返回其值，并返回OK，否则返回ERROR */
+                  QElemType& e);           /*
+                                              若队列不空，删除Q的队头元素，用e返回其值，并返回OK，否则返回ERROR
+                                            */
 
 void   Traverse_LQ(LQueue Q,
-                   void (*vi)(QElemType)); /* 从队头到队尾依次对队列Q中每个元素调用函数vi() */
+                   void (*vi)(QElemType)); /*
+                                              从队头到队尾依次对队列Q中每个元素调用函数vi()
+                                            */
 #endif /* ifndef QUEUE_H */

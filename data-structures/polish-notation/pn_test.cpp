@@ -58,7 +58,8 @@ static char const* testcompound() {
 
   mu_assert("compound", NULL != E);
   printf("\n%s\n", "CompoundExpr:");
-  WriteEx(t1); printf(" %s ", "乘以"); WriteEx(t2); printf(" %s ", "等于");
+  WriteEx(t1); printf(" %s ", "multiplied by"); WriteEx(t2); printf(" %s ",
+                                                                    "equals");
   WriteExpr(E);
   DestroyExpression(t1);
   DestroyExpression(t2);
@@ -124,8 +125,8 @@ static char const* testdiff() {
     E  = ReadExpr(str[i]);
     dE = Diff(E, 'x');
     MergeConst(dE);
-    printf("%s", "原函数："); WriteExpr(E);
-    printf("%s", "对x的偏导数："); WriteExpr(dE);
+    printf("%s", "primitive: "); WriteExpr(E);
+    printf("%s", "diff(x): "); WriteExpr(dE);
     putchar('\n');
   }
   return OK;
@@ -137,33 +138,40 @@ static char const* testcalculator() {
   int   value;
   Expression E;
 
-  printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
+  printf("\n%s\n",
+         "Please enter polish notation (press enter key directly to exit): ");
 
-  while (fgets(buffer, 100, stdin) != NULL) {
+  while (fgets(buffer, 100, stdin)) {
     buffer[strcspn(buffer, "\r\n")] = 0; // 将第一个 \r 或者 \n 替换为 \0
 
+    if (buffer[0] == 0) {
+      break;
+    }
     E = ReadExpr(buffer);
 
     if (E) {
-      printf("%s\n", "请输入需要赋值的变量(按 Ctrl + D 取消)：");
+      printf("%s\n",
+             "Enter variable to assign (press enter key directly to exit): ");
 
-      while ((ch = fgetc(stdin)) != EOF) {
+      while ((ch = fgetc(stdin)) != EOF && ch != '\n') {
         CLEAN_INPUT;
-        printf("%s%c%s\n", "请输入要赋给变量", ch, "的值：");
+        printf("Enter the value to be assigned to %c:\n", ch);
 
         while (scanf("%d", &value) != 1) {
           CLEAN_INPUT;
-          printf("%s%c%s\n", "请再次输入要赋给变量", ch, "的值：");
+          printf("Enter the value to be assigned to %c again:\n", ch);
         }
         CLEAN_INPUT;
         Assign(E, ch, value);
-        printf("%s\n", "请再次输入需要赋值的变量(按 Ctrl + D 取消)：");
+        printf("%s\n",
+               "Enter variable to assign (press enter key directly to exit): ");
       }
-      printf("\n%s\n", "结果：");
+      printf("%s\n", "Result: ");
       WriteEx(E);
       printf("=%d\n", Value(E));
     }
-    printf("\n%s\n", "请输入前缀表达式(按 Ctrl + D 取消)：");
+    printf("\n%s\n",
+           "Please enter polish notation (press enter key directly to exit): ");
   }
   return OK;
 }

@@ -335,7 +335,7 @@ Expression ReadExpr(char const *str) {
 
   if (BAD || !IsReasonable(E)) {
     DestroyExpression(E);
-    printf("%s\n", "不合理的表达式！");
+    printf("%s\n", "illegal expression");
     return NULL;
   }
   return E;

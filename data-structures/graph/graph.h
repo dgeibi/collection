@@ -57,7 +57,8 @@ Status GetVex(ALGraph  G,
 
 Status SetVex(ALGraph G,
               int     k,
-              VexType v); // 给图G中索引为k的顶点赋值 v，若图G已经存在值为 v 的结点则不赋值
+              VexType v); // 给图G中索引为k的顶点赋值 v，若图G已经存在值为 v
+                          // 的结点则不赋值
 
 int FirstAdjVex(ALGraph      G,
                 int          k,
@@ -91,11 +92,13 @@ Status ExistIn(ALGraph G,
                int     k);                    // 检查顶点k的邻接链表中是否存在
                                               // m顶点对应的结点
 
-int    outDegree(ALGraph G,
-                 VexType v);                  // 求有向图G中值为 v 的顶点的出度。若k顶点不存在，则返回-1
+int outDegree(ALGraph G,
+              VexType v);                     // 求有向图G中值为 v
+                                              // 的顶点的出度。若k顶点不存在，则返回-1
 
-int    inDegree(ALGraph G,
-                VexType v);                   // 求有向图G中值为 v 的顶点的入度。若k顶点不存在，则返回-1
+int inDegree(ALGraph G,
+             VexType v);                      // 求有向图G中值为 v
+                                              // 的顶点的入度。若k顶点不存在，则返回-1
 
 Status DFSTraverse(ALGraph  G,
                    Status (*visit)(VexType)); // 深度优先遍历图 G
