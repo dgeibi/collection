@@ -14,10 +14,10 @@
 
     "editor.wrappingColumn": 0,
 
-    "externalTerminal.linuxExec": "xfce4-terminal",
-
     "editor.tabCompletion": true,
 
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+
+    "files.encoding": "gbk"
 
 }

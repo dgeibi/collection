@@ -58,7 +58,7 @@ static char const* testcompound() {
 
   mu_assert("compound", NULL != E);
   printf("\n%s\n", "CompoundExpr:");
-  WriteEx(t1); printf(" %s ", "ä¹˜ä»¥"); WriteEx(t2); printf(" %s ", "ç­‰äº");
+  WriteEx(t1); printf(" %s ", "³ËÒÔ"); WriteEx(t2); printf(" %s ", "µÈÓÚ");
   WriteExpr(E);
   DestroyExpression(t1);
   DestroyExpression(t2);
@@ -124,8 +124,8 @@ static char const* testdiff() {
     E  = ReadExpr(str[i]);
     dE = Diff(E, 'x');
     MergeConst(dE);
-    printf("%s", "åŸå‡½æ•°ï¼š"); WriteExpr(E);
-    printf("%s", "å¯¹xçš„åå¯¼æ•°ï¼š"); WriteExpr(dE);
+    printf("%s", "Ô­º¯Êı£º"); WriteExpr(E);
+    printf("%s", "¶ÔxµÄÆ«µ¼Êı£º"); WriteExpr(dE);
     putchar('\n');
   }
   return OK;
@@ -137,33 +137,33 @@ static char const* testcalculator() {
   int   value;
   Expression E;
 
-  printf("\n%s\n", "è¯·è¾“å…¥å‰ç¼€è¡¨è¾¾å¼(æŒ‰ Ctrl + D å–æ¶ˆ)ï¼š");
+  printf("\n%s\n", "ÇëÊäÈëÇ°×º±í´ïÊ½(°´ Ctrl + D È¡Ïû)£º");
 
   while (fgets(buffer, 100, stdin) != NULL) {
-    buffer[strcspn(buffer, "\r\n")] = 0; // å°†ç¬¬ä¸€ä¸ª \r æˆ–è€… \n æ›¿æ¢ä¸º \0
+    buffer[strcspn(buffer, "\r\n")] = 0; // ½«µÚÒ»¸ö \r »òÕß \n Ìæ»»Îª \0
 
     E = ReadExpr(buffer);
 
     if (E) {
-      printf("%s\n", "è¯·è¾“å…¥éœ€è¦èµ‹å€¼çš„å˜é‡(æŒ‰ Ctrl + D å–æ¶ˆ)ï¼š");
+      printf("%s\n", "ÇëÊäÈëĞèÒª¸³ÖµµÄ±äÁ¿(°´ Ctrl + D È¡Ïû)£º");
 
       while ((ch = fgetc(stdin)) != EOF) {
         CLEAN_INPUT;
-        printf("%s%c%s\n", "è¯·è¾“å…¥è¦èµ‹ç»™å˜é‡", ch, "çš„å€¼ï¼š");
+        printf("%s%c%s\n", "ÇëÊäÈëÒª¸³¸ø±äÁ¿", ch, "µÄÖµ£º");
 
         while (scanf("%d", &value) != 1) {
           CLEAN_INPUT;
-          printf("%s%c%s\n", "è¯·å†æ¬¡è¾“å…¥è¦èµ‹ç»™å˜é‡", ch, "çš„å€¼ï¼š");
+          printf("%s%c%s\n", "ÇëÔÙ´ÎÊäÈëÒª¸³¸ø±äÁ¿", ch, "µÄÖµ£º");
         }
         CLEAN_INPUT;
         Assign(E, ch, value);
-        printf("%s\n", "è¯·å†æ¬¡è¾“å…¥éœ€è¦èµ‹å€¼çš„å˜é‡(æŒ‰ Ctrl + D å–æ¶ˆ)ï¼š");
+        printf("%s\n", "ÇëÔÙ´ÎÊäÈëĞèÒª¸³ÖµµÄ±äÁ¿(°´ Ctrl + D È¡Ïû)£º");
       }
-      printf("\n%s\n", "ç»“æœï¼š");
+      printf("\n%s\n", "½á¹û£º");
       WriteEx(E);
       printf("=%d\n", Value(E));
     }
-    printf("\n%s\n", "è¯·è¾“å…¥å‰ç¼€è¡¨è¾¾å¼(æŒ‰ Ctrl + D å–æ¶ˆ)ï¼š");
+    printf("\n%s\n", "ÇëÊäÈëÇ°×º±í´ïÊ½(°´ Ctrl + D È¡Ïû)£º");
   }
   return OK;
 }

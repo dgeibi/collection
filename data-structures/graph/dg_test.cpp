@@ -43,9 +43,9 @@ static char const* testTraverse() {
   arcs[3] = { 'b', 'c', 1 };
 
   CreateGraph(G, DG, "abcde", 5, arcs, 4);
-  printf("æ·±åº¦ä¼˜å…ˆï¼š");
+  printf("Éî¶ÈÓÅÏÈ£º");
   mu_assert("DFSTraverse", DFSTraverse(G, vi) == OK);
-  printf("\nå¹¿åº¦ä¼˜å…ˆï¼š");
+  printf("\n¹ã¶ÈÓÅÏÈ£º");
   mu_assert("BFSTraverse", BFSTraverse(G, vi) == OK);
   putchar('\n');
   putchar('\n');
@@ -65,10 +65,10 @@ static char const* testAdd() {
 
   CreateGraph(G, DG, "abcde", 5, arcs, 6);
   mu_assert("add: repeat", AddArc(G, 'b', 'c', 1) == ERROR && G.e == 6);
-  printf("\nåŠ è¾¹å‰ï¼š\n");
+  printf("\n¼Ó±ßÇ°£º\n");
   g_print(G);
   mu_assert("add: normal", AddArc(G, 'a', 'c', 1) == OK && G.e == 7);
-  printf("\nåŠ è¾¹åï¼š\n");
+  printf("\n¼Ó±ßºó£º\n");
   g_print(G);
   return OK;
 }
@@ -89,10 +89,10 @@ static char const* testRemove() {
 
   CreateGraph(G, DG, "abcdefg", 7, arcs, 9);
   mu_assert("remove: not exist", RemoveArc(G, 'g', 'c') == ERROR && G.e == 9);
-  printf("\nåˆ è¾¹å‰ï¼š\n");
+  printf("\nÉ¾±ßÇ°£º\n");
   g_print(G);
   mu_assert("remove: normal", RemoveArc(G, 'a', 'b') == OK && G.e == 8);
-  printf("\nåˆ è¾¹åï¼š\n");
+  printf("\nÉ¾±ßºó£º\n");
   g_print(G);
   return OK;
 }

@@ -14,95 +14,95 @@ typedef char VexType;
 
 typedef enum {
   DG, DN, UDG, UDN
-} GraphKind;                   // æœ‰å‘å›¾,æœ‰å‘ç½‘,æ— å‘å›¾,æ— å‘ç½‘
+} GraphKind;                   // ÓĞÏòÍ¼,ÓĞÏòÍø,ÎŞÏòÍ¼,ÎŞÏòÍø
 
 typedef struct AdjVexNode {
-  int                adjvex;   // é‚»æ¥é¡¶ç‚¹åœ¨é¡¶ç‚¹æ•°ç»„ä¸­çš„ä½åº
-  struct AdjVexNode *next;     // æŒ‡å‘ä¸‹ä¸€ä¸ªé‚»æ¥é¡¶ç‚¹
-  int                info;     // å­˜å‚¨è¾¹ï¼ˆå¼§ï¼‰ç›¸å…³ä¿¡æ¯ï¼Œæƒå€¼ï¼Œå¯¹äºéå¸¦æƒå›¾å¯ä¸ç”¨
-} AdjVexNode, *AdjVexNodeP;    // é‚»æ¥é“¾è¡¨çš„ç»“ç‚¹ç±»å‹
+  int                adjvex;   // ÁÚ½Ó¶¥µãÔÚ¶¥µãÊı×éÖĞµÄÎ»Ğò
+  struct AdjVexNode *next;     // Ö¸ÏòÏÂÒ»¸öÁÚ½Ó¶¥µã
+  int                info;     // ´æ´¢±ß£¨»¡£©Ïà¹ØĞÅÏ¢£¬È¨Öµ£¬¶ÔÓÚ·Ç´øÈ¨Í¼¿É²»ÓÃ
+} AdjVexNode, *AdjVexNodeP;    // ÁÚ½ÓÁ´±íµÄ½áµãÀàĞÍ
 
 typedef struct VexNode {
-  VexType            data;     // é¡¶ç‚¹å€¼ï¼ŒVexTypeæ˜¯é¡¶ç‚¹ç±»å‹ï¼Œç”±ç”¨æˆ·å®šä¹‰
-  struct AdjVexNode *firstArc; // é‚»æ¥é“¾è¡¨çš„å¤´æŒ‡é’ˆ
-} VexNode;                     // é¡¶ç‚¹æ•°ç»„çš„å…ƒç´ ç±»å‹
+  VexType            data;     // ¶¥µãÖµ£¬VexTypeÊÇ¶¥µãÀàĞÍ£¬ÓÉÓÃ»§¶¨Òå
+  struct AdjVexNode *firstArc; // ÁÚ½ÓÁ´±íµÄÍ·Ö¸Õë
+} VexNode;                     // ¶¥µãÊı×éµÄÔªËØÀàĞÍ
 
 typedef struct {
-  VexNode  *vexs;              // é¡¶ç‚¹æ•°ç»„ï¼Œç”¨äºå­˜å‚¨é¡¶ç‚¹ä¿¡æ¯
-  int       n, e;              // é¡¶ç‚¹æ•°å’Œè¾¹ï¼ˆå¼§ï¼‰æ•°
-  GraphKind kind;              // å›¾çš„ç±»å‹
-  int      *tags;              // æ ‡å¿—æ•°ç»„
-} ALGraph;                     // é‚»æ¥è¡¨ç±»å‹
+  VexNode  *vexs;              // ¶¥µãÊı×é£¬ÓÃÓÚ´æ´¢¶¥µãĞÅÏ¢
+  int       n, e;              // ¶¥µãÊıºÍ±ß£¨»¡£©Êı
+  GraphKind kind;              // Í¼µÄÀàĞÍ
+  int      *tags;              // ±êÖ¾Êı×é
+} ALGraph;                     // ÁÚ½Ó±íÀàĞÍ
 
 typedef struct {
-  VexType v, w;                // é¡¶ç‚¹å€¼
-  int     info;                // å¯¹å¸¦æƒå›¾ï¼Œä¸ºæƒå€¼
-} ArcInfo;                     // è¾¹ï¼ˆå¼§ï¼‰ä¿¡æ¯
+  VexType v, w;                // ¶¥µãÖµ
+  int     info;                // ¶Ô´øÈ¨Í¼£¬ÎªÈ¨Öµ
+} ArcInfo;                     // ±ß£¨»¡£©ĞÅÏ¢
 
 Status CreateGraph(ALGraph   & G,
                    GraphKind   kind,
                    char const *vexs,
                    int         n,
                    ArcInfo    *arcs,
-                   int         e); // åˆ›å»ºå›¾çš„é‚»æ¥è¡¨
+                   int         e); // ´´½¨Í¼µÄÁÚ½Ó±í
 
-Status DestoryGraph(ALGraph& G);   // é”€æ¯å›¾G
+Status DestoryGraph(ALGraph& G);   // Ïú»ÙÍ¼G
 
 int    LocateVex(ALGraph G,
-                 VexType v);       // æŸ¥æ‰¾é¡¶ç‚¹våœ¨å›¾Gçš„ç´¢å¼•
+                 VexType v);       // ²éÕÒ¶¥µãvÔÚÍ¼GµÄË÷Òı
 
 Status GetVex(ALGraph  G,
               int      k,
-              VexType& v); // å–å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹çš„å€¼åˆ° v
+              VexType& v); // È¡Í¼GÖĞË÷ÒıÎªkµÄ¶¥µãµÄÖµµ½ v
 
 Status SetVex(ALGraph G,
               int     k,
-              VexType v); // ç»™å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹èµ‹å€¼ vï¼Œè‹¥å›¾Gå·²ç»å­˜åœ¨å€¼ä¸º v çš„ç»“ç‚¹åˆ™ä¸èµ‹å€¼
+              VexType v); // ¸øÍ¼GÖĞË÷ÒıÎªkµÄ¶¥µã¸³Öµ v£¬ÈôÍ¼GÒÑ¾­´æÔÚÖµÎª v µÄ½áµãÔò²»¸³Öµ
 
 int FirstAdjVex(ALGraph      G,
                 int          k,
                 AdjVexNodeP& p);
 
-// è‹¥å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨éç©ºï¼Œè¿™ä»¤æŒ‡é’ˆpæŒ‡å‘ç¬¬ä¸€ä¸ªç»“ç‚¹ï¼Œå¹¶è¿”å›å…¶ç´¢å¼•
-// å¦åˆ™ï¼Œä»¤ p ä¸º NULLï¼Œè¿”å›-1
+// ÈôÍ¼GÖĞË÷ÒıÎªkµÄ¶¥µãµÄÁÚ½ÓÁ´±í·Ç¿Õ£¬ÕâÁîÖ¸ÕëpÖ¸ÏòµÚÒ»¸ö½áµã£¬²¢·µ»ØÆäË÷Òı
+// ·ñÔò£¬Áî p Îª NULL£¬·µ»Ø-1
 
 int NextAdjVex(ALGraph      G,
                int          k,
                AdjVexNodeP& p);
 
-// p æ‰€æŒ‡ç»“ç‚¹åœ¨ç´¢å¼•ä¸º k çš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨ä¸­ï¼Œä»¤ p æŒ‡å‘ pæ‰€æŒ‡ç»“ç‚¹çš„ä¸‹ä¸€ä¸ªç»“ç‚¹ï¼Œå¹¶è¿”å›ç´¢å¼•
-// å¦‚æœ p ä¸º NULLï¼Œè¿”å› -1
+// p ËùÖ¸½áµãÔÚË÷ÒıÎª k µÄ¶¥µãµÄÁÚ½ÓÁ´±íÖĞ£¬Áî p Ö¸Ïò pËùÖ¸½áµãµÄÏÂÒ»¸ö½áµã£¬²¢·µ»ØË÷Òı
+// Èç¹û p Îª NULL£¬·µ»Ø -1
 
 Status AddArc(ALGraph& G,
               VexType  v,
               VexType  w,
               int      info);
 
-// åœ¨å›¾ G ä¸­å¢åŠ å€¼ä¸º v çš„é¡¶ç‚¹åˆ°å€¼ä¸º w çš„é¡¶ç‚¹çš„è¾¹æˆ–å¼§ï¼Œinfo ä¸ºæƒå€¼
+// ÔÚÍ¼ G ÖĞÔö¼ÓÖµÎª v µÄ¶¥µãµ½ÖµÎª w µÄ¶¥µãµÄ±ß»ò»¡£¬info ÎªÈ¨Öµ
 
 Status RemoveArc(ALGraph& G,
                  VexType  v,
                  VexType  w);
 
-// åˆ é™¤å›¾ G ä¸­å€¼ä¸º v çš„é¡¶ç‚¹åˆ°å€¼ä¸º w çš„é¡¶ç‚¹çš„è¾¹æˆ–å¼§
+// É¾³ıÍ¼ G ÖĞÖµÎª v µÄ¶¥µãµ½ÖµÎª w µÄ¶¥µãµÄ±ß»ò»¡
 
 Status ExistIn(ALGraph G,
                int     m,
-               int     k);                    // æ£€æŸ¥é¡¶ç‚¹kçš„é‚»æ¥é“¾è¡¨ä¸­æ˜¯å¦å­˜åœ¨
-                                              // mé¡¶ç‚¹å¯¹åº”çš„ç»“ç‚¹
+               int     k);                    // ¼ì²é¶¥µãkµÄÁÚ½ÓÁ´±íÖĞÊÇ·ñ´æÔÚ
+                                              // m¶¥µã¶ÔÓ¦µÄ½áµã
 
 int    outDegree(ALGraph G,
-                 VexType v);                  // æ±‚æœ‰å‘å›¾Gä¸­å€¼ä¸º v çš„é¡¶ç‚¹çš„å‡ºåº¦ã€‚è‹¥ké¡¶ç‚¹ä¸å­˜åœ¨ï¼Œåˆ™è¿”å›-1
+                 VexType v);                  // ÇóÓĞÏòÍ¼GÖĞÖµÎª v µÄ¶¥µãµÄ³ö¶È¡£Èôk¶¥µã²»´æÔÚ£¬Ôò·µ»Ø-1
 
 int    inDegree(ALGraph G,
-                VexType v);                   // æ±‚æœ‰å‘å›¾Gä¸­å€¼ä¸º v çš„é¡¶ç‚¹çš„å…¥åº¦ã€‚è‹¥ké¡¶ç‚¹ä¸å­˜åœ¨ï¼Œåˆ™è¿”å›-1
+                VexType v);                   // ÇóÓĞÏòÍ¼GÖĞÖµÎª v µÄ¶¥µãµÄÈë¶È¡£Èôk¶¥µã²»´æÔÚ£¬Ôò·µ»Ø-1
 
 Status DFSTraverse(ALGraph  G,
-                   Status (*visit)(VexType)); // æ·±åº¦ä¼˜å…ˆéå†å›¾ G
+                   Status (*visit)(VexType)); // Éî¶ÈÓÅÏÈ±éÀúÍ¼ G
 
 Status BFSTraverse(ALGraph  G,
-                   Status (*visit)(VexType)); // å¹¿åº¦ä¼˜å…ˆéå†å›¾ G
+                   Status (*visit)(VexType)); // ¹ã¶ÈÓÅÏÈ±éÀúÍ¼ G
 
-void   g_print(ALGraph G);                    // æ‰“å°æœ‰å‘å›¾
+void   g_print(ALGraph G);                    // ´òÓ¡ÓĞÏòÍ¼
 
 #endif /* ifndef GRAPH_H */

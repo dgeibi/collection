@@ -1,12 +1,12 @@
 #include "queue.h"
 
 void InitQueue_LQ(LQueue& Q) {
-  /* æ„é€ ä¸€ä¸ªç©ºé˜Ÿåˆ—Q */
+  /* ¹¹ÔìÒ»¸ö¿Õ¶ÓÁĞQ */
   Q.front = Q.rear = NULL;
 }
 
 void DestroyQueue_LQ(LQueue& Q) {
-  /* é”€æ¯é˜Ÿåˆ—Q(æ— è®ºç©ºå¦å‡å¯) */
+  /* Ïú»Ù¶ÓÁĞQ(ÎŞÂÛ¿Õ·ñ¾ù¿É) */
   while (Q.front)
   {
     Q.rear = Q.front->next;
@@ -17,13 +17,13 @@ void DestroyQueue_LQ(LQueue& Q) {
 }
 
 bool IsEmpty_LQ(LQueue Q) {
-  /* è‹¥Qä¸ºç©ºé˜Ÿåˆ—ï¼Œåˆ™è¿”å›TRUEï¼Œå¦åˆ™è¿”å›FALSE */
+  /* ÈôQÎª¿Õ¶ÓÁĞ£¬Ôò·µ»ØTRUE£¬·ñÔò·µ»ØFALSE */
   if (Q.front == NULL) return true;
   else return false;
 }
 
 int QueueLength_LQ(LQueue Q) {
-  /* æ±‚é˜Ÿåˆ—çš„é•¿åº¦ */
+  /* Çó¶ÓÁĞµÄ³¤¶È */
   int i = 0;
   QueuePtr p;
 
@@ -43,7 +43,7 @@ int QueueLength_LQ(LQueue Q) {
 }
 
 Status GetHead_LQ(LQueue Q, QElemType& e) {
-  /* è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ™ç”¨eè¿”å›Qçš„é˜Ÿå¤´å…ƒç´ ï¼Œå¹¶è¿”å›OKï¼Œå¦åˆ™è¿”å›ERROR */
+  /* Èô¶ÓÁĞ²»¿Õ£¬ÔòÓÃe·µ»ØQµÄ¶ÓÍ·ÔªËØ£¬²¢·µ»ØOK£¬·ñÔò·µ»ØERROR */
 
   if (Q.front == Q.rear) return ERROR;
   e = Q.front->data;
@@ -51,10 +51,10 @@ Status GetHead_LQ(LQueue Q, QElemType& e) {
 }
 
 void EnQueue_LQ(LQueue& Q, QElemType e) {
-  /* æ’å…¥å…ƒç´ eä¸ºQçš„æ–°çš„é˜Ÿå°¾å…ƒç´  */
+  /* ²åÈëÔªËØeÎªQµÄĞÂµÄ¶ÓÎ²ÔªËØ */
   QueuePtr p = (QueuePtr)malloc(sizeof(LQNode));
 
-  if (!p) /* å­˜å‚¨åˆ†é…å¤±è´¥ */
+  if (!p) /* ´æ´¢·ÖÅäÊ§°Ü */
     exit(OVERFLOW);
   p->data = e;
   p->next = NULL;
@@ -69,14 +69,14 @@ void EnQueue_LQ(LQueue& Q, QElemType e) {
 }
 
 Status DeQueue_LQ(LQueue& Q, QElemType& e) {
-  /* è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ é™¤Qçš„é˜Ÿå¤´å…ƒç´ ï¼Œç”¨eè¿”å›å…¶å€¼ï¼Œå¹¶è¿”å›OKï¼Œå¦åˆ™è¿”å›ERROR */
+  /* Èô¶ÓÁĞ²»¿Õ£¬É¾³ıQµÄ¶ÓÍ·ÔªËØ£¬ÓÃe·µ»ØÆäÖµ£¬²¢·µ»ØOK£¬·ñÔò·µ»ØERROR */
   QueuePtr p;
 
   if (IsEmpty_LQ(Q)) return ERROR;
 
-  p       = Q.front; /* æŒ‡å‘å¤´ç»“ç‚¹ */
+  p       = Q.front; /* Ö¸ÏòÍ·½áµã */
   e       = p->data;
-  Q.front = p->next; /* æ‘˜ä¸‹å¤´èŠ‚ç‚¹ */
+  Q.front = p->next; /* ÕªÏÂÍ·½Úµã */
 
   if (Q.rear == p) Q.rear = NULL;
   free(p);
@@ -84,7 +84,7 @@ Status DeQueue_LQ(LQueue& Q, QElemType& e) {
 }
 
 void Traverse_LQ(LQueue Q, void (*vi)(QElemType)) {
-  /* ä»é˜Ÿå¤´åˆ°é˜Ÿå°¾ä¾æ¬¡å¯¹é˜Ÿåˆ—Qä¸­æ¯ä¸ªå…ƒç´ è°ƒç”¨å‡½æ•°vi() */
+  /* ´Ó¶ÓÍ·µ½¶ÓÎ²ÒÀ´Î¶Ô¶ÓÁĞQÖĞÃ¿¸öÔªËØµ÷ÓÃº¯Êıvi() */
   QueuePtr p;
 
   p = Q.front;

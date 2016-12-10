@@ -11,7 +11,7 @@ void ToConst(Expression E) {
 }
 
 bool IsReasonable(Expression E) {
-  // åˆ¤æ–­è¡¨è¾¾å¼æ˜¯å¦åˆç†
+  // ÅÐ¶Ï±í´ïÊ½ÊÇ·ñºÏÀí
   if (E) {
     if (E->type != OPERATOR) {
       return true;
@@ -56,7 +56,7 @@ Expression Diff(Expression E, char V) {
 
       case '^':
 
-        // ç¼ºé™·ï¼šä¸æ”¯æŒæŒ‡æ•°å‡½æ•°æ±‚åå¯¼æ•°
+        // È±ÏÝ£º²»Ö§³ÖÖ¸Êýº¯ÊýÇóÆ«µ¼Êý
         return CompoundExpr('*', E, CompoundExpr('/', CompoundExpr('*',
                                                                    E->rchild,
                                                                    Diff(E->
@@ -74,7 +74,7 @@ Expression Diff(Expression E, char V) {
   return nE;
 }
 
-// å¤åˆ¶è¡¨è¾¾å¼
+// ¸´ÖÆ±í´ïÊ½
 Expression Copy(Expression E) {
   Expression p;
 
@@ -106,7 +106,7 @@ void DestroyExpression(Expression& E) {
 }
 
 void MergeConst(Expression& E) {
-  // åˆå¹¶è¡¨è¾¾å¼ E ä¸­æ‰€æœ‰å¸¸æ•°è¿ç®—
+  // ºÏ²¢±í´ïÊ½ E ÖÐËùÓÐ³£ÊýÔËËã
   if (E) {
     MergeConst(E->lchild);
     MergeConst(E->rchild);
@@ -182,9 +182,9 @@ void MergeConst(Expression& E) {
 }
 
 bool PreOrderFind(Expression& E, int type, char data, int value) {
-  // å…ˆåºæŸ¥æ‰¾æ–°ç»“ç‚¹çš„ä½ç½®ï¼Œæ ¹æ® IsReasonable åˆ¤æ–­è¡¨è¾¾å¼æ˜¯å¦å¯ä»¥æ’å…¥/éœ€è¦æœ‰é€’å½’
-  // å¦‚æžœ E ä¸º NULL åˆ™æ’å…¥ï¼Œå¹¶è¿”å›ž true
-  // æœªæ’å…¥åˆ™è¿”å›ž false
+  // ÏÈÐò²éÕÒÐÂ½áµãµÄÎ»ÖÃ£¬¸ù¾Ý IsReasonable ÅÐ¶Ï±í´ïÊ½ÊÇ·ñ¿ÉÒÔ²åÈë/ÐèÒªÓÐµÝ¹é
+  // Èç¹û E Îª NULL Ôò²åÈë£¬²¢·µ»Ø true
+  // Î´²åÈëÔò·µ»Ø false
 
   if (!IsReasonable(E)) {
     if (E == NULL) {
@@ -202,17 +202,17 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
     }
     else if (!IsReasonable(E->lchild) &&
              PreOrderFind(E->lchild, type, data, value)) {
-      return true; // å·¦å¼æœªæ»¡å¹¶ä¸”æ’å…¥æˆåŠŸ
+      return true; // ×óÊ½Î´Âú²¢ÇÒ²åÈë³É¹¦
     }
     else if (!IsReasonable(E->rchild)) {
       return PreOrderFind(E->rchild, type, data, value);
     }
   }
-  return false; // è¡¨è¾¾å¼å·²ç»æ»¡äº†ï¼Œè¿”å›ž false
+  return false; // ±í´ïÊ½ÒÑ¾­ÂúÁË£¬·µ»Ø false
 }
 
 bool Is(int type, char ch) {
-  // åˆ¤æ–­ ch æ˜¯å¦æ˜¯ type
+  // ÅÐ¶Ï ch ÊÇ·ñÊÇ type
   switch (type) {
     case CONST:
 
@@ -240,7 +240,7 @@ bool Is(int type, char ch) {
 }
 
 bool IsAtom(int type, char const *str) {
-  // åˆ¤æ–­æ˜¯å¦ä¸º type ç±»åŽŸå­
+  // ÅÐ¶ÏÊÇ·ñÎª type ÀàÔ­×Ó
   size_t length = strlen(str);
 
   if (type == CONST) {
@@ -270,12 +270,12 @@ bool IsAtom(int type, char const *str) {
 }
 
 Expression ReadExpr(char const *str) {
-  // ç”±å­—ç¬¦ä¸²æž„é€ è¡¨è¾¾å¼ï¼Œå¦‚æžœè¯­æ³•æœ‰è¯¯ï¼Œè¿”å›ž NULL
-  // å…è®¸çš„å­—ç¬¦ï¼š
-  //    è¿ç®—ç¬¦ï¼š+-*/^
-  //    å¸¸æ•°ï¼š0-9
-  //    å˜é‡ï¼ša-zA-Z
-  //    åˆ†éš”ç¬¦ï¼šç©ºæ ¼ï¼ˆå¯é€‰ï¼‰
+  // ÓÉ×Ö·û´®¹¹Ôì±í´ïÊ½£¬Èç¹ûÓï·¨ÓÐÎó£¬·µ»Ø NULL
+  // ÔÊÐíµÄ×Ö·û£º
+  //    ÔËËã·û£º+-*/^
+  //    ³£Êý£º0-9
+  //    ±äÁ¿£ºa-zA-Z
+  //    ·Ö¸ô·û£º¿Õ¸ñ£¨¿ÉÑ¡£©
   Expression E = NULL;
   int        value = 0;
   size_t     length = strlen(str);
@@ -285,23 +285,23 @@ Expression ReadExpr(char const *str) {
     if (Is(CONST, str[i])) {
       value = value * 10 + (str[i] - '0');
 
-      if (!Is(CONST, str[i + 1])) { // ä¸‹ä¸€ä¸ªå­—ç¬¦ä¸æ˜¯å¸¸æ•°
+      if (!Is(CONST, str[i + 1])) { // ÏÂÒ»¸ö×Ö·û²»ÊÇ³£Êý
         if (MINUS) {
-          value = -value;           // æ˜¯è´Ÿçš„å¸¸æ•°åŽŸå­
+          value = -value;           // ÊÇ¸ºµÄ³£ÊýÔ­×Ó
         }
 
         if (!PreOrderFind(E, CONST, '\0', value)) {
           BAD = true;
           break;
         }
-        value = 0; // é‡ç½®
+        value = 0; // ÖØÖÃ
       }
     }
     else {
       if (Is(OPERATOR, str[i])) {
         if ((i == 0) && IsAtom(CONST, str)) {
           if (str[i] == '-') {
-            MINUS = true; // æ˜¯è´Ÿçš„å¸¸æ•°åŽŸå­
+            MINUS = true; // ÊÇ¸ºµÄ³£ÊýÔ­×Ó
           }
         }
         else if (!PreOrderFind(E, OPERATOR, str[i], 0)) {
@@ -311,7 +311,7 @@ Expression ReadExpr(char const *str) {
       }
       else if (Is(VARIABLE, str[i])) {
         if ((i == 1) && IsAtom(VARIABLE, str)) {
-          // å¦‚æžœæ˜¯å˜é‡åŽŸå­ï¼Œå‰é¢è¡¥é›¶
+          // Èç¹ûÊÇ±äÁ¿Ô­×Ó£¬Ç°Ãæ²¹Áã
           if (!PreOrderFind(E, CONST, '\0', 0)) {
             BAD = true;
             break;
@@ -335,14 +335,14 @@ Expression ReadExpr(char const *str) {
 
   if (BAD || !IsReasonable(E)) {
     DestroyExpression(E);
-    printf("%s\n", "ä¸åˆç†çš„è¡¨è¾¾å¼ï¼");
+    printf("%s\n", "²»ºÏÀíµÄ±í´ïÊ½£¡");
     return NULL;
   }
   return E;
 }
 
 bool IsHigher(Expression parent, Expression child) {
-  // åˆ¤æ–­çˆ¶æ¯ç»“ç‚¹çš„è¿ç®—ç¬¦çš„ä¼˜å…ˆçº§æ˜¯å¦æ¯”å­ç»“ç‚¹çš„ä¼˜å…ˆçº§é«˜
+  // ÅÐ¶Ï¸¸Ä¸½áµãµÄÔËËã·ûµÄÓÅÏÈ¼¶ÊÇ·ñ±È×Ó½áµãµÄÓÅÏÈ¼¶¸ß
   switch (parent->data) {
     case '^':
 
@@ -377,7 +377,7 @@ bool IsHigher(Expression parent, Expression child) {
 }
 
 void WriteEx(Expression E) {
-  // ç”¨å¸¦æ‹¬å¼§çš„ä¸­ç¼€è¡¨ç¤ºå¼è¾“å‡ºè¡¨è¾¾å¼ Eï¼Œæ·»åŠ æ‹¬å·
+  // ÓÃ´øÀ¨»¡µÄÖÐ×º±íÊ¾Ê½Êä³ö±í´ïÊ½ E£¬Ìí¼ÓÀ¨ºÅ
   if (E) {
     if (E->lchild) {
       if (IsHigher(E, E->lchild)) {
@@ -415,7 +415,7 @@ void WriteEx(Expression E) {
 }
 
 void WriteExpr(Expression E) {
-  // åŠ æ¢è¡Œç¬¦
+  // ¼Ó»»ÐÐ·û
   if (E) {
     WriteEx(E);
     putchar('\n');
@@ -423,8 +423,8 @@ void WriteExpr(Expression E) {
 }
 
 Expression CompoundExpr(char P, Expression E1, Expression E2) {
-  // æž„é€ ä¸€ä¸ªæ–°çš„å¤åˆè¡¨è¾¾å¼ï¼Œ(E1)P(E2)ï¼Œ(P E1 E1)
-  if (!Is(OPERATOR, P)) { // ä¸æ˜¯è¿ç®—ç¬¦
+  // ¹¹ÔìÒ»¸öÐÂµÄ¸´ºÏ±í´ïÊ½£¬(E1)P(E2)£¬(P E1 E1)
+  if (!Is(OPERATOR, P)) { // ²»ÊÇÔËËã·û
     return NULL;
   }
   else {
@@ -446,7 +446,7 @@ Expression CompoundExpr(char P, Expression E1, Expression E2) {
 void Assign(Expression E,
             char       V,
             int        num) {
-  // å¯¹å˜é‡ V çš„èµ‹å€¼(V = c)
+  // ¶Ô±äÁ¿ V µÄ¸³Öµ(V = c)
   if (E) {
     if ((E->type == VARIABLE) && (E->data == V)) {
       E->value = num;
@@ -457,7 +457,7 @@ void Assign(Expression E,
 }
 
 int Value(Expression E) {
-  // å¯¹ç®—æœ¯è¡¨è¾¾å¼ E æ±‚å€¼
+  // ¶ÔËãÊõ±í´ïÊ½ E ÇóÖµ
   if (E) {
     switch (E->type) {
       case VARIABLE:
