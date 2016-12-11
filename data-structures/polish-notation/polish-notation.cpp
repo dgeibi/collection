@@ -4,8 +4,8 @@ void ToConst(Expression E) { // 转化为常量
   if (E) {
     E->type = CONST;
     E->data = 0;
-    DestroyExpression(E->lchild);
-    DestroyExpression(E->rchild);
+    DestroyExpr(E->lchild);
+    DestroyExpr(E->rchild);
     E->lchild = E->rchild = NULL;
   }
 }
@@ -96,12 +96,12 @@ Expression Copy(Expression E) {
   return NULL;
 }
 
-void DestroyExpression(Expression& E) {
+void DestroyExpr(Expression& E) {
   if (E) {
-    if (E->lchild) DestroyExpression(E->lchild);
+    if (E->lchild) DestroyExpr(E->lchild);
 
     if (E->rchild) {
-      DestroyExpression(E->rchild);
+      DestroyExpr(E->rchild);
     }
     free(E);
   }
@@ -157,27 +157,27 @@ void MergeConst(Expression& E) {
     }
     else if (E->data == '+') {
       if ((E->lchild->type == CONST) && (E->lchild->value == 0)) {
-        DestroyExpression(E->lchild); // + 0 x = x
+        DestroyExpr(E->lchild); // + 0 x = x
         E = E->rchild;
       }
       else if ((E->rchild->type == CONST) && (E->rchild->value == 0)) {
-        DestroyExpression(E->rchild); // + x 0 = x
+        DestroyExpr(E->rchild); // + x 0 = x
         E = E->lchild;
       }
     }
     else if (E->data == '-') {
       if ((E->rchild->type == CONST) && (E->rchild->value == 0)) {
-        DestroyExpression(E->rchild); // - x 0 = x
+        DestroyExpr(E->rchild); // - x 0 = x
         E = E->lchild;
       }
     }
     else if (E->data == '*') {
       if ((E->lchild->type == CONST) && (E->lchild->value == 1)) {
-        DestroyExpression(E->lchild); // * 1 x = x
+        DestroyExpr(E->lchild); // * 1 x = x
         E = E->rchild;
       }
       else if ((E->rchild->type == CONST) && (E->rchild->value == 1)) {
-        DestroyExpression(E->rchild); // * x 1 = x
+        DestroyExpr(E->rchild); // * x 1 = x
         E = E->lchild;
       }
     }
@@ -332,7 +332,7 @@ Expression ReadExpr(char const *str) {
   } // endfor
 
   if (BAD || !IsReasonable(E)) {
-    DestroyExpression(E);
+    DestroyExpr(E);
     printf("%s\n", "illegal expression");
     return NULL;
   }

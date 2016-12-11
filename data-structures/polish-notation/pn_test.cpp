@@ -29,7 +29,7 @@ static char const* testinit() {
     E = ReadExpr(str[i]);
     mu_assert("read expression", E != NULL);
     WriteExpr(E);
-    DestroyExpression(E);
+    DestroyExpr(E);
   }
   mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
   mu_assert("read expression_NULL", ReadExpr("*11") == NULL);
@@ -63,9 +63,9 @@ static char const* testcompound() {
   WriteEx(t1); printf(" %s ", "multiplied by"); WriteEx(t2); printf(" %s ",
                                                                     "equals");
   WriteExpr(E);
-  DestroyExpression(t1);
-  DestroyExpression(t2);
-  DestroyExpression(E);
+  DestroyExpr(t1);
+  DestroyExpr(t2);
+  DestroyExpr(E);
   return OK;
 }
 
@@ -102,7 +102,7 @@ static char const* testmerge() {
     printf("%s", "Before: "); WriteExpr(E);
     MergeConst(E);
     printf("%s", "After: "); WriteExpr(E);
-    DestroyExpression(E);
+    DestroyExpr(E);
   }
   return OK;
 }

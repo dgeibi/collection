@@ -21,7 +21,7 @@ typedef struct ExprNode {
 } ExprNode, *Expression;
 
 // 释放表达式
-void DestroyExpression(Expression& E);
+void DestroyExpr(Expression& E);
 
 // 判断是否为 type 类原子
 bool IsAtom(int         type,
