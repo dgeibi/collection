@@ -1,6 +1,6 @@
 #include "polish-notation.h"
 
-void ToConst(Expression E) { // ×ª»¯Îª³£Á¿
+void ToConst(Expression E) { // è½¬åŒ–ä¸ºå¸¸é‡
   if (E) {
     E->type = CONST;
     E->data = 0;
@@ -11,23 +11,23 @@ void ToConst(Expression E) { // ×ª»¯Îª³£Á¿
 }
 
 bool IsReasonable(Expression E) {
-  // ÅĞ¶Ï±í´ïÊ½ÊÇ·ñºÏÀí
+  // åˆ¤æ–­è¡¨è¾¾å¼æ˜¯å¦åˆç†
   if (E) {
     if (E->type != OPERATOR) {
       return true;
-    } // ÔËËã·ûĞèÅĞ¶Ï×ÓÊ½
-    else if (false == IsReasonable(E->lchild)) {// ×ó×ÓÊ½²»ºÏÀí
+    } // è¿ç®—ç¬¦éœ€åˆ¤æ–­å­å¼
+    else if (false == IsReasonable(E->lchild)) {// å·¦å­å¼ä¸åˆç†
       return false;
     }
     else return IsReasonable(E->rchild);
   }
-  return false; // E==NULL£¬²»ºÏÀí
+  return false; // E==NULLï¼Œä¸åˆç†
 }
 
 Expression Diff(Expression E, char V) {
   if (E == NULL) return NULL;
 
-  if (E->type == OPERATOR) { // ÒÀÕÕÇóµ¼¹«Ê½ÊµÏÖ
+  if (E->type == OPERATOR) { // ä¾ç…§æ±‚å¯¼å…¬å¼å®ç°
     switch (E->data) {
       case '+':
       case '-':
@@ -56,7 +56,7 @@ Expression Diff(Expression E, char V) {
 
       case '^':
 
-        // È±Ïİ£º²»Ö§³ÖÖ¸Êıº¯ÊıÇóÆ«µ¼Êı
+        // ç¼ºé™·ï¼šä¸æ”¯æŒæŒ‡æ•°å‡½æ•°æ±‚åå¯¼æ•°
         return CompoundExpr('*', E, CompoundExpr('/', CompoundExpr('*',
                                                                    E->rchild,
                                                                    Diff(E->
@@ -67,7 +67,7 @@ Expression Diff(Expression E, char V) {
     }
   }
 
-  // ±äÁ¿V£¬ÆäËüÔ­×ÓµÄ¶ÔVµÄÆ«µ¼Êı·Ö±ğÎª1£¬0
+  // å˜é‡Vï¼Œå…¶å®ƒåŸå­çš„å¯¹Vçš„åå¯¼æ•°åˆ†åˆ«ä¸º1ï¼Œ0
   Expression nE = (Expression)malloc(sizeof(ExprNode));
   nE->type   = CONST;
   nE->data   = '\0';
@@ -76,7 +76,7 @@ Expression Diff(Expression E, char V) {
   return nE;
 }
 
-// ¸´ÖÆ±í´ïÊ½
+// å¤åˆ¶è¡¨è¾¾å¼
 Expression Copy(Expression E) {
   Expression p;
 
@@ -108,14 +108,14 @@ void DestroyExpression(Expression& E) {
 }
 
 void MergeConst(Expression& E) {
-  // ºÏ²¢±í´ïÊ½ E ÖĞËùÓĞ³£Á¿ÔËËã
+  // åˆå¹¶è¡¨è¾¾å¼ E ä¸­æ‰€æœ‰å¸¸é‡è¿ç®—
   if (E) {
     MergeConst(E->lchild);
     MergeConst(E->rchild);
 
     if ((E->type == OPERATOR) && E->lchild && (E->lchild->type == CONST) &&
         E->rchild && (E->rchild->type == CONST)) {
-      // £¨OPERATOR CONST CONST)
+      // ï¼ˆOPERATOR CONST CONST)
       switch (E->data) {
         case '+':
           E->value = E->lchild->value + E->rchild->value;
@@ -185,9 +185,9 @@ void MergeConst(Expression& E) {
 }
 
 bool PreOrderFind(Expression& E, int type, char data, int value) {
-  // ÏÈĞò²éÕÒĞÂ½áµãµÄÎ»ÖÃ£¬¸ù¾İ IsReasonable ÅĞ¶Ï±í´ïÊ½ÊÇ·ñ¿ÉÒÔ²åÈë/ĞèÒªÓĞµİ¹é
-  // Èç¹û E Îª NULL Ôò²åÈë£¬²¢·µ»Ø true
-  // Î´²åÈëÔò·µ»Ø false
+  // å…ˆåºæŸ¥æ‰¾æ–°ç»“ç‚¹çš„ä½ç½®ï¼Œæ ¹æ® IsReasonable åˆ¤æ–­è¡¨è¾¾å¼æ˜¯å¦å¯ä»¥æ’å…¥/éœ€è¦æœ‰é€’å½’
+  // å¦‚æœ E ä¸º NULL åˆ™æ’å…¥ï¼Œå¹¶è¿”å› true
+  // æœªæ’å…¥åˆ™è¿”å› false
 
   if (!IsReasonable(E)) {
     if (E == NULL) {
@@ -205,17 +205,17 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
     }
     else if (!IsReasonable(E->lchild) &&
              PreOrderFind(E->lchild, type, data, value)) {
-      return true; // ×óÊ½Î´Âú²¢ÇÒ²åÈë³É¹¦
+      return true; // å·¦å¼æœªæ»¡å¹¶ä¸”æ’å…¥æˆåŠŸ
     }
     else if (!IsReasonable(E->rchild)) {
       return PreOrderFind(E->rchild, type, data, value);
     }
   }
-  return false; // ±í´ïÊ½ÒÑ¾­ÂúÁË£¬·µ»Ø false
+  return false; // è¡¨è¾¾å¼å·²ç»æ»¡äº†ï¼Œè¿”å› false
 }
 
 bool Is(int type, char ch) {
-  // ÅĞ¶Ï ch ÊÇ·ñÊÇ type
+  // åˆ¤æ–­ ch æ˜¯å¦æ˜¯ type
   switch (type) {
     case CONST:
 
@@ -243,14 +243,14 @@ bool Is(int type, char ch) {
 }
 
 bool IsAtom(int type, char const *str) {
-  // ÅĞ¶ÏÊÇ·ñÎª type ÀàÔ­×Ó
+  // åˆ¤æ–­æ˜¯å¦ä¸º type ç±»åŸå­
   size_t length = strlen(str);
 
   if (type == CONST) {
     for (size_t i = 0; i < length; i++)
     {
       if ((i == 0) && ((str[0] == '+') || (str[0] == '-')) && str[1]) {
-        continue; // str[0] ¿ÉÒÔÎª + -£¬µ«±ØĞë´æÔÚÏÂÒ»Î»
+        continue; // str[0] å¯ä»¥ä¸º + -ï¼Œä½†å¿…é¡»å­˜åœ¨ä¸‹ä¸€ä½
       }
 
       if (Is(type, str[i])) {
@@ -261,10 +261,10 @@ bool IsAtom(int type, char const *str) {
     return true;
   }
   else if (type == VARIABLE) {
-    if (length == 1) {      // ÎŞ·ûºÅ±äÁ¿Ô­×Ó
+    if (length == 1) {      // æ— ç¬¦å·å˜é‡åŸå­
       return Is(type, str[0]);
     }
-    else if (length == 2) { // ÓĞ·ûºÅ±äÁ¿Ô­×Ó
+    else if (length == 2) { // æœ‰ç¬¦å·å˜é‡åŸå­
       return (str[0] == '+' || str[0] == '-') && Is(type, str[1]);
     }
   }
@@ -273,58 +273,58 @@ bool IsAtom(int type, char const *str) {
 }
 
 Expression ReadExpr(char const *str) {
-  // ÓÉ×Ö·û´®¹¹Ôì±í´ïÊ½£¬Èç¹ûÓï·¨ÓĞÎó£¬·µ»Ø NULL
-  // ÔÊĞíµÄ×Ö·û£º
-  //    ÔËËã·û£º+-*/^
-  //    ³£Á¿£º0-9
-  //    ±äÁ¿£ºa-zA-Z
-  //    ·Ö¸ô·û£º¿Õ¸ñ£¨¿ÉÑ¡£©
+  // ç”±å­—ç¬¦ä¸²æ„é€ è¡¨è¾¾å¼ï¼Œå¦‚æœè¯­æ³•æœ‰è¯¯ï¼Œè¿”å› NULL
+  // å…è®¸çš„å­—ç¬¦ï¼š
+  //    è¿ç®—ç¬¦ï¼š+-*/^
+  //    å¸¸é‡ï¼š0-9
+  //    å˜é‡ï¼ša-zA-Z
+  //    åˆ†éš”ç¬¦ï¼šç©ºæ ¼ï¼ˆå¯é€‰ï¼‰
   Expression E = NULL;
   int        value = 0;
   size_t     length = strlen(str);
   bool       BAD = false, MINUS = false;
 
-  for (size_t i = 0; i < length; i++) {                 // ÒÀ´Î¶ÁÈ¡Ã¿Ò»¸ö×Ö·û
-    if (Is(CONST, str[i])) {                            // ³£Á¿
-      value = value * 10 + (str[i] - '0');              // ½øÎ»£¬×ª»»Îªint
+  for (size_t i = 0; i < length; i++) {                 // ä¾æ¬¡è¯»å–æ¯ä¸€ä¸ªå­—ç¬¦
+    if (Is(CONST, str[i])) {                            // å¸¸é‡
+      value = value * 10 + (str[i] - '0');              // è¿›ä½ï¼Œè½¬æ¢ä¸ºint
 
-      if (!Is(CONST, str[i + 1])) {                     // ÏÂÒ»¸ö×Ö·û²»ÊÇ³£Á¿
-        if (MINUS) {                                    // ÊÇ¸ºµÄ³£Á¿Ô­×Ó
-          value = -value;                               // ½«ÖµÉèÎªÏà·´Êı
+      if (!Is(CONST, str[i + 1])) {                     // ä¸‹ä¸€ä¸ªå­—ç¬¦ä¸æ˜¯å¸¸é‡
+        if (MINUS) {                                    // æ˜¯è´Ÿçš„å¸¸é‡åŸå­
+          value = -value;                               // å°†å€¼è®¾ä¸ºç›¸åæ•°
         }
 
-        if (!PreOrderFind(E, CONST, '\0', value)) {     // ²åÈë³£Á¿½áµãµ½ E
-          BAD = true;                                   // ²åÈëÊ§°Ü
-        }// ±í´ïÊ½ÒÑ¾­ÂúÁË
-        value = 0;                                      // ÖØÖÃ
+        if (!PreOrderFind(E, CONST, '\0', value)) {     // æ’å…¥å¸¸é‡ç»“ç‚¹åˆ° E
+          BAD = true;                                   // æ’å…¥å¤±è´¥
+        }// è¡¨è¾¾å¼å·²ç»æ»¡äº†
+        value = 0;                                      // é‡ç½®
       }
     }
-    else if (Is(OPERATOR, str[i])) {                    // ÔËËã·û
+    else if (Is(OPERATOR, str[i])) {                    // è¿ç®—ç¬¦
       if ((i == 0) && IsAtom(CONST, str)) {
         if (str[i] == '-') {
-          MINUS = true;                                 // ÊÇ¸ºµÄ³£Á¿Ô­×Ó
+          MINUS = true;                                 // æ˜¯è´Ÿçš„å¸¸é‡åŸå­
         }
       }
-      else if (!PreOrderFind(E, OPERATOR, str[i], 0)) { // ²åÈëÔËËã·û½áµãµ½ E
+      else if (!PreOrderFind(E, OPERATOR, str[i], 0)) { // æ’å…¥è¿ç®—ç¬¦ç»“ç‚¹åˆ° E
         BAD = true;
       }
     }
-    else if (Is(VARIABLE, str[i])) {            // ±äÁ¿
-      if ((i == 1) && IsAtom(VARIABLE, str)) {  // ÓĞ·ûºÅ±äÁ¿Ô­×Ó
-        if (!PreOrderFind(E, CONST, '\0', 0)) { // Ç°Ãæ²¹Ò»¸öÁã
+    else if (Is(VARIABLE, str[i])) {            // å˜é‡
+      if ((i == 1) && IsAtom(VARIABLE, str)) {  // æœ‰ç¬¦å·å˜é‡åŸå­
+        if (!PreOrderFind(E, CONST, '\0', 0)) { // å‰é¢è¡¥ä¸€ä¸ªé›¶
           BAD = true;
           break;
         }
       }
 
-      if (!PreOrderFind(E, VARIABLE, str[i], 0)) { // ²åÈë±äÁ¿½áµãµ½ E
+      if (!PreOrderFind(E, VARIABLE, str[i], 0)) { // æ’å…¥å˜é‡ç»“ç‚¹åˆ° E
         BAD = true;
       }
     }
-    else if (str[i] == ' ') { // ¿Õ¸ñ£¬¿ÉÑ¡·Ö¸ô·û£¬ºöÂÔ
+    else if (str[i] == ' ') { // ç©ºæ ¼ï¼Œå¯é€‰åˆ†éš”ç¬¦ï¼Œå¿½ç•¥
       continue;
     }
-    else {                    // ÆäËü×Ö·û·Ç·¨
+    else {                    // å…¶å®ƒå­—ç¬¦éæ³•
       BAD = true;
     }
 
@@ -340,7 +340,7 @@ Expression ReadExpr(char const *str) {
 }
 
 bool IsHigher(Expression parent, Expression child) {
-  // ÅĞ¶Ï¸¸Ê½µÄÔËËã·ûµÄÓÅÏÈ¼¶ÊÇ·ñ±È×ÓÊ½µÄÓÅÏÈ¼¶¸ß
+  // åˆ¤æ–­çˆ¶å¼çš„è¿ç®—ç¬¦çš„ä¼˜å…ˆçº§æ˜¯å¦æ¯”å­å¼çš„ä¼˜å…ˆçº§é«˜
   switch (parent->data) {
     case '^':
 
@@ -375,11 +375,11 @@ bool IsHigher(Expression parent, Expression child) {
 }
 
 void WriteEx(Expression E) {
-  // ÓÃ´øÀ¨»¡µÄÖĞ×º±íÊ¾Ê½Êä³ö±í´ïÊ½ E£¬Ìí¼ÓÀ¨ºÅ
+  // ç”¨å¸¦æ‹¬å¼§çš„ä¸­ç¼€è¡¨ç¤ºå¼è¾“å‡ºè¡¨è¾¾å¼ Eï¼Œæ·»åŠ æ‹¬å·
   if (E) {
     if (E->lchild) {
-      if (IsHigher(E, E->lchild)) { // ¸¸Ê½±È×ÓÊ½µÄÓÅÏÈ¼¶¸ß
-        putchar('(');               // ¼ÓÀ¨ºÅ
+      if (IsHigher(E, E->lchild)) { // çˆ¶å¼æ¯”å­å¼çš„ä¼˜å…ˆçº§é«˜
+        putchar('(');               // åŠ æ‹¬å·
         WriteEx(E->lchild);
         putchar(')');
       }
@@ -413,7 +413,7 @@ void WriteEx(Expression E) {
 }
 
 void WriteExpr(Expression E) {
-  // ¼Ó»»ĞĞ·û
+  // åŠ æ¢è¡Œç¬¦
   if (E) {
     WriteEx(E);
     putchar('\n');
@@ -421,8 +421,8 @@ void WriteExpr(Expression E) {
 }
 
 Expression CompoundExpr(char P, Expression E1, Expression E2) {
-  // ¹¹ÔìÒ»¸öĞÂµÄ¸´ºÏ±í´ïÊ½£¬(E1)P(E2)£¬(P E1 E1)
-  if (!Is(OPERATOR, P)) { // ²»ÊÇÔËËã·û
+  // æ„é€ ä¸€ä¸ªæ–°çš„å¤åˆè¡¨è¾¾å¼ï¼Œ(E1)P(E2)ï¼Œ(P E1 E1)
+  if (!Is(OPERATOR, P)) { // ä¸æ˜¯è¿ç®—ç¬¦
     return NULL;
   }
   else {
@@ -435,7 +435,7 @@ Expression CompoundExpr(char P, Expression E1, Expression E2) {
     E->type   = OPERATOR;
     E->value  = 0;
     E->data   = P;
-    E->lchild = Copy(E1); // ´æ¸±±¾
+    E->lchild = Copy(E1); // å­˜å‰¯æœ¬
     E->rchild = Copy(E2);
     return E;
   }
@@ -444,7 +444,7 @@ Expression CompoundExpr(char P, Expression E1, Expression E2) {
 void Assign(Expression E,
             char       V,
             int        num) {
-  // ¶Ô±äÁ¿ V µÄ¸³Öµ(V = c)
+  // å¯¹å˜é‡ V çš„èµ‹å€¼(V = c)
   if (E) {
     if ((E->type == VARIABLE) && (E->data == V)) {
       E->value = num;
@@ -455,7 +455,7 @@ void Assign(Expression E,
 }
 
 int Value(Expression E) {
-  // ¶ÔËãÊõ±í´ïÊ½ E ÇóÖµ
+  // å¯¹ç®—æœ¯è¡¨è¾¾å¼ E æ±‚å€¼
   if (E) {
     switch (E->type) {
       case VARIABLE:

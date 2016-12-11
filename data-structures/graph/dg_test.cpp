@@ -1,15 +1,15 @@
 #include "graph.h"
 
-int tests_run = 0; // ¼ÇÂ¼²âÊÔ´ÎÊý
+int tests_run = 0; // è®°å½•æµ‹è¯•æ¬¡æ•°
 
 Status vi(VexType i) {
-  // ·ÃÎÊÊ¹ÓÃµÄº¯Êý
+  // è®¿é—®ä½¿ç”¨çš„å‡½æ•°
   printf("%c  ", i);
   return OK;
 }
 
 static char const* testinit() {
-  // ²âÊÔ CreateGraph ºÍ DestoryGraph
+  // æµ‹è¯• CreateGraph å’Œ DestoryGraph
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -36,7 +36,7 @@ static char const* testinit() {
 }
 
 static char const* testTraverse() {
-  // ²âÊÔ DFSTraverse ºÍ BFSTraverse
+  // æµ‹è¯• DFSTraverse å’Œ BFSTraverse
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -57,7 +57,7 @@ static char const* testTraverse() {
 }
 
 static char const* testAdd() {
-  // ²âÊÔ AddArc
+  // æµ‹è¯• AddArc
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -79,7 +79,7 @@ static char const* testAdd() {
 }
 
 static char const* testRemove() {
-  // ²âÊÔ RemoveArc
+  // æµ‹è¯• RemoveArc
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -104,7 +104,7 @@ static char const* testRemove() {
 }
 
 static char const* testDegree() {
-  //  ²âÊÔ inDegree ºÍ outDegree
+  //  æµ‹è¯• inDegree å’Œ outDegree
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
 
@@ -129,7 +129,7 @@ static char const* testDegree() {
 }
 
 static char const* testVex() {
-  // ²âÊÔ SetVex ºÍ GetVex
+  // æµ‹è¯• SetVex å’Œ GetVex
   ALGraph G;
   ArcInfo arcs[MAX_SIZE_ARCS];
   VexType ch;
@@ -151,7 +151,7 @@ static char const* testVex() {
 }
 
 static char const* run() {
-  // Ö´ÐÐËùÓÐ²âÊÔ
+  // æ‰§è¡Œæ‰€æœ‰æµ‹è¯•
   mu_run_test(testinit);
   mu_run_test(testTraverse);
   mu_run_test(testAdd);

@@ -21,7 +21,7 @@ Status InsertAfter_L(LNode *p, LNode *q) {
   return OK;
 }
 
-/* ½« a ÒÆ¶¯µ½ b ºóÃæ */
+/* å°† a ç§»åŠ¨åˆ° b åé¢ */
 Status MoveAfter_L(LinkList a, LinkList b) {
   if (b == NULL) return ERROR;
 

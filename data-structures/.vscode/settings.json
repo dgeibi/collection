@@ -16,8 +16,6 @@
 
     "editor.tabCompletion": true,
 
-    "editor.tabSize": 2,
-
-    "files.encoding": "gbk"
+    "editor.tabSize": 2
 
 }

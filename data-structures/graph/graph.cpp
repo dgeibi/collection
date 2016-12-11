@@ -6,7 +6,7 @@ Status CreateGraph(ALGraph   & G,
                    int         n,
                    ArcInfo    *arcs,
                    int         e) {
-  // ´´½¨º¬n¸ö¶¥µãºÍeÌõ±ßµÄÓĞÏòÍ¼G£¬vexsÎª¶¥µãĞÅÏ¢£¬arcsÎª±ßĞÅÏ¢
+  // åˆ›å»ºå«nä¸ªé¡¶ç‚¹å’Œeæ¡è¾¹çš„æœ‰å‘å›¾Gï¼Œvexsä¸ºé¡¶ç‚¹ä¿¡æ¯ï¼Œarcsä¸ºè¾¹ä¿¡æ¯
   int i;
 
   G.kind = kind;
@@ -16,7 +16,7 @@ Status CreateGraph(ALGraph   & G,
   G.tags = NULL;
 
   if ((n <= 0) || (MAX_SIZE_ARCS < e)) {
-    // ¶¥µãÊıÎª¿Õ£¬±ßÊı³¬¹ı×î´óÖµ
+    // é¡¶ç‚¹æ•°ä¸ºç©ºï¼Œè¾¹æ•°è¶…è¿‡æœ€å¤§å€¼
     return ERROR;
   }
 
@@ -32,26 +32,26 @@ Status CreateGraph(ALGraph   & G,
 
   for (i = 0; i < e; i++)
   {
-    // ÖğÌõÌí¼Ó
+    // é€æ¡æ·»åŠ 
     if (ERROR == AddArc(G, arcs[i].v, arcs[i].w, arcs[i].info)) return ERROR;
   }
   return OK;
 }
 
 int inDegree(ALGraph G, VexType v) {
-  // ÇóÓĞÏòÍ¼GÖĞÖµÎª v µÄ¶¥µãµÄÈë¶È¡£Èôk¶¥µã²»´æÔÚ£¬Ôò·µ»Ø-1
+  // æ±‚æœ‰å‘å›¾Gä¸­å€¼ä¸º v çš„é¡¶ç‚¹çš„å…¥åº¦ã€‚è‹¥ké¡¶ç‚¹ä¸å­˜åœ¨ï¼Œåˆ™è¿”å›-1
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n)) {
-    return -1; // k¶¥µã²»´æÔÚ
+    return -1; // ké¡¶ç‚¹ä¸å­˜åœ¨
   }
 
   int i, sum = 0;
   AdjVexNodeP p;
 
   for (i = 0; i < G.n; i++)
-  {                        // Öğ¸ö¼ì²é
-    if (i == k) continue;  // Ìø¹ı×ÔÉí
+  {                        // é€ä¸ªæ£€æŸ¥
+    if (i == k) continue;  // è·³è¿‡è‡ªèº«
     p = G.vexs[i].firstArc;
 
     while (p)
@@ -64,11 +64,11 @@ int inDegree(ALGraph G, VexType v) {
 }
 
 int outDegree(ALGraph G, VexType v) {
-  // ÇóÓĞÏòÍ¼GÖĞÖµÎª v µÄ¶¥µãµÄ³ö¶È¡£Èôk¶¥µã²»´æÔÚ£¬Ôò·µ»Ø-1
+  // æ±‚æœ‰å‘å›¾Gä¸­å€¼ä¸º v çš„é¡¶ç‚¹çš„å‡ºåº¦ã€‚è‹¥ké¡¶ç‚¹ä¸å­˜åœ¨ï¼Œåˆ™è¿”å›-1
   int k = LocateVex(G, v);
 
   if ((G.n <= 0) || (k < 0) || (k >= G.n)) {
-    return -1; // k¶¥µã²»´æÔÚ
+    return -1; // ké¡¶ç‚¹ä¸å­˜åœ¨
   }
   int i         = 0;
   AdjVexNode *p = G.vexs[k].firstArc;
@@ -82,7 +82,7 @@ int outDegree(ALGraph G, VexType v) {
 }
 
 Status ExistIn(ALGraph G, int m, int k) {
-  // ¼ì²é¶¥µãkµÄÁÚ½ÓÁ´±íÖĞÊÇ·ñ´æÔÚ m¶¥µã¶ÔÓ¦µÄ½áµã
+  // æ£€æŸ¥é¡¶ç‚¹kçš„é‚»æ¥é“¾è¡¨ä¸­æ˜¯å¦å­˜åœ¨ mé¡¶ç‚¹å¯¹åº”çš„ç»“ç‚¹
   if ((k < 0) || (m < 0) || (k >= G.n) || (m >= G.n)) return ERROR;
 
   AdjVexNodeP p = G.vexs[k].firstArc;
@@ -97,18 +97,18 @@ Status ExistIn(ALGraph G, int m, int k) {
 }
 
 int LocateVex(ALGraph G, VexType v) {
-  // ²éÕÒ¶¥µãvÔÚÍ¼GµÄË÷Òı
+  // æŸ¥æ‰¾é¡¶ç‚¹våœ¨å›¾Gçš„ç´¢å¼•
   for (int i = 0; i < G.n; i++) {
     if (G.vexs[i].data == v) {
       return i;
     }
   }
-  return -1; // Ã»ÕÒµ½
+  return -1; // æ²¡æ‰¾åˆ°
 }
 
 int FirstAdjVex(ALGraph G, int k, AdjVexNodeP& p) {
-  // ÈôÍ¼GÖĞË÷ÒıÎªkµÄ¶¥µãµÄÁÚ½ÓÁ´±í·Ç¿Õ£¬ÕâÁîÖ¸ÕëpÖ¸ÏòµÚÒ»¸ö½áµã£¬²¢·µ»ØÆäË÷Òı
-  // ·ñÔò£¬Áî p Îª NULL£¬·µ»Ø-1
+  // è‹¥å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨éç©ºï¼Œè¿™ä»¤æŒ‡é’ˆpæŒ‡å‘ç¬¬ä¸€ä¸ªç»“ç‚¹ï¼Œå¹¶è¿”å›å…¶ç´¢å¼•
+  // å¦åˆ™ï¼Œä»¤ p ä¸º NULLï¼Œè¿”å›-1
   if ((k < 0) || (k >= G.n)) {
     return -1;
   }
@@ -118,14 +118,14 @@ int FirstAdjVex(ALGraph G, int k, AdjVexNodeP& p) {
     return p->adjvex;
   }
   else {
-    return -1; // Ë÷ÒıÎªkµÄ¶¥µãÎŞÁÚ½Ó¶¥µã
+    return -1; // ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹æ— é‚»æ¥é¡¶ç‚¹
   }
 }
 
 int NextAdjVex(ALGraph G, int k, AdjVexNodeP& p) {
-  // p ËùÖ¸½áµãÔÚË÷ÒıÎª k µÄ¶¥µãµÄÁÚ½ÓÁ´±íÖĞ£¬Áî p Ö¸Ïò
-  // pËùÖ¸½áµãµÄÏÂÒ»¸ö½áµã£¬²¢·µ»ØË÷Òı
-  // Èç¹û p Îª NULL£¬·µ»Ø -1
+  // p æ‰€æŒ‡ç»“ç‚¹åœ¨ç´¢å¼•ä¸º k çš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨ä¸­ï¼Œä»¤ p æŒ‡å‘
+  // pæ‰€æŒ‡ç»“ç‚¹çš„ä¸‹ä¸€ä¸ªç»“ç‚¹ï¼Œå¹¶è¿”å›ç´¢å¼•
+  // å¦‚æœ p ä¸º NULLï¼Œè¿”å› -1
   if ((k < 0) || (k >= G.n) || (p == NULL)) {
     return -1;
   }
@@ -134,23 +134,23 @@ int NextAdjVex(ALGraph G, int k, AdjVexNodeP& p) {
 
   while (t) {
     if (t == p) {
-      // p ËùÖ¸½áµãÔÚË÷ÒıÎª k µÄ¶¥µãµÄÁÚ½ÓÁ´±íÖĞ
+      // p æ‰€æŒ‡ç»“ç‚¹åœ¨ç´¢å¼•ä¸º k çš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨ä¸­
       p = p->next;
 
       if (p != NULL) {
-        return p->adjvex; // ÕÒµ½ÁË
+        return p->adjvex; // æ‰¾åˆ°äº†
       }
       else {
-        return -1;        // ½áµãÒÑ¾­È¡ÍêÁË
+        return -1;        // ç»“ç‚¹å·²ç»å–å®Œäº†
       }
     }
     t = t->next;
   }
-  return -1; // p ËùÖ¸½áµã²»ÔÚË÷ÒıÎª k µÄ¶¥µãµÄÁÚ½ÓÁ´±íÖĞ
+  return -1; // p æ‰€æŒ‡ç»“ç‚¹ä¸åœ¨ç´¢å¼•ä¸º k çš„é¡¶ç‚¹çš„é‚»æ¥é“¾è¡¨ä¸­
 }
 
 Status DestoryAdjVexNode(AdjVexNodeP& p) {
-  // Ïú»ÙÁÚ½ÓÁ´±í
+  // é”€æ¯é‚»æ¥é“¾è¡¨
   AdjVexNodeP current = p, t;
 
   while (current) {
@@ -162,7 +162,7 @@ Status DestoryAdjVexNode(AdjVexNodeP& p) {
 }
 
 Status DestoryGraph(ALGraph& G) {
-  // Ïú»ÙÍ¼G
+  // é”€æ¯å›¾G
   int n = G.n;
 
   for (int i = 0; i < n; i++) {
@@ -182,7 +182,7 @@ Status DestoryGraph(ALGraph& G) {
 }
 
 Status GetVex(ALGraph G, int k, VexType& v) {
-  // È¡Í¼GÖĞË÷ÒıÎªkµÄ¶¥µãµÄÖµµ½ w
+  // å–å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹çš„å€¼åˆ° w
   if ((k < 0) || (k >= G.n)) {
     return ERROR;
   }
@@ -191,8 +191,8 @@ Status GetVex(ALGraph G, int k, VexType& v) {
 }
 
 Status SetVex(ALGraph G, int k, VexType v) {
-  // ¸øÍ¼GÖĞË÷ÒıÎªkµÄ¶¥µã¸³Öµ v
-  // Èç¹ûÍ¼GÒÑ¾­´æÔÚÖµÎª v µÄ½áµã²»¸³Öµ
+  // ç»™å›¾Gä¸­ç´¢å¼•ä¸ºkçš„é¡¶ç‚¹èµ‹å€¼ v
+  // å¦‚æœå›¾Gå·²ç»å­˜åœ¨å€¼ä¸º v çš„ç»“ç‚¹ä¸èµ‹å€¼
   if ((k < 0) || (k >= G.n)) {
     return ERROR;
   }
@@ -207,7 +207,7 @@ Status SetVex(ALGraph G, int k, VexType v) {
 }
 
 Status AddArc(ALGraph& G, VexType v, VexType w, int info) {
-  // ÔÚÍ¼ G ÖĞÔö¼ÓÖµÎª v µÄ¶¥µãµ½ÖµÎª w µÄ¶¥µãµÄ±ß»ò»¡£¬info ÎªÈ¨Öµ
+  // åœ¨å›¾ G ä¸­å¢åŠ å€¼ä¸º v çš„é¡¶ç‚¹åˆ°å€¼ä¸º w çš„é¡¶ç‚¹çš„è¾¹æˆ–å¼§ï¼Œinfo ä¸ºæƒå€¼
   AdjVexNodeP p;
 
   int k = LocateVex(G, v);
@@ -224,7 +224,7 @@ Status AddArc(ALGraph& G, VexType v, VexType w, int info) {
     G.vexs[k].firstArc = p;
 
     if ((G.kind == UDG) || (G.kind == UDN)) {
-      // ¶ÔÓÚÎŞÏòÍ¼
+      // å¯¹äºæ— å‘å›¾
       p                  = (AdjVexNodeP)malloc(sizeof(AdjVexNode));
       p->info            = info;
       p->adjvex          = k;
@@ -239,7 +239,7 @@ Status AddArc(ALGraph& G, VexType v, VexType w, int info) {
 }
 
 Status RemoveArc(ALGraph& G, VexType v, VexType w) {
-  // É¾³ıÍ¼ G ÖĞÖµÎª v µÄ¶¥µãµ½ÖµÎª w µÄ¶¥µãµÄ±ß»ò»¡
+  // åˆ é™¤å›¾ G ä¸­å€¼ä¸º v çš„é¡¶ç‚¹åˆ°å€¼ä¸º w çš„é¡¶ç‚¹çš„è¾¹æˆ–å¼§
   AdjVexNodeP p, t;
   int k = LocateVex(G, v);
   int m = LocateVex(G, w);
@@ -247,7 +247,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
   if ((k < 0) || (m < 0) || (k >= G.n) || (m >= G.n)) return ERROR;
 
   if (ExistIn(G, m, k)) {
-    // v Óë w ÁÚ½Ó
+    // v ä¸ w é‚»æ¥
     p = G.vexs[k].firstArc;
 
     if (p->adjvex == m) {
@@ -255,7 +255,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
       free(p);
     }
     else {
-      while (p) { // Ñ°ÕÒ´ıÉ¾½áµã
+      while (p) { // å¯»æ‰¾å¾…åˆ ç»“ç‚¹
         if (p->next->adjvex == m) {
           t = p->next;
           break;
@@ -272,7 +272,7 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
     G.e--;
 
     if ((G.kind == UDG) || (G.kind == UDN)) {
-      // ¶ÔÓÚÎŞÏòÍ¼
+      // å¯¹äºæ— å‘å›¾
       p = G.vexs[m].firstArc;
 
       if (p->adjvex == k) {
@@ -297,21 +297,21 @@ Status RemoveArc(ALGraph& G, VexType v, VexType w) {
     }
   }
   else {
-    // v ²»Óë w ÁÚ½Ó
+    // v ä¸ä¸ w é‚»æ¥
     return ERROR;
   }
   return OK;
 }
 
 Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
-  // ¹ã¶ÈÓÅÏÈ±éÀúÍ¼ G
+  // å¹¿åº¦ä¼˜å…ˆéå†å›¾ G
   int i, j, k;
   AdjVexNodeP p;
   LQueue Q; InitQueue_LQ(Q);
 
   for (i = 0; i < G.n; i++) G.tags[i] = UNVISITED;
 
-  // ³õÊ¼»¯±êÖ¾Êı×é
+  // åˆå§‹åŒ–æ ‡å¿—æ•°ç»„
 
 
   for (i = 0; i < G.n; i++)
@@ -321,9 +321,9 @@ Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
       G.tags[i] = VISITED;
       EnQueue_LQ(Q, i);
 
-      while (OK == DeQueue_LQ(Q, k)) { // ³ö¶ÓÔªËØµ½ k
+      while (OK == DeQueue_LQ(Q, k)) { // å‡ºé˜Ÿå…ƒç´ åˆ° k
         for (j = FirstAdjVex(G, k, p); j >= 0; j = NextAdjVex(G, k, p))
-          // ÒÀ´ÎÅĞ¶Ïk¶¥µãµÄËùÓĞÁÚ½Ó¶¥µãj£¬ÈôÎ´·ÃÎÊ£¬Ôò·ÃÎÊ£¬²¢Èë¶Ó
+          // ä¾æ¬¡åˆ¤æ–­ké¡¶ç‚¹çš„æ‰€æœ‰é‚»æ¥é¡¶ç‚¹jï¼Œè‹¥æœªè®¿é—®ï¼Œåˆ™è®¿é—®ï¼Œå¹¶å…¥é˜Ÿ
           if (UNVISITED == G.tags[j]) {
             if (ERROR == visit(G.vexs[j].data)) return ERROR;
 
@@ -338,32 +338,32 @@ Status BFSTraverse(ALGraph G, Status (*visit)(VexType)) {
 Status DFS(ALGraph G, int v, Status (*visit)(VexType)) {
   AdjVexNodeP p;
 
-  // ÖÃÒÑ·ÃÎÊ±ê¼Ç
+  // ç½®å·²è®¿é—®æ ‡è®°
   G.tags[v] = VISITED;
 
-  // ·ÃÎÊ¶¥µã
+  // è®¿é—®é¡¶ç‚¹
   if (ERROR == visit(G.vexs[v].data)) return ERROR;
 
-  // pÖ¸Ïò¶¥µãvµÄµÚÒ»Ìõ»¡µÄ»¡Í·½áµã
+  // pæŒ‡å‘é¡¶ç‚¹vçš„ç¬¬ä¸€æ¡å¼§çš„å¼§å¤´ç»“ç‚¹
   p = G.vexs[v].firstArc;
 
   while (p != NULL)
   {
-    // Èôp->adjvex¶¥µãÎ´·ÃÎÊ,µİ¹é·ÃÎÊËü
+    // è‹¥p->adjvexé¡¶ç‚¹æœªè®¿é—®,é€’å½’è®¿é—®å®ƒ
     if (G.tags[p->adjvex] == UNVISITED) {
       if (DFS(G, p->adjvex, visit) == ERROR) {
         return ERROR;
       }
     }
 
-    // pÖ¸Ïò¶¥µãvµÄÏÂÒ»Ìõ»¡µÄ»¡Í·½áµã
+    // pæŒ‡å‘é¡¶ç‚¹vçš„ä¸‹ä¸€æ¡å¼§çš„å¼§å¤´ç»“ç‚¹
     p = p->next;
   }
   return OK;
 }
 
 Status DFSTraverse(ALGraph G, Status (*visit)(VexType)) {
-  // Éî¶ÈÓÅÏÈ±éÀúÍ¼ G
+  // æ·±åº¦ä¼˜å…ˆéå†å›¾ G
   int i;
 
   for (i = 0; i < G.n; i++) {
@@ -371,7 +371,7 @@ Status DFSTraverse(ALGraph G, Status (*visit)(VexType)) {
   }
 
   for (i = 0; i < G.n; i++) {
-    // ÒÀ´ÎÅĞ¶Ïi¶¥µã£¬ÈôÎ´·ÃÎÊ¹ı£¬Ôòµİ¹é·ÃÎÊËü
+    // ä¾æ¬¡åˆ¤æ–­ié¡¶ç‚¹ï¼Œè‹¥æœªè®¿é—®è¿‡ï¼Œåˆ™é€’å½’è®¿é—®å®ƒ
     if (UNVISITED == G.tags[i]) {
       if (DFS(G, i, visit) == ERROR) return ERROR;
     }

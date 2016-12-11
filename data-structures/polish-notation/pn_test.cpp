@@ -1,6 +1,6 @@
 #include "polish-notation.h"
 
-int tests_run = 0; // ¼ÇÂ¼²âÊÔ´ÎÊı
+int tests_run = 0; // è®°å½•æµ‹è¯•æ¬¡æ•°
 
 static char const* testinit() {
   Expression  E;
@@ -20,12 +20,12 @@ static char const* testinit() {
     "^ ^ 2 3 4",
     "* / 2 45 2"
   };
-  size_t length = sizeof(str) / sizeof(*str); // ±í´ïÊ½µÄ¸öÊı
+  size_t length = sizeof(str) / sizeof(*str); // è¡¨è¾¾å¼çš„ä¸ªæ•°
 
   printf("\n%s\n", "ReadExpr and WriteExpr:");
 
   for (size_t i = 0; i < length; i++) {
-    // ÒÀ´Î¶ÁÈ¡±í´ïÊ½£¬²¢Êä³öÖĞ×º±í´ïÊ½
+    // ä¾æ¬¡è¯»å–è¡¨è¾¾å¼ï¼Œå¹¶è¾“å‡ºä¸­ç¼€è¡¨è¾¾å¼
     E = ReadExpr(str[i]);
     mu_assert("read expression", E != NULL);
     WriteExpr(E);
@@ -144,7 +144,7 @@ static char const* testcalculator() {
          "Please enter polish notation (press enter key directly to exit): ");
 
   while (fgets(buffer, 100, stdin)) {
-    buffer[strcspn(buffer, "\r\n")] = 0; // ½«µÚÒ»¸ö \r »òÕß \n Ìæ»»Îª \0
+    buffer[strcspn(buffer, "\r\n")] = 0; // å°†ç¬¬ä¸€ä¸ª \r æˆ–è€… \n æ›¿æ¢ä¸º \0
 
     if (buffer[0] == 0) {
       break;

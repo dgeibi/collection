@@ -10,35 +10,35 @@ typedef int QElemType;
 typedef struct LQNode {
   QElemType      data;
   struct LQNode *next;
-} LQNode, *QueuePtr;                       // ½áµãºÍ½áµãÖ¸ÕëÀàĞÍ
+} LQNode, *QueuePtr;                       // ç»“ç‚¹å’Œç»“ç‚¹æŒ‡é’ˆç±»å‹
 
 typedef struct {
-  QueuePtr front;                          // ¶ÓÍ·Ö¸Õë
-  QueuePtr rear;                           // ¶ÓÎ²Ö¸Õë
-} LQueue;                                  // Á´¶ÓÁĞÀàĞÍ
+  QueuePtr front;                          // é˜Ÿå¤´æŒ‡é’ˆ
+  QueuePtr rear;                           // é˜Ÿå°¾æŒ‡é’ˆ
+} LQueue;                                  // é“¾é˜Ÿåˆ—ç±»å‹
 
-void   InitQueue_LQ(LQueue& Q);            /* ¹¹ÔìÒ»¸ö¿Õ¶ÓÁĞQ */
+void   InitQueue_LQ(LQueue& Q);            /* æ„é€ ä¸€ä¸ªç©ºé˜Ÿåˆ—Q */
 
-void   DestroyQueue_LQ(LQueue& Q);         /* Ïú»Ù¶ÓÁĞQ(ÎŞÂÛ¿Õ·ñ¾ù¿É) */
+void   DestroyQueue_LQ(LQueue& Q);         /* é”€æ¯é˜Ÿåˆ—Q(æ— è®ºç©ºå¦å‡å¯) */
 
-bool   IsEmpty_LQ(LQueue Q);               /* ÈôQÎª¿Õ¶ÓÁĞ£¬Ôò·µ»Ø true£¬·ñÔò·µ»Ø false */
+bool   IsEmpty_LQ(LQueue Q);               /* è‹¥Qä¸ºç©ºé˜Ÿåˆ—ï¼Œåˆ™è¿”å› trueï¼Œå¦åˆ™è¿”å› false */
 
-int    QueueLength_LQ(LQueue Q);           /* Çó¶ÓÁĞµÄ³¤¶È */
+int    QueueLength_LQ(LQueue Q);           /* æ±‚é˜Ÿåˆ—çš„é•¿åº¦ */
 
 Status GetHead_LQ(LQueue     Q,
                   QElemType& e);           /*
-                                              Èô¶ÓÁĞ²»¿Õ£¬ÔòÓÃe·µ»ØQµÄ¶ÓÍ·ÔªËØ£¬²¢·µ»ØOK£¬·ñÔò·µ»ØERROR*/
+                                              è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ™ç”¨eè¿”å›Qçš„é˜Ÿå¤´å…ƒç´ ï¼Œå¹¶è¿”å›OKï¼Œå¦åˆ™è¿”å›ERROR*/
 
 void   EnQueue_LQ(LQueue  & Q,
-                  QElemType e);            /* ²åÈëÔªËØeÎªQµÄĞÂµÄ¶ÓÎ²ÔªËØ */
+                  QElemType e);            /* æ’å…¥å…ƒç´ eä¸ºQçš„æ–°çš„é˜Ÿå°¾å…ƒç´  */
 
 Status DeQueue_LQ(LQueue   & Q,
                   QElemType& e);           /*
-                                              Èô¶ÓÁĞ²»¿Õ£¬É¾³ıQµÄ¶ÓÍ·ÔªËØ£¬ÓÃe·µ»ØÆäÖµ£¬²¢·µ»ØOK£¬·ñÔò·µ»ØERROR
+                                              è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ é™¤Qçš„é˜Ÿå¤´å…ƒç´ ï¼Œç”¨eè¿”å›å…¶å€¼ï¼Œå¹¶è¿”å›OKï¼Œå¦åˆ™è¿”å›ERROR
                                             */
 
 void   Traverse_LQ(LQueue Q,
                    void (*vi)(QElemType)); /*
-                                              ´Ó¶ÓÍ·µ½¶ÓÎ²ÒÀ´Î¶Ô¶ÓÁĞQÖĞÃ¿¸öÔªËØµ÷ÓÃº¯Êıvi()
+                                              ä»é˜Ÿå¤´åˆ°é˜Ÿå°¾ä¾æ¬¡å¯¹é˜Ÿåˆ—Qä¸­æ¯ä¸ªå…ƒç´ è°ƒç”¨å‡½æ•°vi()
                                             */
 #endif /* ifndef QUEUE_H */
