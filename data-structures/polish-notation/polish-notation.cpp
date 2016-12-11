@@ -203,9 +203,8 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
       E->rchild = NULL;
       return true;
     }
-    else if (!IsReasonable(E->lchild) &&
-             PreOrderFind(E->lchild, type, data, value)) {
-      return true; // 左式未满并且插入成功
+    else if (!IsReasonable(E->lchild)) {//左子式未满
+      return PreOrderFind(E->lchild, type, data, value);
     }
     else if (!IsReasonable(E->rchild)) {
       return PreOrderFind(E->rchild, type, data, value);
