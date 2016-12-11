@@ -1,6 +1,7 @@
 #include "polish-notation.h"
 
-int tests_run = 0;
+int tests_run = 0; // 记录测试次数
+
 static char const* testinit() {
   Expression  E;
   char const *str[] = {
@@ -19,11 +20,12 @@ static char const* testinit() {
     "^ ^ 2 3 4",
     "* / 2 45 2"
   };
-  size_t length = sizeof(str) / sizeof(*str);
+  size_t length = sizeof(str) / sizeof(*str); // 表达式的个数
 
   printf("\n%s\n", "ReadExpr and WriteExpr:");
 
   for (size_t i = 0; i < length; i++) {
+    // 依次读取表达式，并输出中缀表达式
     E = ReadExpr(str[i]);
     mu_assert("read expression", E != NULL);
     WriteExpr(E);

@@ -16,7 +16,7 @@ enum type {
 typedef struct ExprNode {
   int              type;  // 类型：OPERATOR/ CONST/ VARIABLE
   char             data;  // 字符数据：变量/运算符的字符
-  int              value; // 值：变量/常数的值
+  int              value; // 值：变量/常量的值
   struct ExprNode *lchild, *rchild;
 } ExprNode, *Expression;
 
@@ -38,7 +38,7 @@ bool IsHigher(Expression parent,
 // 判断表达式是否合理
 bool       IsReasonable(Expression E);
 
-// 将表达式重置为常数
+// 将表达式重置为常量
 void       ToConst(Expression E);
 
 // 复制表达式
@@ -55,7 +55,7 @@ bool PreOrderFind(Expression& E,
 // 由字符串构造表达式，如果语法有误，返回 NULL
 // 允许的字符：
 //    运算符：+-*/^
-//    常数：0-9
+//    常量：0-9
 //    变量：a-zA-Z
 //    分隔符：空格（可选）
 Expression ReadExpr(char const *str);
@@ -80,8 +80,8 @@ Expression CompoundExpr(char       P,
                         Expression E1,
                         Expression E2);
 
-// 合并表达式 E 中所有常数运算。例如,
-// 对表达式 E = (2 + 3 - a) * (b + 3 * 4)进行合并常数的操作后, 求得 E = (5 - a) * (b + 12)
+// 合并表达式 E 中所有常量运算。例如,
+// 对表达式 E = (2 + 3 - a) * (b + 3 * 4)进行合并常量的操作后, 求得 E = (5 - a) * (b + 12)
 void       MergeConst(Expression& E);
 
 // 求偏导数（只支持幂函数）

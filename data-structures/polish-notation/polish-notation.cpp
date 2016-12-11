@@ -1,9 +1,9 @@
 #include "polish-notation.h"
 
-void ToConst(Expression E) {
+void ToConst(Expression E) { // 转化为常量
   if (E) {
     E->type = CONST;
-    E->data = '\0';
+    E->data = 0;
     DestroyExpression(E->lchild);
     DestroyExpression(E->rchild);
     E->lchild = E->rchild = NULL;
@@ -15,19 +15,19 @@ bool IsReasonable(Expression E) {
   if (E) {
     if (E->type != OPERATOR) {
       return true;
-    }
-    else if (false == IsReasonable(E->lchild)) {
+    } // 运算符需判断子式
+    else if (false == IsReasonable(E->lchild)) {// 左子式不合理
       return false;
     }
     else return IsReasonable(E->rchild);
   }
-  return false;
+  return false; // E==NULL，不合理
 }
 
 Expression Diff(Expression E, char V) {
   if (E == NULL) return NULL;
 
-  if (E->type == OPERATOR) {
+  if (E->type == OPERATOR) { // 依照求导公式实现
     switch (E->data) {
       case '+':
       case '-':
@@ -66,6 +66,8 @@ Expression Diff(Expression E, char V) {
         break;
     }
   }
+
+  // 变量V，其它原子的对V的偏导数分别为1，0
   Expression nE = (Expression)malloc(sizeof(ExprNode));
   nE->type   = CONST;
   nE->data   = '\0';
@@ -106,13 +108,14 @@ void DestroyExpression(Expression& E) {
 }
 
 void MergeConst(Expression& E) {
-  // 合并表达式 E 中所有常数运算
+  // 合并表达式 E 中所有常量运算
   if (E) {
     MergeConst(E->lchild);
     MergeConst(E->rchild);
 
     if ((E->type == OPERATOR) && E->lchild && (E->lchild->type == CONST) &&
         E->rchild && (E->rchild->type == CONST)) {
+      // （OPERATOR CONST CONST)
       switch (E->data) {
         case '+':
           E->value = E->lchild->value + E->rchild->value;
@@ -247,7 +250,7 @@ bool IsAtom(int type, char const *str) {
     for (size_t i = 0; i < length; i++)
     {
       if ((i == 0) && ((str[0] == '+') || (str[0] == '-')) && str[1]) {
-        continue;
+        continue; // str[0] 可以为 + -，但必须存在下一位
       }
 
       if (Is(type, str[i])) {
@@ -258,10 +261,10 @@ bool IsAtom(int type, char const *str) {
     return true;
   }
   else if (type == VARIABLE) {
-    if (length == 1) {
+    if (length == 1) {      // 无符号变量原子
       return Is(type, str[0]);
     }
-    else if (length == 2) {
+    else if (length == 2) { // 有符号变量原子
       return (str[0] == '+' || str[0] == '-') && Is(type, str[1]);
     }
   }
@@ -273,7 +276,7 @@ Expression ReadExpr(char const *str) {
   // 由字符串构造表达式，如果语法有误，返回 NULL
   // 允许的字符：
   //    运算符：+-*/^
-  //    常数：0-9
+  //    常量：0-9
   //    变量：a-zA-Z
   //    分隔符：空格（可选）
   Expression E = NULL;
@@ -281,57 +284,52 @@ Expression ReadExpr(char const *str) {
   size_t     length = strlen(str);
   bool       BAD = false, MINUS = false;
 
-  for (size_t i = 0; i < length; i++) {
-    if (Is(CONST, str[i])) {
-      value = value * 10 + (str[i] - '0');
+  for (size_t i = 0; i < length; i++) {                 // 依次读取每一个字符
+    if (Is(CONST, str[i])) {                            // 常量
+      value = value * 10 + (str[i] - '0');              // 进位，转换为int
 
-      if (!Is(CONST, str[i + 1])) { // 下一个字符不是常数
-        if (MINUS) {
-          value = -value;           // 是负的常数原子
+      if (!Is(CONST, str[i + 1])) {                     // 下一个字符不是常量
+        if (MINUS) {                                    // 是负的常量原子
+          value = -value;                               // 将值设为相反数
         }
 
-        if (!PreOrderFind(E, CONST, '\0', value)) {
-          BAD = true;
-          break;
-        }
-        value = 0; // 重置
+        if (!PreOrderFind(E, CONST, '\0', value)) {     // 插入常量结点到 E
+          BAD = true;                                   // 插入失败
+        }// 表达式已经满了
+        value = 0;                                      // 重置
       }
     }
-    else {
-      if (Is(OPERATOR, str[i])) {
-        if ((i == 0) && IsAtom(CONST, str)) {
-          if (str[i] == '-') {
-            MINUS = true; // 是负的常数原子
-          }
-        }
-        else if (!PreOrderFind(E, OPERATOR, str[i], 0)) {
-          BAD = true;
-          break;
+    else if (Is(OPERATOR, str[i])) {                    // 运算符
+      if ((i == 0) && IsAtom(CONST, str)) {
+        if (str[i] == '-') {
+          MINUS = true;                                 // 是负的常量原子
         }
       }
-      else if (Is(VARIABLE, str[i])) {
-        if ((i == 1) && IsAtom(VARIABLE, str)) {
-          // 如果是变量原子，前面补零
-          if (!PreOrderFind(E, CONST, '\0', 0)) {
-            BAD = true;
-            break;
-          }
-        }
-
-        if (!PreOrderFind(E, VARIABLE, str[i], 0)) {
-          BAD = true;
-          break;
-        }
-      }
-      else if (str[i] == ' ') {
-        continue;
-      }
-      else {
+      else if (!PreOrderFind(E, OPERATOR, str[i], 0)) { // 插入运算符结点到 E
         BAD = true;
-        break;
       }
-    } // endelse
-  }   // endfor
+    }
+    else if (Is(VARIABLE, str[i])) {            // 变量
+      if ((i == 1) && IsAtom(VARIABLE, str)) {  // 有符号变量原子
+        if (!PreOrderFind(E, CONST, '\0', 0)) { // 前面补一个零
+          BAD = true;
+          break;
+        }
+      }
+
+      if (!PreOrderFind(E, VARIABLE, str[i], 0)) { // 插入变量结点到 E
+        BAD = true;
+      }
+    }
+    else if (str[i] == ' ') { // 空格，可选分隔符，忽略
+      continue;
+    }
+    else {                    // 其它字符非法
+      BAD = true;
+    }
+
+    if (BAD) break;
+  } // endfor
 
   if (BAD || !IsReasonable(E)) {
     DestroyExpression(E);
@@ -342,7 +340,7 @@ Expression ReadExpr(char const *str) {
 }
 
 bool IsHigher(Expression parent, Expression child) {
-  // 判断父母结点的运算符的优先级是否比子结点的优先级高
+  // 判断父式的运算符的优先级是否比子式的优先级高
   switch (parent->data) {
     case '^':
 
@@ -380,8 +378,8 @@ void WriteEx(Expression E) {
   // 用带括弧的中缀表示式输出表达式 E，添加括号
   if (E) {
     if (E->lchild) {
-      if (IsHigher(E, E->lchild)) {
-        putchar('(');
+      if (IsHigher(E, E->lchild)) { // 父式比子式的优先级高
+        putchar('(');               // 加括号
         WriteEx(E->lchild);
         putchar(')');
       }
@@ -437,7 +435,7 @@ Expression CompoundExpr(char P, Expression E1, Expression E2) {
     E->type   = OPERATOR;
     E->value  = 0;
     E->data   = P;
-    E->lchild = Copy(E1);
+    E->lchild = Copy(E1); // 存副本
     E->rchild = Copy(E2);
     return E;
   }
