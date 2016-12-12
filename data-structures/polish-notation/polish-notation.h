@@ -82,7 +82,7 @@ Expression CompoundExpr(char       P,
 
 // 合并表达式 E 中所有常量运算。例如,
 // 对表达式 E = (2 + 3 - a) * (b + 3 * 4)进行合并常量的操作后, 求得 E = (5 - a) * (b + 12)
-void       MergeConst(Expression& E);
+Expression MergeConst(Expression& E);
 
 // 求偏导数（只支持幂函数）
 Expression Diff(Expression e,

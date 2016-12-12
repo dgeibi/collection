@@ -107,7 +107,7 @@ void DestroyExpr(Expression& E) {
   }
 }
 
-void MergeConst(Expression& E) {
+Expression MergeConst(Expression& E) {
   // 合并表达式 E 中所有常量运算
   if (E) {
     MergeConst(E->lchild);
@@ -182,6 +182,7 @@ void MergeConst(Expression& E) {
       }
     }
   }
+  return E;
 }
 
 bool PreOrderFind(Expression& E, int type, char data, int value) {
@@ -203,7 +204,7 @@ bool PreOrderFind(Expression& E, int type, char data, int value) {
       E->rchild = NULL;
       return true;
     }
-    else if (!IsReasonable(E->lchild)) {//左子式未满
+    else if (!IsReasonable(E->lchild)) { // 左子式未满
       return PreOrderFind(E->lchild, type, data, value);
     }
     else if (!IsReasonable(E->rchild)) {

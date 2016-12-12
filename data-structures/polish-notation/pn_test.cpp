@@ -134,11 +134,28 @@ static char const* testdiff() {
   return OK;
 }
 
+int getChoice() {
+  int choice;
+
+  printf("Do something with expression:\n");
+  printf("1. Assign\n");
+  printf("2. Diff\n");
+  printf("3. Enter next expression or Exit\n");
+  printf("Enter your choice:");
+
+  while (scanf("%d", &choice) != 1) {
+    CLEAN_INPUT;
+    printf("Enter your choice again:");
+  }
+  CLEAN_INPUT;
+  return choice;
+}
+
 static char const* testcalculator() {
   char *buffer = (char *)malloc(100);
   char  ch;
   int   value;
-  Expression E;
+  Expression E, nE;
 
   printf("\n%s\n",
          "Please enter polish notation (press enter key directly to exit): ");
@@ -152,25 +169,59 @@ static char const* testcalculator() {
     E = ReadExpr(buffer);
 
     if (E) {
-      printf("%s\n",
-             "Enter variable to assign (press enter key directly to exit): ");
+      switch (getChoice()) {
+        case 1:
 
-      while ((ch = fgetc(stdin)) != EOF && ch != '\n') {
-        CLEAN_INPUT;
-        printf("Enter the value to be assigned to %c:\n", ch);
+          printf("%s\n",
+                 "Enter variable for assignment (press enter key directly to exit): ");
 
-        while (scanf("%d", &value) != 1) {
+          while ((ch = fgetc(stdin)) != EOF && ch != '\n') {
+            CLEAN_INPUT;
+
+            if (Is(VARIABLE, ch)) {
+              printf("Enter the value to be assigned to %c:\n", ch);
+
+              while (scanf("%d", &value) != 1) {
+                CLEAN_INPUT;
+                printf("Enter the value to be assigned to %c again:\n", ch);
+              }
+              CLEAN_INPUT;
+              Assign(E, ch, value);
+            }
+
+            printf("%s\n",
+                   "Enter variable for assignment (press enter key directly to exit): ");
+          }
+          printf("%s\n", "Result: ");
+          WriteEx(E);
+          printf("=%d\n", Value(E));
+          break;
+
+        case 2:
+          printf("%s\n",
+                 "Enter variable for differentiation (press enter key directly to exit): ");
+
+          while (!Is(VARIABLE, (ch = fgetc(stdin)))) {
+            CLEAN_INPUT;
+
+            if ((ch == EOF) || (ch == '\n')) {
+              break;
+            }
+            printf("%c is not a variable.\n", ch);
+            printf("Please enter a variable: ");
+          }
           CLEAN_INPUT;
-          printf("Enter the value to be assigned to %c again:\n", ch);
-        }
-        CLEAN_INPUT;
-        Assign(E, ch, value);
-        printf("%s\n",
-               "Enter variable to assign (press enter key directly to exit): ");
+
+          if (Is(VARIABLE, ch)) {
+            printf("primitive: "); WriteExpr(E);
+            nE = Diff(E, ch);
+            printf("diff(%c): ", ch); WriteExpr(MergeConst(nE));
+          }
+          break;
+
+        default:
+          break;
       }
-      printf("%s\n", "Result: ");
-      WriteEx(E);
-      printf("=%d\n", Value(E));
     }
     printf("\n%s\n",
            "Please enter polish notation (press enter key directly to exit): ");
