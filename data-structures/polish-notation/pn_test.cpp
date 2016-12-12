@@ -4,7 +4,7 @@ int tests_run = 0; // 记录测试次数
 
 static char const* testinit() {
   Expression  E;
-  char const *str[] = {
+  char const *str1[] = {
     "0",
     "a",
     "+111",
@@ -20,22 +20,31 @@ static char const* testinit() {
     "^ ^ 2 3 4",
     "* / 2 45 2"
   };
-  size_t length = sizeof(str) / sizeof(*str); // 表达式的个数
+  size_t length = sizeof(str1) / sizeof(*str1); // 表达式的个数
 
   printf("\n%s\n", "ReadExpr and WriteExpr:");
 
   for (size_t i = 0; i < length; i++) {
     // 依次读取表达式，并输出中缀表达式
-    E = ReadExpr(str[i]);
+    E = ReadExpr(str1[i]);
     mu_assert("read expression", E != NULL);
+    printf("Input: %-20s Output: ", str1[i]);
     WriteExpr(E);
     DestroyExpr(E);
   }
-  mu_assert("read expression_NULL", ReadExpr("1+2") == NULL);
-  mu_assert("read expression_NULL", ReadExpr("*11") == NULL);
-  mu_assert("read expression_NULL", ReadExpr("+ 1 2 3") == NULL);
-  mu_assert("read expression_NULL", ReadExpr("+ * 2 3 1 x") == NULL);
-  mu_assert("read expression_NULL", ReadExpr("+ * 2 3") == NULL);
+  char const *str2[] = {
+    "1+2",
+    "*11",
+    "+ 1 2 3",
+    "+ * 2 3 1 x",
+    "+ * 2 3"
+  };
+  length = sizeof(str2) / sizeof(*str2);
+
+  for (size_t i = 0; i < length; i++) {
+    printf("Input: %-20s Output: ", str2[i]);
+    mu_assert("read expression NULL", ReadExpr(str2[i]) == NULL);
+  }
   return OK;
 }
 
