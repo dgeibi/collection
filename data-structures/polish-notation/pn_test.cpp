@@ -138,9 +138,10 @@ int getChoice() {
   int choice;
 
   printf("Do something with expression:\n");
-  printf("1. Assign\n");
-  printf("2. Diff\n");
-  printf("3. Enter next expression or Exit\n");
+  printf("1. Value\n");
+  printf("2. Assign\n");
+  printf("3. Diff\n");
+  printf("4. Enter next expression or Exit\n");
   printf("Enter your choice:");
 
   while (scanf("%d", &choice) != 1) {
@@ -170,7 +171,7 @@ static char const* testcalculator() {
 
     if (E) {
       switch (getChoice()) {
-        case 1:
+        case 2:
 
           printf("%s\n",
                  "Enter variable for assignment (press enter key directly to exit): ");
@@ -192,12 +193,14 @@ static char const* testcalculator() {
             printf("%s\n",
                    "Enter variable for assignment (press enter key directly to exit): ");
           }
-          printf("%s\n", "Result: ");
+
+        case 1:
+          printf("Result: ");
           WriteEx(E);
           printf("=%d\n", Value(E));
           break;
 
-        case 2:
+        case 3:
           printf("%s\n",
                  "Enter variable for differentiation (press enter key directly to exit): ");
 
