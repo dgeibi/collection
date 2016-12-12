@@ -205,15 +205,17 @@ static char const* testcalculator() {
                  "Enter variable for differentiation (press enter key directly to exit): ");
 
           while (!Is(VARIABLE, (ch = fgetc(stdin)))) {
-            CLEAN_INPUT;
-
             if ((ch == EOF) || (ch == '\n')) {
               break;
             }
+            CLEAN_INPUT;
             printf("%c is not a variable.\n", ch);
             printf("Please enter a variable: ");
           }
-          CLEAN_INPUT;
+
+          if ((ch != EOF) && (ch != '\n')) {
+            CLEAN_INPUT;
+          }
 
           if (Is(VARIABLE, ch)) {
             printf("primitive: "); WriteExpr(E);
