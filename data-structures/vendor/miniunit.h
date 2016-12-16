@@ -40,6 +40,6 @@ extern int tests_run;
   }
 
 #define CLEAN_INPUT \
-  while (getchar() != '\n') { continue; }
+  {int ch;while ((ch=getchar()) != '\n' && ch != EOF);}
 
 #endif /* ifndef MINIUNIT_H */

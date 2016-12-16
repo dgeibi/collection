@@ -68,6 +68,9 @@ static char const* testcompound() {
   Expression E = CompoundExpr('*', t1, t2);
 
   mu_assert("compound", NULL != E);
+  mu_assert("null expression compound", NULL == CompoundExpr('/', NULL, t1));
+  mu_assert("illegal operator compound", NULL == CompoundExpr('c', t2, t1));
+  
   printf("\n%s\n", "CompoundExpr:");
   WriteEx(t1); printf(" %s ", "multiplied by"); WriteEx(t2); printf(" %s ",
                                                                     "equals");

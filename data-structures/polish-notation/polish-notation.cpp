@@ -422,7 +422,7 @@ void WriteExpr(Expression E) {
 
 Expression CompoundExpr(char P, Expression E1, Expression E2) {
   // 构造一个新的复合表达式，(E1)P(E2)，(P E1 E1)
-  if (!Is(OPERATOR, P)) { // 不是运算符
+  if (!Is(OPERATOR, P) || !E1 || !E2) { // 不是运算符，空表达式
     return NULL;
   }
   else {
