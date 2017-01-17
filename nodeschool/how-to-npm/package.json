@@ -1,0 +1,24 @@
+{
+  "name": "@dgeibi/oh-nnnp",
+  "version": "1.0.3",
+  "description": "my first package",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "dgeibi",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgeibi/npm-package.git"
+  },
+  "keywords": [
+    "beginner"
+  ],
+  "bugs": {
+    "url": "https://github.com/dgeibi/npm-package/issues"
+  },
+  "homepage": "https://github.com/dgeibi/npm-package#readme"
+}
