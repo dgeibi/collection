@@ -1,37 +1,41 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-const width = '200px';
+const width = '200px'
 
 class SearchSelect extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       value: '',
-    };
+    }
   }
 
   onValueChange = (e) => {
-    this.setValue(e.target.value);
+    this.setValue(e.target.value)
   }
 
   onClick = (e) => {
-    if (!e.target.matches('li')) return;
-    this.setValue(e.target.textContent);
+    if (!e.target.matches('li')) return
+    this.setValue(e.target.textContent)
   }
 
   setValue(value) {
-    if (value !== this.state.value) this.setState({ value });
+    if (value !== this.state.value) this.setState({ value })
   }
 
   render() {
-    const { value } = this.state;
-    const regex = new RegExp(String(value).replace(/\\/g, '\\\\'), 'i');
+    const { value } = this.state
+    const regex = new RegExp(String(value).replace(/\\/g, '\\\\'), 'i')
     return (
       <div>
         <div>
-          <input type="search" value={value} onInput={this.onValueChange} />
+          <input type='search' value={value} onInput={this.onValueChange} />
           <ul onClick={this.onClick}>
-            {this.props.items.map(item => <li key={item} className={regex.test(item) ? '' : 'hide'}>{item}</li>)}
+            {this.props.items.map(item =>
+              <li key={item} className={regex.test(item) ? '' : 'hide'}>
+                {item}
+              </li>
+            )}
           </ul>
         </div>
         <style jsx>{`
@@ -45,7 +49,8 @@ class SearchSelect extends Component {
             box-sizing: inherit;
           }
 
-          div:hover ul, div input:focus + ul {
+          div:hover ul,
+          div input:focus + ul {
             visibility: visible;
           }
 
@@ -82,10 +87,10 @@ class SearchSelect extends Component {
           ul li:hover {
             background: #eee;
           }
-      `}</style>
+        `}</style>
       </div>
-    );
+    )
   }
 }
 
-export default SearchSelect;
+export default SearchSelect
