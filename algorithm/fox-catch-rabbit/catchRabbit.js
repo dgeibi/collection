@@ -11,10 +11,7 @@ function catchRabbit(number) {
     viewed[current] = true
     offset = (offset + 1) % number
     current = (current + offset) % number
-    if (current === INIT_CURRENT && offset === INIT_OFFSET) {
-      break
-    }
-  } while (count < THRESHOLD)
+  } while (count < THRESHOLD && !(current === INIT_CURRENT && offset === INIT_OFFSET))
   const notViewed = []
   for (let i = 0; i < viewed.length; i += 1) {
     if (!viewed[i]) notViewed.push(i + 1)
