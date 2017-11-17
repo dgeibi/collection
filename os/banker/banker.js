@@ -43,7 +43,7 @@ banker.returnType = {
  */
 function isSafe(alloc, need, avail) {
   const len = alloc.length
-  const finishes = new Array(len)
+  const finishes = Array(len).fill(false)
   const work = Res.cloneRess(avail)
   for (let i = 0; i < len; i += 1) {
     if (!finishes[i] && need[i].every((x, j) => x.value <= work[j].value)) {
