@@ -21,7 +21,7 @@ const table = new Table(0.2)
 exports.tlog = function tlogObjs(datas) {
   const first = datas[0]
   if (!first) {
-    return console.log('nothing')
+    return console.log('null')
   }
   if (Array.isArray(first)) {
     table.setData(datas)
