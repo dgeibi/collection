@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, no-mixed-operators */
 // copy from http://blog.csdn.net/ljianhui/article/details/13761901
-gameSchedule(3)
+gameSchedule(8)
 
 function gameSchedule(number) {
   const table = Array(number * number).fill(0)
