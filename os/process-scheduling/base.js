@@ -20,22 +20,27 @@ class Base {
     const logs = []
     const pickData = x => x.data()
 
-    while (time < 1000 && this.ready.length + this.pending.length > 0) {
+    while (this.ready.length + this.pending.length > 0) {
       this.takeReady(time)
       if (this.ready.length <= 0) {
         time += 1
         continue
       }
-      const log = { time }
       const proc = this.schedule(time)
       if (!proc) {
         time += 1
-        logs.push(log)
+        logs.push({ time })
         continue
       }
+
       const roundTime = Math.min(this.sliceNum, proc.needTime)
       repeat(roundTime, () => proc.tick())
-      time += roundTime
+      time += roundTime - 1
+      const log = { time }
+      // 快进后，就绪列队要补充
+      if (roundTime > 1) {
+        this.takeReady(time)
+      }
       log.running = pickData(proc)
       proc.stop()
       if (proc.state === stateType.FINISH) {
@@ -49,6 +54,7 @@ class Base {
       log.pendings = this.pending.map(pickData)
       log.readys = this.ready.map(pickData)
       logs.push(log)
+      time += 1
     }
     this.logs = logs
     return this
@@ -65,7 +71,7 @@ class Base {
   takeReady(time) {
     for (let i = this.pending.length - 1; i >= 0; i -= 1) {
       const proc = this.pending[i]
-      if (proc.arriveTime === time) {
+      if (proc.arriveTime <= time) {
         this.ready.push(this.pending.splice(i, 1)[0])
       }
     }
@@ -83,18 +89,14 @@ class Base {
   }
 
   printLogs() {
-    if (!this.logs) return
+    if (!this.logs) return this
     console.log(`${this.constructor.name} running logs:`)
     this.logs.forEach((log) => {
-      console.log(`Pendings Queue of #${log.time}:`)
-      tlog(log.pendings)
-
-      console.log(`Ready Queue of #${log.time}:`)
-      tlog(log.readys)
-
-      console.log(`Deads Queue of #${log.time}:`)
-      tlog(log.deads)
+      tlog(log.pendings, `${this.constructor.name} Pendings Queue of #${log.time}`)
+      tlog(log.readys, `${this.constructor.name} Ready Queue of #${log.time}`)
+      tlog(log.deads, `${this.constructor.name} Deads Queue of #${log.time}`)
     })
+    return this
   }
 }
 
