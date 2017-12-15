@@ -13,7 +13,7 @@ class HRRNScheduler extends Base {
   schedule(time) {
     this.ready.forEach((proc) => {
       const { needTime, arriveTime } = proc
-      proc.priority = (time - arriveTime + needTime) / needTime // eslint-disable-line
+      proc.priority = (time - arriveTime + needTime) / needTime
     })
     this.ready.sort((a, b) => b.priority > a.priority)
     return this.ready[0]
