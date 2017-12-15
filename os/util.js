@@ -18,7 +18,8 @@ const TCharts = require('tcharts.js')
 const { Table } = TCharts
 const table = new Table(0.2)
 
-exports.tlog = function tlogObjs(datas) {
+exports.tlog = function tlogObjs(datas, msg) {
+  msg && console.log(msg + ':')
   const first = datas[0]
   if (!first) {
     return console.log('null')
