@@ -18,8 +18,8 @@ class PCB {
     )
     const { needTime, arriveTime, pid } = theOpt
     this.pid = pid
-    this.cyclingTime = 0
-    this.priority = 0
+    this.cyclingTime = NaN
+    this.priority = NaN
     this.state = stateType.WAIT
     this.needTime = needTime
     this.arriveTime = arriveTime
