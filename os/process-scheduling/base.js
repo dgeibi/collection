@@ -28,7 +28,7 @@ class Base {
         readys: this.ready.map(pickData),
       })
     }
-    pushLog('-0')
+    pushLog('not started')
     while (this.ready.length + this.pending.length > 0) {
       this.takeReady(time)
       const proc = this.ready.length > 0 && this.schedule(time)
@@ -92,6 +92,7 @@ class Base {
     this.logs.forEach((log) => {
       tlog(log.pendings, `${this.constructor.name} Pendings Queue of #${log.time}`)
       tlog(log.readys, `${this.constructor.name} Ready Queue of #${log.time}`)
+      log.running && console.log('----', 'Running', log.running.pid, '----')
       tlog(log.deads, `${this.constructor.name} Deads Queue of #${log.time}`)
     })
     return this
