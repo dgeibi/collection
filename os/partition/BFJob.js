@@ -15,6 +15,7 @@ class BFJob extends FFJob {
       part = part.next
     }
     if (minSizePart) {
+      // 找到最小的可分配分区并分配
       this.alloc(minSizePart, size)
       ret = true
     }

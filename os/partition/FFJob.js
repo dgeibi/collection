@@ -22,6 +22,7 @@ class FFJob {
     let ret = false
     while (part !== null && ret === false) {
       if (part.size > size) {
+        // 找到第一个适应的分区并分配
         this.alloc(part, size)
         ret = true
       } else {
