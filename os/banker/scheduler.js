@@ -2,7 +2,6 @@ const Base = require('../process-scheduling/base')
 const stateType = require('./stateType')
 const banker = require('./banker')
 const Res = require('./Res')
-// const { getRandomInt } = require('../util')
 
 class RRRScheduler extends Base {
   constructor(opt) {
@@ -24,11 +23,16 @@ class RRRScheduler extends Base {
         ps.reqs &&
         ps.reqs.every((x, j) => x <= this.avail[j].value)
       ) {
+        // 解除阻塞
         ps.unblock()
       }
     })
+    // 需求矩阵
     const need = this.ready.map(ps => ps.needRess)
+    // 分配矩阵
     const alloc = this.ready.map(ps => ps.allocRess)
+
+    // 寻找可分配的作业
     for (let i = 0; i < this.ready.length; i += 1) {
       if (this.ready[i].state === stateType.WAIT) {
         const proc = this.ready[i]
@@ -44,6 +48,7 @@ class RRRScheduler extends Base {
         if (action === banker.returnType.BLOCK) {
           proc.block()
         } else if (action === banker.returnType.OK) {
+          // 消耗资源
           this.consume(reqs)
           console.log(proc.pid, 'consume', reqs)
           return proc
@@ -73,7 +78,7 @@ class RRRScheduler extends Base {
       this.ready.push(this.removePs(proc))
     } else if (proc.state === stateType.FINISH) {
       this.recycle(proc.allocRess)
-      console.log('f', this.avail)
+      console.log(JSON.stringify(this.avail))
     }
   }
 }
