@@ -11,15 +11,20 @@ class Base {
     console.log('__', this.constructor.name)
     this.cur = this.init
     const logs = []
+    // 有寻道请求
     while (this.reqs.length > 0) {
       const index = this.schedule()
       const req = this.reqs[index]
       const { track } = req
       if (req) {
+        // 计算距离
         const distance = Math.abs(req.track - this.cur)
         logs.push({ track, distance })
+
+        // 当前磁道号
         this.cur = track
       }
+      // 移除请求
       this.takeout(index)
     }
     this.logs = logs
@@ -31,7 +36,6 @@ class Base {
     return this.logs.reduce((sum, { distance }) => sum + distance, 0) / this.logs.length
   }
 
-  // eslint-disable-next-line
   schedule() {
     return 0
   }

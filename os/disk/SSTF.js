@@ -1,6 +1,7 @@
 const Base = require('./Base')
 
 class SSTF extends Base {
+  // 找到距当前磁头最近的请求磁道
   schedule() {
     const reqs = this.reqs
     let index = 0
