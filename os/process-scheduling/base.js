@@ -29,30 +29,44 @@ class Base {
       })
     }
     pushLog('not started')
+    // 就绪列队与未到达进程列队长度和大于 0 时循环继续
     while (this.ready.length + this.pending.length > 0) {
+      // 将到达的进程移入就绪列队
       this.takeReady(time)
+
+      // 调出可运行进程
       const proc = this.ready.length > 0 && this.schedule(time)
       pushLog(time, proc)
 
+      // 无进程未就绪循环继续
       if (!proc) {
         time += 1
         continue
       }
+
+      // 执行轮数
       const roundTime = Math.min(this.sliceNum, proc.needTime)
+      // 执行roundTime轮次
       repeat(roundTime, () => proc.tick())
+
       time += roundTime
 
+      // 修改进程状态
       proc.stop()
 
+      // 若进程已完成，则计算周转时间并移入死亡列队
       if (proc.state === stateType.FINISH) {
         proc.cyclingTime = time - proc.arriveTime
         proc.finishTime = time
         this.dead.push(this.removePs(proc))
       }
+
+      // 将已运行进程传递给钩子方法
       if (this.afterRun) {
         this.afterRun(proc)
       }
     }
+
     pushLog(time)
     this.logs = logs
     return this
