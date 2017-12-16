@@ -19,48 +19,41 @@ class Base {
     let time = 0
     const logs = []
     const pickData = x => x.data()
-
+    const pushLog = (time, proc) => {
+      logs.push({
+        time,
+        running: proc && pickData(proc),
+        deads: this.dead.map(pickData),
+        pendings: this.pending.map(pickData),
+        readys: this.ready.map(pickData),
+      })
+    }
+    pushLog('-0')
     while (this.ready.length + this.pending.length > 0) {
       this.takeReady(time)
-      if (this.ready.length <= 0) {
-        time += 1
-        continue
-      }
-      const proc = this.schedule(time)
-      if (!proc) {
-        logs.push({ time })
-        time += 1
-        continue
-      }
+      const proc = this.ready.length > 0 && this.schedule(time)
+      pushLog(time, proc)
 
+      if (!proc) {
+        time += 1
+        continue
+      }
       const roundTime = Math.min(this.sliceNum, proc.needTime)
       repeat(roundTime, () => proc.tick())
-      time += roundTime - 1
-      // 快进后，就绪列队要补充
-      if (roundTime > 1) {
-        this.takeReady(time)
-      }
+      time += roundTime
 
-      const log = { time }
-      log.running = pickData(proc)
       proc.stop()
 
       if (proc.state === stateType.FINISH) {
-        proc.cyclingTime = time + 1 - proc.arriveTime
+        proc.cyclingTime = time - proc.arriveTime
+        proc.finishTime = time
         this.dead.push(this.removePs(proc))
       }
       if (this.afterRun) {
         this.afterRun(proc)
       }
-
-      // 记录 time 末的列队
-      log.deads = this.dead.map(pickData)
-      log.pendings = this.pending.map(pickData)
-      log.readys = this.ready.map(pickData)
-      logs.push(log)
-
-      time += 1
     }
+    pushLog(time)
     this.logs = logs
     return this
   }
