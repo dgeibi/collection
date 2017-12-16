@@ -28,32 +28,37 @@ class Base {
       }
       const proc = this.schedule(time)
       if (!proc) {
-        time += 1
         logs.push({ time })
+        time += 1
         continue
       }
 
       const roundTime = Math.min(this.sliceNum, proc.needTime)
       repeat(roundTime, () => proc.tick())
       time += roundTime - 1
-      const log = { time }
       // 快进后，就绪列队要补充
       if (roundTime > 1) {
         this.takeReady(time)
       }
+
+      const log = { time }
       log.running = pickData(proc)
       proc.stop()
+
       if (proc.state === stateType.FINISH) {
-        proc.cyclingTime = time - proc.arriveTime
+        proc.cyclingTime = time + 1 - proc.arriveTime
         this.dead.push(this.removePs(proc))
       }
       if (this.afterRun) {
         this.afterRun(proc)
       }
+
+      // 记录 time 末的列队
       log.deads = this.dead.map(pickData)
       log.pendings = this.pending.map(pickData)
       log.readys = this.ready.map(pickData)
       logs.push(log)
+
       time += 1
     }
     this.logs = logs
