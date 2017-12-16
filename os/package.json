@@ -5,13 +5,15 @@
   "main": "util.js",
   "scripts": {
     "format": "prettier-eslint --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ps:random": "node process-scheduling/test/random.js",
+    "ps:rr": "node process-scheduling/test/rr.js",
+    "part:bf": "node partition/bf.test.js",
+    "part:ff": "node partition/ff.test.js",
+    "banker": "node banker/test.js",
+    "disk": "node disk/test.js"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "jest": "^21.2.1"
-  },
   "dependencies": {
     "tcharts.js": "0.0.4"
   }
