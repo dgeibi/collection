@@ -1,9 +1,9 @@
 const Base = require('./Base')
 
-class FIFS extends Base {
+class FCFS extends Base {
   schedule() {
     return 0
   }
 }
 
-module.exports = FIFS
+module.exports = FCFS

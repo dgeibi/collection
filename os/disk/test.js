@@ -1,5 +1,5 @@
 const Request = require('./Request')
-const FIFS = require('./FIFS')
+const FCFS = require('./FCFS')
 const SSTF = require('./SSTF')
 const SCAN = require('./SCAN')
 const CSCAN = require('./CSCAN')
@@ -14,7 +14,7 @@ const test = (Fn, ...args) => {
   scheduler.test()
 }
 
-test(FIFS)
+test(FCFS)
 test(SSTF)
 test(SCAN)
 test(CSCAN)
