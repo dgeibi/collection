@@ -11,7 +11,7 @@ class HRRNScheduler extends Base {
   }
 
   schedule(time) {
-    this.ready.forEach((proc) => {
+    this.ready.forEach(proc => {
       const { needTime, arriveTime } = proc
       proc.priority = (time - arriveTime + needTime) / needTime
     })

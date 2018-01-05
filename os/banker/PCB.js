@@ -45,7 +45,8 @@ class PCB extends BasePCB {
 
   request() {
     this.reqs =
-      this.reqs || this.needRess.map(({ value }) => (value > 0 ? getRandomInt(1, value + 1) : 0))
+      this.reqs ||
+      this.needRess.map(({ value }) => (value > 0 ? getRandomInt(1, value + 1) : 0))
     return this.reqs
   }
 

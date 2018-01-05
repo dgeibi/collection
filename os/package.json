@@ -4,7 +4,7 @@
   "description": "",
   "main": "util.js",
   "scripts": {
-    "format": "prettier-eslint --write '**/*.js'",
+    "format": "prettier --write \"**/*.js\"",
     "ps:random": "node process-scheduling/test/random.js",
     "ps:rr": "node process-scheduling/test/rr.js",
     "part:bf": "node partition/bf.test.js",
@@ -16,5 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "tcharts.js": "0.0.4"
+  },
+  "devDependencies": {
+    "prettier": "^1.9.2"
   }
 }

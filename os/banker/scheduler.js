@@ -17,7 +17,7 @@ class RRRScheduler extends Base {
 
   schedule() {
     if (this.ready.length <= 0) return null
-    this.ready.forEach((ps) => {
+    this.ready.forEach(ps => {
       if (
         ps.state === stateType.BLOCK &&
         ps.reqs &&

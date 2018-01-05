@@ -1,6 +1,6 @@
 const Partition = require('./Partition')
 
-module.exports = (Job) => {
+module.exports = Job => {
   const jobs = Array(8)
     .fill(null)
     .map((v, i) => new Job(i + 1))

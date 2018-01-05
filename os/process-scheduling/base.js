@@ -96,19 +96,14 @@ class Base {
         break
       }
     }
-    return deads
-      ? deads.reduce((sum, pcb) => pcb.cyclingTime + sum, 0) / deads.length
-      : 0
+    return deads ? deads.reduce((sum, pcb) => pcb.cyclingTime + sum, 0) / deads.length : 0
   }
 
   printLogs() {
     if (!this.logs) return this
     console.log(`${this.constructor.name} running logs:`)
     this.logs.forEach(log => {
-      tlog(
-        log.pendings,
-        `${this.constructor.name} Pendings Queue of #${log.time}`
-      )
+      tlog(log.pendings, `${this.constructor.name} Pendings Queue of #${log.time}`)
       tlog(log.readys, `${this.constructor.name} Ready Queue of #${log.time}`)
       log.running && console.log('----', 'Running', log.running.pid, '----')
       tlog(log.deads, `${this.constructor.name} Deads Queue of #${log.time}`)
