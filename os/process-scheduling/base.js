@@ -29,11 +29,9 @@ class Base {
       })
     }
     pushLog('not started')
+    this.takeReady(time)
     // 就绪列队与未到达进程列队长度和大于 0 时循环继续
     while (this.ready.length + this.pending.length > 0) {
-      // 将到达的进程移入就绪列队
-      this.takeReady(time)
-
       // 调出可运行进程
       const proc = this.ready.length > 0 && this.schedule(time)
       pushLog(time, proc)
@@ -41,6 +39,7 @@ class Base {
       // 无进程未就绪循环继续
       if (!proc) {
         time += 1
+        this.takeReady(time)
         continue
       }
 
@@ -48,8 +47,8 @@ class Base {
       const roundTime = Math.min(this.sliceNum, proc.needTime)
       // 执行roundTime轮次
       repeat(roundTime, () => proc.tick())
-
       time += roundTime
+      this.takeReady(time)
 
       // 修改进程状态
       proc.stop()
@@ -97,14 +96,19 @@ class Base {
         break
       }
     }
-    return deads ? deads.reduce((sum, pcb) => pcb.cyclingTime + sum, 0) / deads.length : 0
+    return deads
+      ? deads.reduce((sum, pcb) => pcb.cyclingTime + sum, 0) / deads.length
+      : 0
   }
 
   printLogs() {
     if (!this.logs) return this
     console.log(`${this.constructor.name} running logs:`)
-    this.logs.forEach((log) => {
-      tlog(log.pendings, `${this.constructor.name} Pendings Queue of #${log.time}`)
+    this.logs.forEach(log => {
+      tlog(
+        log.pendings,
+        `${this.constructor.name} Pendings Queue of #${log.time}`
+      )
       tlog(log.readys, `${this.constructor.name} Ready Queue of #${log.time}`)
       log.running && console.log('----', 'Running', log.running.pid, '----')
       tlog(log.deads, `${this.constructor.name} Deads Queue of #${log.time}`)
