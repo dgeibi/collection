@@ -3,7 +3,7 @@ module.exports = function runJobScheduler(scheduler, step) {
 
   scheduler.loadJob(time)
   step(time, scheduler)
-  while (scheduler.pending.length + scheduler.arrived.length > 0) {
+  while (!scheduler.isQueueEmpty()) {
     time = scheduler.run(time)
     step(time, scheduler)
   }

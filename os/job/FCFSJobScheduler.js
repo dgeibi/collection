@@ -65,6 +65,10 @@ class FCFSJobScheduler {
     return job
   }
 
+  isQueueEmpty() {
+    return this.pending.length + this.arrived.length <= 0
+  }
+
   takeJob(time) {
     const arrived = []
     for (let i = this.pending.length - 1; i >= 0; i -= 1) {
