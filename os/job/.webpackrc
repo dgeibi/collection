@@ -1,0 +1,12 @@
+{
+  "entry": "src/index.js",
+  "html": {
+    "template": "./src/index.ejs"
+  },
+  "extraBabelPlugins": [
+    "emotion",
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+  ],
+  "hash": true,
+  "ignoreMomentLocale": true
+}

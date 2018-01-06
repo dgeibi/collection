@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "dgeibi/react",
+    "prettier"
+  ]
+}
