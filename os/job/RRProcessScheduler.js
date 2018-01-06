@@ -23,19 +23,19 @@ class RRProcessScheduler {
     // 执行轮数
     const roundTime = Math.min(this.sliceNum, proc.needTime)
     repeat(roundTime, () => proc.tick())
-    time += roundTime
+    const newTime = time + roundTime
 
     // 修改进程状态
     proc.stop()
 
     // 若进程已完成，则计算周转时间并移入死亡列队
     if (proc.state === PCB.stateType.FINISH) {
-      proc.cyclingTime = time - proc.arriveTime
-      proc.finishedTime = time
+      proc.cyclingTime = newTime - proc.arriveTime
+      proc.finishedTime = newTime
       this.dead.push(this.removePS(proc))
     }
 
-    const ret = callback(time, proc)
+    const ret = callback(newTime, proc)
 
     if (proc.state === PCB.stateType.WAIT) {
       this.ready.push(this.ready.shift())

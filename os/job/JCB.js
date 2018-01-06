@@ -4,7 +4,7 @@ const { maybeUndefined } = require('./util')
 let uuJID = 0
 function getJID() {
   uuJID += 1
-  return 'job' + uuJID
+  return `job${uuJID}`
 }
 
 class JCB {
@@ -31,13 +31,14 @@ class JCB {
 
   request(part, size = this.memSize) {
     let ret = false
-    while (part !== null && ret === false) {
-      if (part.size > size) {
+    let cur = part
+    while (cur !== null && ret === false) {
+      if (cur.size > size) {
         // 找到第一个适应的分区并分配
-        this.alloc(part, size)
+        this.alloc(cur, size)
         ret = true
       } else {
-        part = part.next
+        cur = cur.next
       }
     }
     return ret
