@@ -1,7 +1,7 @@
 const { maybeUndefined } = require('./util')
 
 class MemPartition {
-  constructor({ address, size, next, prev, job, state } = {}) {
+  constructor({ address, size, next, prev, job, state, holder } = {}) {
     /** @type {number} */
     this.address = maybeUndefined(address, 0)
 
@@ -18,6 +18,8 @@ class MemPartition {
     this.state = maybeUndefined(state, MemPartition.stateType.FREE)
 
     this.job = maybeUndefined(job, null)
+
+    this.holder = maybeUndefined(holder, () => MemPartition)
   }
 
   unlink() {
@@ -30,16 +32,19 @@ class MemPartition {
     if (next && this.address + this.size === next.address) {
       this.size += next.size
       this.next = next.next
+      if (this.next) {
+        this.next.prev = this
+      }
       next.unlink()
       return this
     }
-    return next
+    return null
   }
 
   remove(job) {
     const { prev, next } = this
-    if (prev === null && MemPartition.head === this) {
-      MemPartition.head = next
+    if (prev === null && this.holder.memory === this) {
+      this.holder.memory = next
     } else if (prev !== null) {
       prev.next = next
       if (next !== null) {
@@ -62,6 +67,7 @@ class MemPartition {
         address,
         job,
         state: MemPartition.stateType.BUSY,
+        holder: this.holder,
       })
     }
     return null
@@ -69,7 +75,7 @@ class MemPartition {
 
   mergeInsert() {
     let last = null
-    let cur = MemPartition.head
+    let cur = this.holder.memory
     this.state = MemPartition.stateType.FREE
     this.job = null
     while (cur && cur.address < this.address) {
@@ -77,12 +83,12 @@ class MemPartition {
       cur = cur.next
     }
     if (last === null) {
-      if (MemPartition.head) {
-        MemPartition.head.prev = this
+      if (this.holder.memory) {
+        this.holder.memory.prev = this
       }
-      this.next = MemPartition.head
+      this.next = this.holder.memory
       this.prev = null
-      MemPartition.head = this
+      this.holder.memory = this
       this.merge()
     } else {
       if (cur) {
@@ -106,7 +112,7 @@ MemPartition.stateType = {
   BUSY: 1,
 }
 
-MemPartition.head = new MemPartition({
+MemPartition.memory = new MemPartition({
   size: 640,
 })
 

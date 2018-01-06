@@ -4,7 +4,7 @@ const { maybeUndefined } = require('./util')
 let uuJID = 0
 function getJID() {
   uuJID += 1
-  return uuJID
+  return 'job' + uuJID
 }
 
 class JCB {
@@ -29,8 +29,7 @@ class JCB {
     }
   }
 
-  request(size = this.memSize) {
-    let part = MemPartition.head
+  request(part, size = this.memSize) {
     let ret = false
     while (part !== null && ret === false) {
       if (part.size > size) {

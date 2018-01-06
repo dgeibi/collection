@@ -10,11 +10,11 @@ class PCB {
     const { needTime, arriveTime, pid, job } = opt
     this.pid = maybeUndefined(pid, getPid)
     this.maxNeedTime = needTime
+    this.needTime = this.maxNeedTime
     this.arriveTime = arriveTime
-    this.finishedTime = null
+    this.finishedTime = NaN
     this.cyclingTime = NaN
     this.job = job
-    this.needTime = this.maxNeedTime
     this.state = PCB.stateType.WAIT
   }
 

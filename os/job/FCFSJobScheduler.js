@@ -1,12 +1,19 @@
 const JCB = require('./JCB')
 const PCB = require('./PCB')
 const RRProcessScheduler = require('./RRProcessScheduler')
+const MemPartition = require('./MemPartition')
 const { maybeUndefined } = require('./util')
 
 class FCFSJobScheduler {
-  constructor({ jcbs, degree, rrSlice } = {}) {
+  constructor({ jcbs, degree, rrSlice, maxMemSize } = {}) {
     /** @type {Array<JCB>} */
-    this.pending = (jcbs && jcbs.map(x => new JCB(x))) || []
+    this.pending =
+      (jcbs &&
+        jcbs.map((x, i) => {
+          if (x.jid === undefined) return new JCB(Object.assign({ jid: i + 1 }, x))
+          return new JCB(x)
+        })) ||
+      []
 
     /** @type {Array<JCB>} */
     this.arrived = []
@@ -22,6 +29,12 @@ class FCFSJobScheduler {
 
     /** @type {RRProcessScheduler} 进程调度器 */
     this.psScheduler = new RRProcessScheduler(rrSlice)
+
+    this.memoryHolder = {}
+    this.memoryHolder.memory = new MemPartition({
+      size: maybeUndefined(maxMemSize, 640),
+      holder: this.memoryHolder,
+    })
   }
 
   /**
@@ -53,11 +66,15 @@ class FCFSJobScheduler {
   }
 
   takeJob(time) {
+    const arrived = []
     for (let i = this.pending.length - 1; i >= 0; i -= 1) {
       const job = this.pending[i]
       if (job.arriveTime <= time) {
-        this.arrived.push(this.pending.splice(i, 1)[0])
+        arrived.push(this.pending.splice(i, 1)[0])
       }
+    }
+    for (let i = arrived.length - 1; i >= 0; i -= 1) {
+      this.arrived.push(arrived[i])
     }
   }
 
@@ -66,7 +83,7 @@ class FCFSJobScheduler {
     // 装入作业
     for (let i = 0; i < this.arrived.length && this.runningCnt < this.degree; i++) {
       const job = this.arrived[i]
-      if (job.state === JCB.stateType.STANDBY && job.request()) {
+      if (job.state === JCB.stateType.STANDBY && job.request(this.memoryHolder.memory)) {
         job.state = JCB.stateType.RUNNING
         if (Number.isNaN(job.loadedTime)) {
           job.loadedTime = time

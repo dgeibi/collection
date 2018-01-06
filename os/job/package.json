@@ -1,0 +1,16 @@
+{
+  "name": "job",
+  "version": "1.0.0",
+  "description": "模拟实现一个简单功能的操作系统。",
+  "main": "index.js",
+  "scripts": {
+    "test": " tap \"test/*.js\"",
+    "format": "prettier --write \"*.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^1.9.2",
+    "tap": "^11.0.1"
+  }
+}
