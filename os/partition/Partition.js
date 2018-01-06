@@ -44,10 +44,13 @@ class Partition {
     if (next && this.address + this.size === next.address) {
       this.size += next.size
       this.next = next.next
+      if (this.next) {
+        this.next.prev = this
+      }
       next.unlink()
       return this
     }
-    return next
+    return null
   }
 
   remove() {
