@@ -1,14 +1,9 @@
 const tap = require('tap')
-const makeJobMatchSnapshot = require('./makeJobMatchSnapshot')
+const runJobScheduler = require('./runJobScheduler')
 
-module.exports = (scheduler) => {
-  let time = 0
-  const matchSnapshot = makeJobMatchSnapshot(tap, () => time)
-
-  scheduler.loadJob(time)
-  matchSnapshot(scheduler)
-  while (scheduler.pending.length + scheduler.arrived.length > 0) {
-    time = scheduler.run(time)
-    matchSnapshot(scheduler)
-  }
+module.exports = function testJobScheduler(scheduler) {
+  return runJobScheduler(scheduler, function matchSnapshot(time) {
+    tap.matchSnapshot(scheduler.arrived, `arrived | T${time}`)
+    tap.matchSnapshot(scheduler.dead, `dead | T${time}`)
+  })
 }
